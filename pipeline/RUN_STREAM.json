@@ -1,0 +1,429 @@
+{
+	"name": "RUN_STREAM",
+	"properties": {
+		"activities": [
+			{
+				"name": "SET PROCESS LIST",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GET PROCESS LIST",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SET AS_AT_DT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SET STREAM_SEQ_ID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PCS_NM_LIST",
+					"value": {
+						"value": "@activity('GET PROCESS LIST').output.value",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "GET PROCESS LIST",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "START STREAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[dbo].[PROC_GET_PCS_STREAM]",
+						"storedProcedureParameters": {
+							"P_STREAM_NM": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.STREAM_NM",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "FOR EACH PROCESS",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "SET PROCESS LIST",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('PCS_NM_LIST')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 20,
+					"activities": [
+						{
+							"name": "RUN_PCS_1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "RUN_PCS_1",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"P_PROCESS_NM": {
+										"value": "@item().PCS_NM",
+										"type": "Expression"
+									},
+									"P_RUN_MODE": {
+										"value": "@pipeline().parameters.RUN_MODE",
+										"type": "Expression"
+									},
+									"P_STREAM_SEQ_ID": {
+										"value": "@variables('STREAM_SEQ_ID')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "STREAM RESULT",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "FINAL STREAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[dbo].[PROC_STREAM_RESULT]",
+						"storedProcedureParameters": {
+							"P_STREAM_NM": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.STREAM_NM",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_SEQ_ID": {
+								"type": "String",
+								"value": {
+									"value": "@variables('STREAM_SEQ_ID')",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "FINAL STREAM",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "FOR EACH PROCESS",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[dbo].[PROC_FINAL_STREAM]",
+						"storedProcedureParameters": {
+							"P_AS_AT_DT": {
+								"type": "String",
+								"value": {
+									"value": "@variables('AS_AT_DT')",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_NM": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.STREAM_NM",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_SEQ_ID": {
+								"type": "String",
+								"value": {
+									"value": "@variables('STREAM_SEQ_ID')",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "SEND EMAIL",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "GET EMAIL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "STREAM RESULT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-73.eastus.logic.azure.com:443/workflows/31b9c44d80f445e3b627ae52e1048925/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=w3NMGAuVijZ7CE64ElCEkj35TgrTsbwnRx2j6DYIyHU",
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\"\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "GET EMAIL",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "FINAL STREAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[dbo].[PROC_GET_EMAIL]",
+						"storedProcedureParameters": {
+							"P_STREAM_NM": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.STREAM_NM",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_RESULT": {
+								"type": "String",
+								"value": {
+									"value": "@activity('FINAL STREAM').output.FIRSTROW.STREAM_RESULT",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "SET AS_AT_DT",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "START STREAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "AS_AT_DT",
+					"value": {
+						"value": "@activity('START STREAM').output.FIRSTROW.AS_AT_DT",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET STREAM_SEQ_ID",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "START STREAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "STREAM_SEQ_ID",
+					"value": {
+						"value": "@activity('START STREAM').output.FIRSTROW.STREAM_SEQ_ID",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "START STREAM",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[dbo].[PROC_CNTL_ACTV_STREAM]",
+						"storedProcedureParameters": {
+							"P_RUN_MODE": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.RUN_MODE",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_NM": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.STREAM_NM",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"STREAM_NM": {
+				"type": "string",
+				"defaultValue": "ORACLE"
+			},
+			"RUN_MODE": {
+				"type": "string",
+				"defaultValue": "R"
+			}
+		},
+		"variables": {
+			"STREAM_RESULT": {
+				"type": "String",
+				"defaultValue": "-999"
+			},
+			"PCS_NM_LIST": {
+				"type": "Array",
+				"defaultValue": [
+					999
+				]
+			},
+			"AS_AT_DT": {
+				"type": "String",
+				"defaultValue": "19000101"
+			},
+			"STREAM_SEQ_ID": {
+				"type": "String",
+				"defaultValue": "-999"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

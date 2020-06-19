@@ -1,0 +1,87 @@
+{
+	"name": "pipeline4",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "STREAM RESULT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-73.eastus.logic.azure.com:443/workflows/31b9c44d80f445e3b627ae52e1048925/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=w3NMGAuVijZ7CE64ElCEkj35TgrTsbwnRx2j6DYIyHU",
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "{\"EmailTo\":\"\",\n\"Message\":\"@{activity('STREAM RESULT').output.FIRSTROW.A}\"}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "STREAM RESULT",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[dbo].[PROC_STREAM_RESULT]",
+						"storedProcedureParameters": {
+							"P_STREAM_NM": {
+								"type": "String",
+								"value": {
+									"value": "ORACLE",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_SEQ_ID": {
+								"type": "String",
+								"value": {
+									"value": "19",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			}
+		],
+		"variables": {
+			"STREAM RESULT": {
+				"type": "String",
+				"defaultValue": "999"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
