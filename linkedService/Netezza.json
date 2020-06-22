@@ -1,0 +1,16 @@
+{
+	"name": "Netezza",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Netezza",
+		"typeProperties": {
+			"connectionString": "server=10.7.5.160;port=5480;database=EDWDEV;uid=BIG_DATA;securitylevel=preferredUnSecured",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIwNTc5OTdjNS1iNWJmLTQ2NTctYmFiNS0xYTE1ZWIxM2RiZWQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
