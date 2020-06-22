@@ -1,12 +1,12 @@
 {
-	"name": "SqlServerTable1",
+	"name": "OracleTableForTest",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "SqlServer1",
+			"referenceName": "Oracle1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "SqlServerTable",
+		"type": "OracleTable",
 		"schema": []
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"

@@ -1,12 +1,12 @@
 {
-	"name": "OracleTable1",
+	"name": "ControlTable",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Oracle1",
+			"referenceName": "SqlServer1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "OracleTable",
+		"type": "SqlServerTable",
 		"schema": []
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"

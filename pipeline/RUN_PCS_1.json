@@ -51,7 +51,7 @@
 						"queryTimeout": "02:00:00"
 					},
 					"dataset": {
-						"referenceName": "SqlServerTable1",
+						"referenceName": "ControlTable",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": true
@@ -120,7 +120,7 @@
 									"queryTimeout": "02:00:00"
 								},
 								"dataset": {
-									"referenceName": "SqlServerTable1",
+									"referenceName": "ControlTable",
 									"type": "DatasetReference"
 								}
 							}
