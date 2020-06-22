@@ -1,5 +1,5 @@
 {
-	"name": "OracleTable1",
+	"name": "OracleTableForTest",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Oracle1",
