@@ -56,7 +56,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_GET_PCS_STREAM]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_PCS_STREAM]",
 						"storedProcedureParameters": {
 							"P_STREAM_NM": {
 								"type": "String",
