@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_CNTL_START_PCS]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_CNTL_START_PCS]",
 						"storedProcedureParameters": {
 							"P_PCS_NM": {
 								"type": "String",
