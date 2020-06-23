@@ -147,7 +147,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_STREAM_RESULT]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_STREAM_RESULT]",
 						"storedProcedureParameters": {
 							"P_STREAM_NM": {
 								"type": "String",
@@ -195,7 +195,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_FINAL_STREAM]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_FINAL_STREAM]",
 						"storedProcedureParameters": {
 							"P_AS_AT_DT": {
 								"type": "String",
@@ -286,7 +286,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_GET_EMAIL]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_EMAIL]",
 						"storedProcedureParameters": {
 							"P_STREAM_NM": {
 								"type": "String",
@@ -367,7 +367,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_CNTL_ACTV_STREAM]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_CNTL_ACTV_STREAM]",
 						"storedProcedureParameters": {
 							"P_RUN_MODE": {
 								"type": "String",

@@ -7,7 +7,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "CHECK DNDP",
+						"activity": "GET SELECT STATEMEMT",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"variableName": "SOURCE_TABLE",
 					"value": {
-						"value": "@concat('SELECT * FROM ',activity('GET PROCESS INFORMATION').output.firstrow.SRC_SCHEMA_NM,'.',activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
+						"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SELECT_STMT",
 						"type": "Expression"
 					}
 				}
@@ -186,7 +186,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[PROC_UDT_PCS]",
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": null,
@@ -382,7 +382,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_GET_PCS]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_PCS]",
 						"storedProcedureParameters": {
 							"P_PCS_NM": {
 								"type": "String",
@@ -422,7 +422,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_GET_STREAM_DT]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_STREAM_DT]",
 						"storedProcedureParameters": {
 							"P_PCS_NM": {
 								"type": "String",
@@ -553,7 +553,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_CHK_LTST_PCS]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_CHK_LTST_PCS]",
 						"storedProcedureParameters": {
 							"P_LOAD_ID": {
 								"type": "String",
@@ -607,7 +607,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_CHK_DPND_PCS]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_CHK_DPND_PCS]",
 						"storedProcedureParameters": {
 							"P_AS_AT_DT": {
 								"type": "String",
@@ -694,7 +694,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[PROC_UDT_PCS]",
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": null,
@@ -753,7 +753,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[PROC_UDT_PCS]",
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": null,
@@ -812,7 +812,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[PROC_UDT_PCS]",
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": null,
@@ -871,7 +871,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[PROC_UDT_PCS]",
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": {
@@ -935,7 +935,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[PROC_CHK_RECONCILE]",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_CHK_RECONCILE]",
 						"storedProcedureParameters": {
 							"P_LOAD_ID": {
 								"type": "String",
@@ -1032,7 +1032,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[PROC_UDT_PCS]",
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": {
@@ -1097,7 +1097,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[PROC_UDT_PCS]",
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": {
@@ -1162,7 +1162,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[PROC_UDT_PCS]",
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": {
@@ -1205,6 +1205,53 @@
 				"linkedServiceName": {
 					"referenceName": "SqlServer1",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "GET SELECT STATEMEMT",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "CHECK DNDP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_SELECT_STMT]",
+						"storedProcedureParameters": {
+							"P_AS_AT_DT": {
+								"type": "String",
+								"value": {
+									"value": "@variables('AS_AT_DT')",
+									"type": "Expression"
+								}
+							},
+							"P_PCS_NM": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.P_PCS_NM",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "ControlTable",
+						"type": "DatasetReference"
+					}
 				}
 			}
 		],
