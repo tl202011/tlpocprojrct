@@ -253,7 +253,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://prod-73.eastus.logic.azure.com:443/workflows/31b9c44d80f445e3b627ae52e1048925/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=w3NMGAuVijZ7CE64ElCEkj35TgrTsbwnRx2j6DYIyHU",
+					"url": "https://prod-08.southeastasia.logic.azure.com:443/workflows/4d3633648b8e4170a54134728e1215fb/triggers/request/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Frequest%2Frun&sv=1.0&sig=H2ABmTH98dea6_SDk6_X9hSJ6NwxIun4UfYXoFTTdPQ",
 					"method": "POST",
 					"headers": {
 						"Content-Type": "application/json"
