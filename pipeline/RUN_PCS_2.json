@@ -1172,10 +1172,7 @@
 							"type": "String"
 						},
 						"P_CNT_TGT": {
-							"value": {
-								"value": "@activity('COPY').output.rowsCopied",
-								"type": "Expression"
-							},
+							"value": null,
 							"type": "String"
 						},
 						"P_LOAD_ID": {
