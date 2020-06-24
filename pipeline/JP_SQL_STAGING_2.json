@@ -1,5 +1,5 @@
 {
-	"name": "RUN_PCS_2",
+	"name": "JP_SQL_STAGING_2",
 	"properties": {
 		"activities": [
 			{
@@ -1332,7 +1332,7 @@
 			}
 		},
 		"folder": {
-			"name": "COMMON JOB TEMPLATE"
+			"name": "SQL STAGING"
 		},
 		"annotations": []
 	},
