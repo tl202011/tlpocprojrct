@@ -784,7 +784,7 @@
 							"P_TARGET_CNT": {
 								"type": "String",
 								"value": {
-									"value": "@activity('COPY').output.rowsCopied",
+									"value": "@variables('CNT_TARGET')",
 									"type": "Expression"
 								}
 							}
@@ -866,14 +866,14 @@
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": {
-								"value": "@activity('COUNT SOURCE').output.FIRSTROW.COUNT_SOURCE ",
+								"value": "@variables('CNT_SOURCE')",
 								"type": "Expression"
 							},
 							"type": "String"
 						},
 						"P_CNT_TGT": {
 							"value": {
-								"value": "@activity('COPY').output.rowsCopied",
+								"value": "@variables('CNT_TARGET')",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -931,14 +931,14 @@
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": {
-								"value": "@activity('COUNT SOURCE').output.FIRSTROW.COUNT_SOURCE ",
+								"value": "@variables('CNT_SOURCE')",
 								"type": "Expression"
 							},
 							"type": "String"
 						},
 						"P_CNT_TGT": {
 							"value": {
-								"value": "@activity('COPY').output.rowsCopied",
+								"value": "@variables('CNT_TARGET')",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -996,7 +996,7 @@
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": {
-								"value": "@activity('COUNT SOURCE').output.FIRSTROW.COUNT_SOURCE ",
+								"value": "@variables('CNT_SOURCE')",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -1146,77 +1146,6 @@
 						"type": "Expression"
 					},
 					"cases": [
-						{
-							"value": "ORACLE",
-							"activities": [
-								{
-									"name": "ORACLE",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [
-										{
-											"name": "Source",
-											"value": "."
-										},
-										{
-											"name": "Destination",
-											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
-										}
-									],
-									"typeProperties": {
-										"source": {
-											"type": "OracleSource",
-											"oracleReaderQuery": {
-												"value": "@variables('SOURCE_TABLE')",
-												"type": "Expression"
-											},
-											"partitionOption": "None",
-											"queryTimeout": "02:00:00"
-										},
-										"sink": {
-											"type": "ParquetSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "OracleTableForTest",
-											"type": "DatasetReference"
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ParquetFile",
-											"type": "DatasetReference",
-											"parameters": {
-												"file_name": {
-													"value": "@concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
-													"type": "Expression"
-												},
-												"path": {
-													"value": "@activity('GET PROCESS INFORMATION').output.firstrow.path",
-													"type": "Expression"
-												},
-												"asatdt": {
-													"value": "@variables('AS_AT_DT')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								}
-							]
-						},
 						{
 							"value": "EDW",
 							"activities": [
