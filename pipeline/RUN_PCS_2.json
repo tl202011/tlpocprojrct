@@ -1315,10 +1315,10 @@
 							]
 						},
 						{
-							"value": "NETTEZZA",
+							"value": "EDW",
 							"activities": [
 								{
-									"name": "NETTEZZA",
+									"name": "EDW",
 									"type": "Copy",
 									"dependsOn": [],
 									"policy": {
@@ -1341,7 +1341,10 @@
 									"typeProperties": {
 										"source": {
 											"type": "NetezzaSource",
-											"query": "@variables('SOURCE_TABLE')",
+											"query": {
+												"value": "@variables('SOURCE_TABLE')",
+												"type": "Expression"
+											},
 											"partitionOption": "None"
 										},
 										"sink": {
