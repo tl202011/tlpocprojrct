@@ -1235,16 +1235,15 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "OracleSource",
-											"oracleReaderQuery": {
+											"type": "NetezzaSource",
+											"query": {
 												"value": "@variables('SOURCE_CNT_STMT')",
 												"type": "Expression"
 											},
-											"partitionOption": "None",
-											"queryTimeout": "02:00:00"
+											"partitionOption": "DataSlice"
 										},
 										"dataset": {
-											"referenceName": "OracleTableForTest",
+											"referenceName": "NetezzaTable1",
 											"type": "DatasetReference"
 										}
 									}
@@ -1273,7 +1272,7 @@
 										"storedProcedureParameters": {
 											"P_CNT_SRC": {
 												"value": {
-													"value": "@activity('EDW COUNT SOURCE').output.FIRSTROW.SRC_COUNT",
+													"value": "@activity('EDW COUNT SOURCE').output.FIRSTROW.COUNT",
 													"type": "Expression"
 												},
 												"type": "String"
