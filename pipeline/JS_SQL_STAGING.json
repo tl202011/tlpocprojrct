@@ -1,5 +1,5 @@
 {
-	"name": "RUN_STREAM",
+	"name": "JS_SQL_STAGING",
 	"properties": {
 		"activities": [
 			{
@@ -424,7 +424,7 @@
 			}
 		},
 		"folder": {
-			"name": "COMMON JOB TEMPLATE"
+			"name": "SQL STAGING"
 		},
 		"annotations": []
 	},
