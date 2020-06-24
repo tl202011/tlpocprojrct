@@ -15,7 +15,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "SOURCE_TABLE",
+					"variableName": "SOURCE_TABLE_STMT",
 					"value": {
 						"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SELECT_STMT",
 						"type": "Expression"
@@ -567,41 +567,6 @@
 				}
 			},
 			{
-				"name": "COUNT SOURCE",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "GET SOURCE COUNT",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "OracleSource",
-						"oracleReaderQuery": {
-							"value": "@activity('GET SOURCE COUNT').output.firstrow.SRC_COUNT",
-							"type": "Expression"
-						},
-						"partitionOption": "None",
-						"queryTimeout": "02:00:00"
-					},
-					"dataset": {
-						"referenceName": "OracleTableForTest",
-						"type": "DatasetReference"
-					}
-				}
-			},
-			{
 				"name": "UPDATE FAILED ON STREAM",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
@@ -769,68 +734,6 @@
 						},
 						"P_ST": {
 							"value": "FAILED",
-							"type": "String"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "SqlServer1",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "UPDATE COUNT SOURCE",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "COUNT SOURCE",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
-					"storedProcedureParameters": {
-						"P_CNT_SRC": {
-							"value": {
-								"value": "@activity('COUNT SOURCE').output.FIRSTROW.COUNT_SOURCE ",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"P_CNT_TGT": {
-							"value": null,
-							"type": "String"
-						},
-						"P_LOAD_ID": {
-							"value": {
-								"value": "@pipeline().parameters.P_LOAD_ID",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"P_PCS_NM": {
-							"value": {
-								"value": "@pipeline().parameters.P_PCS_NM",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"P_RMRK": {
-							"value": null,
-							"type": "String"
-						},
-						"P_ST": {
-							"value": "START",
 							"type": "String"
 						}
 					}
@@ -1230,7 +1133,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "UPDATE COUNT SOURCE",
+						"activity": "SET SOURCE COUNT",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1320,7 +1223,14 @@
 								{
 									"name": "EDW",
 									"type": "Copy",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "EDW UPDATE COUNT SOURCE",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "7.00:00:00",
 										"retry": 0,
@@ -1342,7 +1252,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@variables('SOURCE_TABLE')",
+												"value": "@variables('SOURCE_TABLE_STMT')",
 												"type": "Expression"
 											},
 											"partitionOption": "None"
@@ -1381,6 +1291,96 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "EDW COUNT SOURCE",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "OracleSource",
+											"oracleReaderQuery": {
+												"value": "@variables('SOURCE_CNT_STMT')",
+												"type": "Expression"
+											},
+											"partitionOption": "None",
+											"queryTimeout": "02:00:00"
+										},
+										"dataset": {
+											"referenceName": "OracleTableForTest",
+											"type": "DatasetReference"
+										}
+									}
+								},
+								{
+									"name": "EDW UPDATE COUNT SOURCE",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "EDW COUNT SOURCE",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+										"storedProcedureParameters": {
+											"P_CNT_SRC": {
+												"value": {
+													"value": "@activity('EDW COUNT SOURCE').output.FIRSTROW.SRC_COUNT",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_CNT_TGT": {
+												"value": null,
+												"type": "String"
+											},
+											"P_LOAD_ID": {
+												"value": {
+													"value": "@pipeline().parameters.P_LOAD_ID",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_PCS_NM": {
+												"value": {
+													"value": "@pipeline().parameters.P_PCS_NM",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_RMRK": {
+												"value": null,
+												"type": "String"
+											},
+											"P_ST": {
+												"value": "START",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SqlServer1",
+										"type": "LinkedServiceReference"
+									}
 								}
 							]
 						}
@@ -1412,6 +1412,26 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "SET SOURCE COUNT",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GET SOURCE COUNT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "SOURCE_CNT_STMT",
+					"value": {
+						"value": "@activity('GET SOURCE COUNT').output.firstrow.SRC_COUNT",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -1433,7 +1453,7 @@
 				"type": "String",
 				"defaultValue": "0"
 			},
-			"SOURCE_TABLE": {
+			"SOURCE_TABLE_STMT": {
 				"type": "String",
 				"defaultValue": "-999"
 			},
@@ -1446,6 +1466,10 @@
 				"defaultValue": "-999"
 			},
 			"CNT_TARGET": {
+				"type": "String",
+				"defaultValue": "-999"
+			},
+			"SOURCE_CNT_STMT": {
 				"type": "String",
 				"defaultValue": "-999"
 			}
