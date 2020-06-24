@@ -23,79 +23,6 @@
 				}
 			},
 			{
-				"name": "COPY",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "UPDATE COUNT SOURCE",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "."
-					},
-					{
-						"name": "Destination",
-						"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
-					}
-				],
-				"typeProperties": {
-					"source": {
-						"type": "OracleSource",
-						"oracleReaderQuery": {
-							"value": "@variables('SOURCE_TABLE')",
-							"type": "Expression"
-						},
-						"partitionOption": "None",
-						"queryTimeout": "02:00:00"
-					},
-					"sink": {
-						"type": "ParquetSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "OracleTableForTest",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ParquetFile",
-						"type": "DatasetReference",
-						"parameters": {
-							"file_name": {
-								"value": "@concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
-								"type": "Expression"
-							},
-							"path": {
-								"value": "@activity('GET PROCESS INFORMATION').output.firstrow.path",
-								"type": "Expression"
-							},
-							"asatdt": {
-								"value": "@variables('AS_AT_DT')",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
 				"name": "CHECK PROCESS INFORMATION",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -1297,6 +1224,191 @@
 						"type": "DatasetReference"
 					}
 				}
+			},
+			{
+				"name": "COPY",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "UPDATE COUNT SOURCE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@activity('GET PROCESS INFORMATION').output.firstrow.STREAM_NM",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "ORACLE",
+							"activities": [
+								{
+									"name": "ORACLE",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "."
+										},
+										{
+											"name": "Destination",
+											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
+										}
+									],
+									"typeProperties": {
+										"source": {
+											"type": "OracleSource",
+											"oracleReaderQuery": {
+												"value": "@variables('SOURCE_TABLE')",
+												"type": "Expression"
+											},
+											"partitionOption": "None",
+											"queryTimeout": "02:00:00"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "OracleTableForTest",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ParquetFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"file_name": {
+													"value": "@concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@activity('GET PROCESS INFORMATION').output.firstrow.path",
+													"type": "Expression"
+												},
+												"asatdt": {
+													"value": "@variables('AS_AT_DT')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"value": "NETTEZZA",
+							"activities": [
+								{
+									"name": "NETTEZZA",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "."
+										},
+										{
+											"name": "Destination",
+											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
+										}
+									],
+									"typeProperties": {
+										"source": {
+											"type": "NetezzaSource",
+											"query": "@variables('SOURCE_TABLE')",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "NetezzaTable1",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ParquetFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"file_name": {
+													"value": "@concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@activity('GET PROCESS INFORMATION').output.firstrow.path",
+													"type": "Expression"
+												},
+												"asatdt": {
+													"value": "@variables('AS_AT_DT')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "ABORT COPY",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": "SELECT 1/0",
+									"queryTimeout": "02:00:00"
+								},
+								"dataset": {
+									"referenceName": "ControlTable",
+									"type": "DatasetReference"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -1327,6 +1439,10 @@
 				"defaultValue": "999"
 			},
 			"CNT_SOURCE": {
+				"type": "String",
+				"defaultValue": "-999"
+			},
+			"CNT_TARGET": {
 				"type": "String",
 				"defaultValue": "-999"
 			}
