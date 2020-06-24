@@ -920,7 +920,7 @@
 						"type": "Lookup",
 						"dependsOn": [
 							{
-								"activity": "SOURCE SELECT STATEMENT",
+								"activity": "GET SOURCE COUNT",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -938,7 +938,7 @@
 							"source": {
 								"type": "OracleSource",
 								"oracleReaderQuery": {
-									"value": "@concat('SELECT COUNT(*) AS COUNT_SOURCE FROM ',activity('GET PROCESS INFORMATION').output.firstrow.SRC_SCHEMA_NM,'.',activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
+									"value": "@activity('GET SOURCE COUNT').output.firstrow.SRC_COUNT",
 									"type": "Expression"
 								},
 								"partitionOption": "None",
@@ -1506,6 +1506,54 @@
 							"source": {
 								"type": "SqlServerSource",
 								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_GET_SELECT_STMT]",
+								"storedProcedureParameters": {
+									"P_AS_AT_DT": {
+										"type": "String",
+										"value": {
+											"value": "@variables('AS_AT_DT')",
+											"type": "Expression"
+										}
+									},
+									"P_PCS_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_PCS_NM",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "ControlTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "GET SOURCE COUNT",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "SOURCE SELECT STATEMENT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_GET_SRC_COUNT]",
 								"storedProcedureParameters": {
 									"P_AS_AT_DT": {
 										"type": "String",
