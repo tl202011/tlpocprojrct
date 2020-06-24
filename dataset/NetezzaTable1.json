@@ -1,0 +1,12 @@
+{
+	"name": "NetezzaTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Netezza",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "NetezzaTable",
+		"schema": []
+	}
+}
