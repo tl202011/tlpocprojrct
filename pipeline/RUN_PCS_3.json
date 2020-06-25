@@ -34,16 +34,7 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [
-										{
-											"name": "Source",
-											"value": "."
-										},
-										{
-											"name": "Destination",
-											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
-										}
-									],
+									"userProperties": [],
 									"typeProperties": {
 										"source": {
 											"type": "NetezzaSource",
@@ -354,16 +345,7 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [
-										{
-											"name": "Source",
-											"value": "."
-										},
-										{
-											"name": "Destination",
-											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
-										}
-									],
+									"userProperties": [],
 									"typeProperties": {
 										"source": {
 											"type": "NetezzaSource",
@@ -585,16 +567,7 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [
-										{
-											"name": "Source",
-											"value": "."
-										},
-										{
-											"name": "Destination",
-											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
-										}
-									],
+									"userProperties": [],
 									"typeProperties": {
 										"source": {
 											"type": "NetezzaSource",
@@ -817,16 +790,7 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [
-										{
-											"name": "Source",
-											"value": "."
-										},
-										{
-											"name": "Destination",
-											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
-										}
-									],
+									"userProperties": [],
 									"typeProperties": {
 										"source": {
 											"type": "OracleSource",
@@ -1049,16 +1013,7 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [
-										{
-											"name": "Source",
-											"value": "."
-										},
-										{
-											"name": "Destination",
-											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
-										}
-									],
+									"userProperties": [],
 									"typeProperties": {
 										"source": {
 											"type": "NetezzaSource",
