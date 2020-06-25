@@ -48,7 +48,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@variables('SOURCE_TABLE_STMT')",
+												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "None"
@@ -73,15 +73,15 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
+													"value": "@pipeline().parameters.SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@activity('GET PROCESS INFORMATION').output.firstrow.path",
+													"value": "@pipeline().parameters.PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@variables('AS_AT_DT')",
+													"value": "@pipeline().parameters.AS_AT_DT",
 													"type": "Expression"
 												}
 											}
@@ -176,18 +176,13 @@
 										"referenceName": "SqlServer1",
 										"type": "LinkedServiceReference"
 									}
-								}
-							]
-						},
-						{
-							"value": "POSTGRE_STAGING",
-							"activities": [
+								},
 								{
-									"name": "POSTGRE_STAGING",
-									"type": "Copy",
+									"name": "EDW UPDATE COUNT TARGET",
+									"type": "SqlServerStoredProcedure",
 									"dependsOn": [
 										{
-											"activity": "POSTGRE_STAGING UPDATE COUNT SOURCE",
+											"activity": "EDW",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -200,60 +195,58 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [
-										{
-											"name": "Source",
-											"value": "."
-										},
-										{
-											"name": "Destination",
-											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
-										}
-									],
+									"userProperties": [],
 									"typeProperties": {
-										"source": {
-											"type": "NetezzaSource",
-											"query": {
-												"value": "@variables('SOURCE_TABLE_STMT')",
-												"type": "Expression"
+										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+										"storedProcedureParameters": {
+											"P_CNT_SRC": {
+												"value": {
+													"value": "@activity('EDW COUNT SOURCE').output.FIRSTROW.COUNT",
+													"type": "Expression"
+												},
+												"type": "String"
 											},
-											"partitionOption": "None"
-										},
-										"sink": {
-											"type": "ParquetSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
+											"P_CNT_TGT": {
+												"value": {
+													"value": "@activity('EDW').output.rowsCopied",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_LOAD_ID": {
+												"value": {
+													"value": "@pipeline().parameters.P_LOAD_ID",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_PCS_NM": {
+												"value": {
+													"value": "@pipeline().parameters.P_PCS_NM",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_RMRK": {
+												"value": null,
+												"type": "String"
+											},
+											"P_ST": {
+												"value": "START",
+												"type": "String"
 											}
-										},
-										"enableStaging": false
+										}
 									},
-									"inputs": [
-										{
-											"referenceName": "NetezzaTable1",
-											"type": "DatasetReference"
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ParquetFile",
-											"type": "DatasetReference",
-											"parameters": {
-												"file_name": {
-													"value": "@concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
-													"type": "Expression"
-												},
-												"path": {
-													"value": "@activity('GET PROCESS INFORMATION').output.firstrow.path",
-													"type": "Expression"
-												},
-												"asatdt": {
-													"value": "@variables('AS_AT_DT')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
+									"linkedServiceName": {
+										"referenceName": "SqlServer1",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						},
+						{
+							"value": "POSTGRE_STAGING",
+							"activities": [
 								{
 									"name": "POSTGRE_STAGING COUNT SOURCE",
 									"type": "Lookup",
@@ -270,7 +263,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@variables('SOURCE_CNT_STMT')",
+												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "DataSlice"
@@ -342,18 +335,13 @@
 										"referenceName": "SqlServer1",
 										"type": "LinkedServiceReference"
 									}
-								}
-							]
-						},
-						{
-							"value": "DV",
-							"activities": [
+								},
 								{
-									"name": "DV",
+									"name": "POSTGRE_STAGING",
 									"type": "Copy",
 									"dependsOn": [
 										{
-											"activity": "DV UPDATE COUNT SOURCE",
+											"activity": "POSTGRE_STAGING UPDATE COUNT SOURCE",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -380,7 +368,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@variables('SOURCE_TABLE_STMT')",
+												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "None"
@@ -405,21 +393,91 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
+													"value": "@pipeline().parameters.SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@activity('GET PROCESS INFORMATION').output.firstrow.path",
+													"value": "@pipeline().parameters.PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@variables('AS_AT_DT')",
+													"value": "@pipeline().parameters.AS_AT_DT",
 													"type": "Expression"
 												}
 											}
 										}
 									]
 								},
+								{
+									"name": "POSTGRE_STAGING UPDATE COUNT TARGET",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "POSTGRE_STAGING",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+										"storedProcedureParameters": {
+											"P_CNT_SRC": {
+												"value": {
+													"value": "@activity('POSTGRE_STAGING COUNT SOURCE').output.FIRSTROW.COUNT",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_CNT_TGT": {
+												"value": {
+													"value": "@activity('POSTGRE_STAGING').output.rowsCopied",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_LOAD_ID": {
+												"value": {
+													"value": "@pipeline().parameters.P_LOAD_ID",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_PCS_NM": {
+												"value": {
+													"value": "@pipeline().parameters.P_PCS_NM",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_RMRK": {
+												"value": null,
+												"type": "String"
+											},
+											"P_ST": {
+												"value": "START",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SqlServer1",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						},
+						{
+							"value": "DV",
+							"activities": [
 								{
 									"name": "DV COUNT SOURCE",
 									"type": "Lookup",
@@ -436,7 +494,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@variables('SOURCE_CNT_STMT')",
+												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "DataSlice"
@@ -508,18 +566,13 @@
 										"referenceName": "SqlServer1",
 										"type": "LinkedServiceReference"
 									}
-								}
-							]
-						},
-						{
-							"value": "ORACLE",
-							"activities": [
+								},
 								{
-									"name": "ORACLE",
+									"name": "DV",
 									"type": "Copy",
 									"dependsOn": [
 										{
-											"activity": "ORACLE UPDATE COUNT SOURCE",
+											"activity": "DV UPDATE COUNT SOURCE",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -546,7 +599,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@variables('SOURCE_TABLE_STMT')",
+												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "None"
@@ -571,21 +624,91 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
+													"value": "@pipeline().parameters.SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@activity('GET PROCESS INFORMATION').output.firstrow.path",
+													"value": "@pipeline().parameters.PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@variables('AS_AT_DT')",
+													"value": "@pipeline().parameters.AS_AT_DT",
 													"type": "Expression"
 												}
 											}
 										}
 									]
 								},
+								{
+									"name": "DV UPDATE COUNT TARGET",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "DV",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+										"storedProcedureParameters": {
+											"P_CNT_SRC": {
+												"value": {
+													"value": "@activity('DV COUNT SOURCE').output.FIRSTROW.COUNT",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_CNT_TGT": {
+												"value": {
+													"value": "@activity('DV').output.rowsCopied",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_LOAD_ID": {
+												"value": {
+													"value": "@pipeline().parameters.P_LOAD_ID",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_PCS_NM": {
+												"value": {
+													"value": "@pipeline().parameters.P_PCS_NM",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_RMRK": {
+												"value": null,
+												"type": "String"
+											},
+											"P_ST": {
+												"value": "START",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SqlServer1",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						},
+						{
+							"value": "ORACLE",
+							"activities": [
 								{
 									"name": "ORACLE COUNT SOURCE",
 									"type": "Lookup",
@@ -602,7 +725,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@variables('SOURCE_CNT_STMT')",
+												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "DataSlice"
@@ -674,18 +797,13 @@
 										"referenceName": "SqlServer1",
 										"type": "LinkedServiceReference"
 									}
-								}
-							]
-						},
-						{
-							"value": "MONGO",
-							"activities": [
+								},
 								{
-									"name": "MONGO",
+									"name": "ORACLE",
 									"type": "Copy",
 									"dependsOn": [
 										{
-											"activity": "MONGO UPDATE COUNT SOURCE",
+											"activity": "ORACLE UPDATE COUNT SOURCE",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -712,7 +830,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@variables('SOURCE_TABLE_STMT')",
+												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "None"
@@ -737,21 +855,91 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)",
+													"value": "@pipeline().parameters.SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@activity('GET PROCESS INFORMATION').output.firstrow.path",
+													"value": "@pipeline().parameters.PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@variables('AS_AT_DT')",
+													"value": "@pipeline().parameters.AS_AT_DT",
 													"type": "Expression"
 												}
 											}
 										}
 									]
 								},
+								{
+									"name": "ORACLE UPDATE COUNT TARGET",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "ORACLE",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+										"storedProcedureParameters": {
+											"P_CNT_SRC": {
+												"value": {
+													"value": "@activity('ORACLE COUNT SOURCE').output.FIRSTROW.COUNT",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_CNT_TGT": {
+												"value": {
+													"value": "@activity('ORACLE').output.rowsCopied",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_LOAD_ID": {
+												"value": {
+													"value": "@pipeline().parameters.P_LOAD_ID",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_PCS_NM": {
+												"value": {
+													"value": "@pipeline().parameters.P_PCS_NM",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_RMRK": {
+												"value": null,
+												"type": "String"
+											},
+											"P_ST": {
+												"value": "START",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SqlServer1",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						},
+						{
+							"value": "MONGO",
+							"activities": [
 								{
 									"name": "MONGO COUNT SOURCE",
 									"type": "Lookup",
@@ -768,7 +956,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@variables('SOURCE_CNT_STMT')",
+												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "DataSlice"
@@ -810,6 +998,143 @@
 											},
 											"P_CNT_TGT": {
 												"value": null,
+												"type": "String"
+											},
+											"P_LOAD_ID": {
+												"value": {
+													"value": "@pipeline().parameters.P_LOAD_ID",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_PCS_NM": {
+												"value": {
+													"value": "@pipeline().parameters.P_PCS_NM",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_RMRK": {
+												"value": null,
+												"type": "String"
+											},
+											"P_ST": {
+												"value": "START",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SqlServer1",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "MONGO",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "MONGO UPDATE COUNT SOURCE",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "."
+										},
+										{
+											"name": "Destination",
+											"value": "luxurywafe/activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL/variables('AS_AT_DT')/@{concat(activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL)}"
+										}
+									],
+									"typeProperties": {
+										"source": {
+											"type": "NetezzaSource",
+											"query": {
+												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+												"type": "Expression"
+											},
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "NetezzaTable1",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ParquetFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"file_name": {
+													"value": "@pipeline().parameters.SRC_TBL",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@pipeline().parameters.PATH",
+													"type": "Expression"
+												},
+												"asatdt": {
+													"value": "@pipeline().parameters.AS_AT_DT",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "MONGO UPDATE COUNT TARGET",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "MONGO",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+										"storedProcedureParameters": {
+											"P_CNT_SRC": {
+												"value": {
+													"value": "@activity('MONGO COUNT SOURCE').output.FIRSTROW.COUNT",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_CNT_TGT": {
+												"value": {
+													"value": "@activity('MONGO').output.rowsCopied",
+													"type": "Expression"
+												},
 												"type": "String"
 											},
 											"P_LOAD_ID": {
@@ -891,6 +1216,18 @@
 				"defaultValue": "-999"
 			},
 			"SOURCE_TABLE_STMT": {
+				"type": "string",
+				"defaultValue": "-999"
+			},
+			"SRC_TBL": {
+				"type": "string",
+				"defaultValue": "-999"
+			},
+			"PATH": {
+				"type": "string",
+				"defaultValue": "-999"
+			},
+			"AS_AT_DT": {
 				"type": "string",
 				"defaultValue": "-999"
 			}
