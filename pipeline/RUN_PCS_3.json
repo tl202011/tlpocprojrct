@@ -723,15 +723,16 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "NetezzaSource",
-											"query": {
+											"type": "OracleSource",
+											"oracleReaderQuery": {
 												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
 												"type": "Expression"
 											},
-											"partitionOption": "DataSlice"
+											"partitionOption": "None",
+											"queryTimeout": "02:00:00"
 										},
 										"dataset": {
-											"referenceName": "NetezzaTable1",
+											"referenceName": "OracleTableForTest",
 											"type": "DatasetReference"
 										}
 									}
@@ -828,12 +829,13 @@
 									],
 									"typeProperties": {
 										"source": {
-											"type": "NetezzaSource",
-											"query": {
+											"type": "OracleSource",
+											"oracleReaderQuery": {
 												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
 												"type": "Expression"
 											},
-											"partitionOption": "None"
+											"partitionOption": "None",
+											"queryTimeout": "02:00:00"
 										},
 										"sink": {
 											"type": "ParquetSink",
@@ -845,7 +847,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "NetezzaTable1",
+											"referenceName": "OracleTableForTest",
 											"type": "DatasetReference"
 										}
 									],
