@@ -64,7 +64,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@concat(pipeline().parameters.SRC_TBL,'.parquet')",
+													"value": "@pipeline().parameters.SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {

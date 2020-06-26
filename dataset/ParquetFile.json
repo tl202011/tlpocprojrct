@@ -25,11 +25,11 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@dataset().file_name",
+					"value": "@concat(dataset().file_name,'.parquet')",
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@dataset().asatdt",
+					"value": "@concat(dataset().file_name,'/',dataset().asatdt)",
 					"type": "Expression"
 				},
 				"fileSystem": {
