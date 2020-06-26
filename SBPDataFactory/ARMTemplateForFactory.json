@@ -1623,7 +1623,7 @@
 													"type": "DatasetReference",
 													"parameters": {
 														"file_name": {
-															"value": "@pipeline().parameters.SRC_TBL",
+															"value": "@concat(pipeline().parameters.SRC_TBL,'.parquet')",
 															"type": "Expression"
 														},
 														"path": {
