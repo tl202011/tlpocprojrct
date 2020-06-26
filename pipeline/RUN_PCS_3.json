@@ -64,7 +64,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "pipeline().parameters.SRC_TBL",
+													"value": "@pipeline().parameters.SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
