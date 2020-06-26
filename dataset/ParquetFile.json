@@ -29,7 +29,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@dataset().asatdt",
+					"value": "@concat(dataset().asatdt,'/',dataset().file_name)",
 					"type": "Expression"
 				},
 				"fileSystem": {
