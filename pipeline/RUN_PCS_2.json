@@ -312,7 +312,19 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "CHECK PROCESS INFORMATION",
+						"activity": "SET STREAM_NM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SET FILE_PATH",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SET FILE_NAME",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1186,7 +1198,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "FILE_PATH",
-					"value": "@activity('GET PROCESS INFORMATION').output.firstrow.PATH"
+					"value": {
+						"value": "@activity('GET PROCESS INFORMATION').output.firstrow.PATH",
+						"type": "Expression"
+					}
 				}
 			},
 			{
@@ -1202,8 +1217,11 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "FILE_PATH",
-					"value": "@activity('GET PROCESS INFORMATION').output.firstrow.STREAM_NM"
+					"variableName": "STREAM_NM",
+					"value": {
+						"value": "@activity('GET PROCESS INFORMATION').output.firstrow.STREAM_NM",
+						"type": "Expression"
+					}
 				}
 			}
 		],
