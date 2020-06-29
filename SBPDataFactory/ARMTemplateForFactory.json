@@ -3037,7 +3037,7 @@
 								"Content-Type": "application/json"
 							},
 							"body": {
-								"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\"\n\"Asat_dt\":\"@{activity('FINAL STREAM').output.firstrow.AS_AT_DT_FORMAT}\",\n\"StreamName\":\"@{pipeline().parameters.STREAM_NM}\"\n}",
+								"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\",\n\"Asat_dt\":\"@{activity('FINAL STREAM').output.firstrow.AS_AT_DT_FORMAT}\",\n\"StreamName\":\"@{pipeline().parameters.STREAM_NM}\"\n}",
 								"type": "Expression"
 							}
 						}
@@ -3287,7 +3287,7 @@
 								"Content-Type": "application/json"
 							},
 							"body": {
-								"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"sbpdl_int_202006@outlook.com\"\n}",
+								"value": "{\n\"EmailTo\":\"sbpdl_int_202006@outlook.com\",\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"Asat_dt\":\"Jan 02, 2020\",\n\"StreamName\":\"EDW\"}\n",
 								"type": "Expression"
 							}
 						}
