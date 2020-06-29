@@ -69,7 +69,7 @@
 						"Content-Type": "application/json"
 					},
 					"body": {
-						"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"sbpdl_int_202006@outlook.com\"\n}",
+						"value": "{\n\"EmailTo\":\"sbpdl_int_202006@outlook.com\",\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"Asat_dt\":\"Jan 02, 2020\",\n\"StreamName\":\"EDW\"}\n",
 						"type": "Expression"
 					}
 				}
