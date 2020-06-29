@@ -1,5 +1,5 @@
 {
-	"name": "RUN_PCS_3",
+	"name": "RUN_PCS_COPY",
 	"properties": {
 		"activities": [
 			{
@@ -1126,7 +1126,7 @@
 							]
 						},
 						{
-							"value": "SQLStaging",
+							"value": "SQL_STAGING",
 							"activities": [
 								{
 									"name": "SQL STAGING",
