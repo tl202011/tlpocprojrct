@@ -1124,7 +1124,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "RUN_PCS_COPY",
+						"referenceName": "RUN_PCS_3",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
