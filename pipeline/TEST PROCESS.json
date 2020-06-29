@@ -3,72 +3,90 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ACTIVATE STREAM",
-				"type": "SqlServerStoredProcedure",
+				"name": "ForEach1",
+				"type": "ForEach",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[CNTL].[PROC_CNTL_ACTV_INDV_PCS]",
-					"storedProcedureParameters": {
-						"P_AS_AT_DT": {
-							"value": {
-								"value": "@pipeline().parameters.P_AS_AT_DT",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"P_PCS_NM": {
-							"value": {
-								"value": "@pipeline().parameters.P_PCS_NM",
-								"type": "Expression"
-							},
-							"type": "String"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "SqlServer1",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "RUN_PCS_1",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "ACTIVATE STREAM",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "RUN_PCS_1",
-						"type": "PipelineReference"
+					"items": {
+						"value": "@pipeline().parameters.P_AS_AT_DT",
+						"type": "Expression"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"P_PROCESS_NM": {
-							"value": "@pipeline().parameters.P_PCS_NM",
-							"type": "Expression"
+					"isSequential": false,
+					"batchCount": 5,
+					"activities": [
+						{
+							"name": "RUN_PCS_1",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "ACTIVATE STREAM",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "RUN_PCS_1",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"P_PROCESS_NM": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "ACTIVATE STREAM",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[CNTL].[PROC_CNTL_ACTV_INDV_PCS]",
+								"storedProcedureParameters": {
+									"P_AS_AT_DT": {
+										"value": {
+											"value": "@item()",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"P_PCS_NM": {
+										"value": {
+											"value": "@pipeline().parameters.P_PCS_NM",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "SqlServer1",
+								"type": "LinkedServiceReference"
+							}
 						}
-					}
+					]
 				}
 			}
 		],
 		"parameters": {
 			"P_AS_AT_DT": {
-				"type": "string",
-				"defaultValue": "999"
+				"type": "array",
+				"defaultValue": [
+					999
+				]
 			},
 			"P_PCS_NM": {
 				"type": "string",
