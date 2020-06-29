@@ -2692,6 +2692,230 @@
 											}
 										}
 									]
+								},
+								{
+									"value": "SQLStaging",
+									"activities": [
+										{
+											"name": "SQL STAGING",
+											"type": "Copy",
+											"dependsOn": [
+												{
+													"activity": "SQL STAGING  UPDATE COUNT SOURCE",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"source": {
+													"type": "SqlServerSource",
+													"sqlReaderQuery": {
+														"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+														"type": "Expression"
+													},
+													"queryTimeout": "02:00:00"
+												},
+												"sink": {
+													"type": "ParquetSink",
+													"storeSettings": {
+														"type": "AzureBlobFSWriteSettings"
+													}
+												},
+												"enableStaging": false
+											},
+											"inputs": [
+												{
+													"referenceName": "SQLStagingTable",
+													"type": "DatasetReference",
+													"parameters": {}
+												}
+											],
+											"outputs": [
+												{
+													"referenceName": "ParquetFile",
+													"type": "DatasetReference",
+													"parameters": {
+														"file_name": {
+															"value": "@pipeline().parameters.SRC_TBL",
+															"type": "Expression"
+														},
+														"path": {
+															"value": "@pipeline().parameters.PATH",
+															"type": "Expression"
+														},
+														"asatdt": {
+															"value": "@pipeline().parameters.AS_AT_DT",
+															"type": "Expression"
+														}
+													}
+												}
+											]
+										},
+										{
+											"name": "SQL STAGING COUNT SOURCE",
+											"type": "Lookup",
+											"dependsOn": [],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"source": {
+													"type": "SqlServerSource",
+													"sqlReaderQuery": {
+														"value": "@pipeline().parameters.SOURCE_CNT_STMT",
+														"type": "Expression"
+													},
+													"queryTimeout": "02:00:00"
+												},
+												"dataset": {
+													"referenceName": "SQLStagingTable",
+													"type": "DatasetReference",
+													"parameters": {}
+												}
+											}
+										},
+										{
+											"name": "SQL STAGING  UPDATE COUNT SOURCE",
+											"type": "SqlServerStoredProcedure",
+											"dependsOn": [
+												{
+													"activity": "SQL STAGING COUNT SOURCE",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+												"storedProcedureParameters": {
+													"P_CNT_SRC": {
+														"value": {
+															"value": "@activity('SQL STAGING COUNT SOURCE').output.FIRSTROW.COUNT",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_CNT_TGT": {
+														"value": null,
+														"type": "String"
+													},
+													"P_LOAD_ID": {
+														"value": {
+															"value": "@pipeline().parameters.P_LOAD_ID",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_PCS_NM": {
+														"value": {
+															"value": "@pipeline().parameters.P_PCS_NM",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_RMRK": {
+														"value": null,
+														"type": "String"
+													},
+													"P_ST": {
+														"value": "START",
+														"type": "String"
+													}
+												}
+											},
+											"linkedServiceName": {
+												"referenceName": "SqlServer1",
+												"type": "LinkedServiceReference"
+											}
+										},
+										{
+											"name": "SQL STAGING  UPDATE COUNT TARGET",
+											"type": "SqlServerStoredProcedure",
+											"dependsOn": [
+												{
+													"activity": "SQL STAGING",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+												"storedProcedureParameters": {
+													"P_CNT_SRC": {
+														"value": {
+															"value": "@activity('SQL STAGING COUNT SOURCE').output.FIRSTROW.COUNT",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_CNT_TGT": {
+														"value": {
+															"value": "@activity('SQL STAGING').output.rowsCopied",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_LOAD_ID": {
+														"value": {
+															"value": "@pipeline().parameters.P_LOAD_ID",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_PCS_NM": {
+														"value": {
+															"value": "@pipeline().parameters.P_PCS_NM",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_RMRK": {
+														"value": null,
+														"type": "String"
+													},
+													"P_ST": {
+														"value": "START",
+														"type": "String"
+													}
+												}
+											},
+											"linkedServiceName": {
+												"referenceName": "SqlServer1",
+												"type": "LinkedServiceReference"
+											}
+										}
+									]
 								}
 							],
 							"defaultActivities": [
@@ -2768,7 +2992,8 @@
 				"[concat(variables('factoryId'), '/datasets/NetezzaTable1')]",
 				"[concat(variables('factoryId'), '/datasets/ParquetFile')]",
 				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
-				"[concat(variables('factoryId'), '/datasets/OracleTableForTest')]"
+				"[concat(variables('factoryId'), '/datasets/OracleTableForTest')]",
+				"[concat(variables('factoryId'), '/datasets/SQLStagingTable')]"
 			]
 		},
 		{
@@ -3443,6 +3668,24 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQLStagingTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlServer2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SqlServer2')]"
 			]
 		},
 		{
