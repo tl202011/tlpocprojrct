@@ -18,7 +18,7 @@
 					"source": {
 						"type": "NetezzaSource",
 						"query": "SELECT * FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL ORDER BY DATE;",
-						"partitionOption": "DataSlice"
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "NetezzaTable1",
