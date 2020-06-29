@@ -14,10 +14,22 @@
 		"Databrickslinked_accessToken": {
 			"value": ""
 		},
+		"MongoDb_CustGeo_connectionString": {
+			"value": ""
+		},
+		"MongoDb_ML_Detector_connectionString": {
+			"value": ""
+		},
 		"Netezza_connectionString": {
 			"value": ""
 		},
+		"Oracle_connectionString": {
+			"value": ""
+		},
 		"Oracle1_connectionString": {
+			"value": ""
+		},
+		"PostgreSql_connectionString": {
 			"value": ""
 		},
 		"SqlServer1_connectionString": {
@@ -28,6 +40,12 @@
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://sbpstorage202006.dfs.core.windows.net"
+		},
+		"MongoDb_CustGeo_properties_typeProperties_database": {
+			"value": "CustGeo"
+		},
+		"MongoDb_ML_Detector_properties_typeProperties_database": {
+			"value": "ML_Detector"
 		},
 		"containerUri": {
 			"value": ""

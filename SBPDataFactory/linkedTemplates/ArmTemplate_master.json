@@ -19,13 +19,29 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'Databrickslinked'"
 		},
+		"MongoDb_CustGeo_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MongoDb_CustGeo'"
+		},
+		"MongoDb_ML_Detector_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MongoDb_ML_Detector'"
+		},
 		"Netezza_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Netezza'"
 		},
+		"Oracle_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Oracle'"
+		},
 		"Oracle1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Oracle1'"
+		},
+		"PostgreSql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'PostgreSql'"
 		},
 		"SqlServer1_connectionString": {
 			"type": "secureString",
@@ -38,6 +54,14 @@
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://sbpstorage202006.dfs.core.windows.net"
+		},
+		"MongoDb_CustGeo_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "CustGeo"
+		},
+		"MongoDb_ML_Detector_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "ML_Detector"
 		},
 		"containerUri": {
 			"type": "string",
@@ -78,21 +102,59 @@
 					"SqlServer1_connectionString": {
 						"value": "[parameters('SqlServer1_connectionString')]"
 					},
+					"MongoDb_CustGeo_connectionString": {
+						"value": "[parameters('MongoDb_CustGeo_connectionString')]"
+					},
+					"MongoDb_ML_Detector_connectionString": {
+						"value": "[parameters('MongoDb_ML_Detector_connectionString')]"
+					},
 					"Netezza_connectionString": {
 						"value": "[parameters('Netezza_connectionString')]"
 					},
+					"Oracle_connectionString": {
+						"value": "[parameters('Oracle_connectionString')]"
+					},
 					"Oracle1_connectionString": {
 						"value": "[parameters('Oracle1_connectionString')]"
+					},
+					"PostgreSql_connectionString": {
+						"value": "[parameters('PostgreSql_connectionString')]"
 					},
 					"SqlServer2_connectionString": {
 						"value": "[parameters('SqlServer2_connectionString')]"
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"MongoDb_CustGeo_properties_typeProperties_database": {
+						"value": "[parameters('MongoDb_CustGeo_properties_typeProperties_database')]"
+					},
+					"MongoDb_ML_Detector_properties_typeProperties_database": {
+						"value": "[parameters('MongoDb_ML_Detector_properties_typeProperties_database')]"
 					}
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_0')]"
+			]
 		}
 	]
 }
