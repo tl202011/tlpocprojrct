@@ -5,8 +5,20 @@
 			"referenceName": "MongoDb_ML_Detector",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"Collection_name": {
+				"type": "string",
+				"defaultValue": "999"
+			}
+		},
 		"annotations": [],
 		"type": "MongoDbV2Collection",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"collection": {
+				"value": "@dataset().Collection_name",
+				"type": "Expression"
+			}
+		}
 	}
 }
