@@ -21,7 +21,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "NetezzaTable1",
+						"referenceName": "NetezzaTable",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false

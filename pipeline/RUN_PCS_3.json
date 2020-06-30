@@ -54,7 +54,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "NetezzaTable1",
+											"referenceName": "NetezzaTable",
 											"type": "DatasetReference"
 										}
 									],
@@ -101,7 +101,7 @@
 											"partitionOption": "DataSlice"
 										},
 										"dataset": {
-											"referenceName": "NetezzaTable1",
+											"referenceName": "NetezzaTable",
 											"type": "DatasetReference"
 										}
 									}
@@ -252,15 +252,14 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "NetezzaSource",
+											"type": "PostgreSqlSource",
 											"query": {
 												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
 												"type": "Expression"
-											},
-											"partitionOption": "DataSlice"
+											}
 										},
 										"dataset": {
-											"referenceName": "NetezzaTable1",
+											"referenceName": "PostgreSqlTable",
 											"type": "DatasetReference"
 										}
 									}
@@ -348,12 +347,11 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "NetezzaSource",
+											"type": "PostgreSqlSource",
 											"query": {
 												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
 												"type": "Expression"
-											},
-											"partitionOption": "None"
+											}
 										},
 										"sink": {
 											"type": "ParquetSink",
@@ -365,7 +363,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "NetezzaTable1",
+											"referenceName": "PostgreSqlTable",
 											"type": "DatasetReference"
 										}
 									],
@@ -482,7 +480,7 @@
 											"partitionOption": "DataSlice"
 										},
 										"dataset": {
-											"referenceName": "NetezzaTable1",
+											"referenceName": "NetezzaTable",
 											"type": "DatasetReference"
 										}
 									}
@@ -587,7 +585,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "NetezzaTable1",
+											"referenceName": "NetezzaTable",
 											"type": "DatasetReference"
 										}
 									],
@@ -705,7 +703,7 @@
 											"queryTimeout": "02:00:00"
 										},
 										"dataset": {
-											"referenceName": "OracleTableForTest",
+											"referenceName": "OracleTable",
 											"type": "DatasetReference"
 										}
 									}
@@ -811,7 +809,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "OracleTableForTest",
+											"referenceName": "OracleTable",
 											"type": "DatasetReference"
 										}
 									],
@@ -907,43 +905,9 @@
 							"value": "MONGO",
 							"activities": [
 								{
-									"name": "MONGO COUNT SOURCE",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "NetezzaSource",
-											"query": {
-												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
-												"type": "Expression"
-											},
-											"partitionOption": "DataSlice"
-										},
-										"dataset": {
-											"referenceName": "NetezzaTable1",
-											"type": "DatasetReference"
-										}
-									}
-								},
-								{
 									"name": "MONGO UPDATE COUNT SOURCE",
 									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "MONGO COUNT SOURCE",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"policy": {
 										"timeout": "7.00:00:00",
 										"retry": 0,
@@ -956,10 +920,7 @@
 										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 										"storedProcedureParameters": {
 											"P_CNT_SRC": {
-												"value": {
-													"value": "@activity('MONGO COUNT SOURCE').output.FIRSTROW.COUNT",
-													"type": "Expression"
-												},
+												"value": null,
 												"type": "String"
 											},
 											"P_CNT_TGT": {
@@ -1016,12 +977,8 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "NetezzaSource",
-											"query": {
-												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
-												"type": "Expression"
-											},
-											"partitionOption": "None"
+											"type": "MongoDbV2Source",
+											"batchSize": 100
 										},
 										"sink": {
 											"type": "ParquetSink",
@@ -1033,8 +990,14 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "NetezzaTable1",
-											"type": "DatasetReference"
+											"referenceName": "MongoDb_CustGeo",
+											"type": "DatasetReference",
+											"parameters": {
+												"Collection_name": {
+													"value": "@pipeline().parameters.SRC_TBL",
+													"type": "Expression"
+												}
+											}
 										}
 									],
 									"outputs": [
@@ -1081,10 +1044,7 @@
 										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 										"storedProcedureParameters": {
 											"P_CNT_SRC": {
-												"value": {
-													"value": "@activity('MONGO COUNT SOURCE').output.FIRSTROW.COUNT",
-													"type": "Expression"
-												},
+												"value": null,
 												"type": "String"
 											},
 											"P_CNT_TGT": {

@@ -1,0 +1,12 @@
+{
+	"name": "PostgreSqlTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "PostgreSql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "PostgreSqlTable",
+		"schema": []
+	}
+}

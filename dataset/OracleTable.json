@@ -1,12 +1,12 @@
 {
-	"name": "NetezzaTable1",
+	"name": "OracleTable",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Netezza",
+			"referenceName": "Oracle",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "NetezzaTable",
+		"type": "OracleTable",
 		"schema": []
 	}
 }

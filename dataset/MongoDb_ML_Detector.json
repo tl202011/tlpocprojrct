@@ -1,0 +1,12 @@
+{
+	"name": "MongoDb_ML_Detector",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MongoDb_ML_Detector",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MongoDbV2Collection",
+		"schema": []
+	}
+}
