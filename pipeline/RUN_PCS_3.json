@@ -905,39 +905,9 @@
 							"value": "MONGO",
 							"activities": [
 								{
-									"name": "MONGO COUNT SOURCE",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SqlServerSource",
-											"queryTimeout": "02:00:00"
-										},
-										"dataset": {
-											"referenceName": "ControlTable",
-											"type": "DatasetReference"
-										}
-									}
-								},
-								{
 									"name": "MONGO UPDATE COUNT SOURCE",
 									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "MONGO COUNT SOURCE",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"policy": {
 										"timeout": "7.00:00:00",
 										"retry": 0,
@@ -950,10 +920,7 @@
 										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 										"storedProcedureParameters": {
 											"P_CNT_SRC": {
-												"value": {
-													"value": "@activity('MONGO COUNT SOURCE').output.FIRSTROW.COUNT",
-													"type": "Expression"
-												},
+												"value": null,
 												"type": "String"
 											},
 											"P_CNT_TGT": {
@@ -1075,10 +1042,7 @@
 										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 										"storedProcedureParameters": {
 											"P_CNT_SRC": {
-												"value": {
-													"value": "@activity('MONGO COUNT SOURCE').output.FIRSTROW.COUNT",
-													"type": "Expression"
-												},
+												"value": null,
 												"type": "String"
 											},
 											"P_CNT_TGT": {
