@@ -500,7 +500,65 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NetezzaTable1')]",
+			"name": "[concat(parameters('factoryName'), '/MongoDb_CustGeo')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MongoDb_CustGeo",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Collection_name": {
+						"type": "string",
+						"defaultValue": "999"
+					}
+				},
+				"annotations": [],
+				"type": "MongoDbV2Collection",
+				"schema": [],
+				"typeProperties": {
+					"collection": {
+						"value": "@dataset().Collection_name",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MongoDb_CustGeo')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MongoDb_ML_Detector')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MongoDb_ML_Detector",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Collection_name": {
+						"type": "string",
+						"defaultValue": "999"
+					}
+				},
+				"annotations": [],
+				"type": "MongoDbV2Collection",
+				"schema": [],
+				"typeProperties": {
+					"collection": {
+						"value": "@dataset().Collection_name",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MongoDb_ML_Detector')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NetezzaTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -515,66 +573,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Netezza')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleTableForTest')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Oracle1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "OracleTable",
-				"schema": [],
-				"typeProperties": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Oracle1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CHECK SOURCE')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Lookup1",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "NetezzaSource",
-								"query": "SELECT * FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL ORDER BY DATE;",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "NetezzaTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					}
-				],
-				"folder": {
-					"name": "TEST"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/NetezzaTable1')]"
 			]
 		}
 	]

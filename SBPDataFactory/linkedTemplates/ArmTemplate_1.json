@@ -13,6 +13,94 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/OracleTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Oracle",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "OracleTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OracleTableForTest')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Oracle1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "OracleTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PostgreSqlTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "PostgreSql",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CHECK SOURCE')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "NetezzaSource",
+								"query": "SELECT * FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL ORDER BY DATE;",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "NetezzaTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					}
+				],
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/RUN_PCS_3')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -70,7 +158,7 @@
 											},
 											"inputs": [
 												{
-													"referenceName": "NetezzaTable1",
+													"referenceName": "NetezzaTable",
 													"type": "DatasetReference",
 													"parameters": {}
 												}
@@ -118,7 +206,7 @@
 													"partitionOption": "DataSlice"
 												},
 												"dataset": {
-													"referenceName": "NetezzaTable1",
+													"referenceName": "NetezzaTable",
 													"type": "DatasetReference",
 													"parameters": {}
 												}
@@ -270,15 +358,14 @@
 											"userProperties": [],
 											"typeProperties": {
 												"source": {
-													"type": "NetezzaSource",
+													"type": "PostgreSqlSource",
 													"query": {
 														"value": "@pipeline().parameters.SOURCE_CNT_STMT",
 														"type": "Expression"
-													},
-													"partitionOption": "DataSlice"
+													}
 												},
 												"dataset": {
-													"referenceName": "NetezzaTable1",
+													"referenceName": "PostgreSqlTable",
 													"type": "DatasetReference",
 													"parameters": {}
 												}
@@ -367,12 +454,11 @@
 											"userProperties": [],
 											"typeProperties": {
 												"source": {
-													"type": "NetezzaSource",
+													"type": "PostgreSqlSource",
 													"query": {
 														"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
 														"type": "Expression"
-													},
-													"partitionOption": "None"
+													}
 												},
 												"sink": {
 													"type": "ParquetSink",
@@ -384,7 +470,7 @@
 											},
 											"inputs": [
 												{
-													"referenceName": "NetezzaTable1",
+													"referenceName": "PostgreSqlTable",
 													"type": "DatasetReference",
 													"parameters": {}
 												}
@@ -502,7 +588,7 @@
 													"partitionOption": "DataSlice"
 												},
 												"dataset": {
-													"referenceName": "NetezzaTable1",
+													"referenceName": "NetezzaTable",
 													"type": "DatasetReference",
 													"parameters": {}
 												}
@@ -608,7 +694,7 @@
 											},
 											"inputs": [
 												{
-													"referenceName": "NetezzaTable1",
+													"referenceName": "NetezzaTable",
 													"type": "DatasetReference",
 													"parameters": {}
 												}
@@ -727,7 +813,7 @@
 													"queryTimeout": "02:00:00"
 												},
 												"dataset": {
-													"referenceName": "OracleTableForTest",
+													"referenceName": "OracleTable",
 													"type": "DatasetReference",
 													"parameters": {}
 												}
@@ -834,7 +920,7 @@
 											},
 											"inputs": [
 												{
-													"referenceName": "OracleTableForTest",
+													"referenceName": "OracleTable",
 													"type": "DatasetReference",
 													"parameters": {}
 												}
@@ -931,44 +1017,9 @@
 									"value": "MONGO",
 									"activities": [
 										{
-											"name": "MONGO COUNT SOURCE",
-											"type": "Lookup",
-											"dependsOn": [],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"source": {
-													"type": "NetezzaSource",
-													"query": {
-														"value": "@pipeline().parameters.SOURCE_CNT_STMT",
-														"type": "Expression"
-													},
-													"partitionOption": "DataSlice"
-												},
-												"dataset": {
-													"referenceName": "NetezzaTable1",
-													"type": "DatasetReference",
-													"parameters": {}
-												}
-											}
-										},
-										{
 											"name": "MONGO UPDATE COUNT SOURCE",
 											"type": "SqlServerStoredProcedure",
-											"dependsOn": [
-												{
-													"activity": "MONGO COUNT SOURCE",
-													"dependencyConditions": [
-														"Succeeded"
-													]
-												}
-											],
+											"dependsOn": [],
 											"policy": {
 												"timeout": "7.00:00:00",
 												"retry": 0,
@@ -981,10 +1032,7 @@
 												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
 												"storedProcedureParameters": {
 													"P_CNT_SRC": {
-														"value": {
-															"value": "@activity('MONGO COUNT SOURCE').output.FIRSTROW.COUNT",
-															"type": "Expression"
-														},
+														"value": null,
 														"type": "String"
 													},
 													"P_CNT_TGT": {
@@ -1041,12 +1089,8 @@
 											"userProperties": [],
 											"typeProperties": {
 												"source": {
-													"type": "NetezzaSource",
-													"query": {
-														"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
-														"type": "Expression"
-													},
-													"partitionOption": "None"
+													"type": "MongoDbV2Source",
+													"batchSize": 100
 												},
 												"sink": {
 													"type": "ParquetSink",
@@ -1058,9 +1102,14 @@
 											},
 											"inputs": [
 												{
-													"referenceName": "NetezzaTable1",
+													"referenceName": "MongoDb_CustGeo",
 													"type": "DatasetReference",
-													"parameters": {}
+													"parameters": {
+														"Collection_name": {
+															"value": "@pipeline().parameters.SRC_TBL",
+															"type": "Expression"
+														}
+													}
 												}
 											],
 											"outputs": [
@@ -1107,10 +1156,7 @@
 												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
 												"storedProcedureParameters": {
 													"P_CNT_SRC": {
-														"value": {
-															"value": "@activity('MONGO COUNT SOURCE').output.FIRSTROW.COUNT",
-															"type": "Expression"
-														},
+														"value": null,
 														"type": "String"
 													},
 													"P_CNT_TGT": {
@@ -1221,7 +1267,10 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/PostgreSqlTable')]",
+				"[concat(variables('factoryId'), '/datasets/OracleTable')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/RUN_PCS_2')]",
@@ -3178,72 +3227,90 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "ACTIVATE STREAM",
-						"type": "SqlServerStoredProcedure",
+						"name": "ForEach1",
+						"type": "ForEach",
 						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
 						"userProperties": [],
 						"typeProperties": {
-							"storedProcedureName": "[[CNTL].[PROC_CNTL_ACTV_INDV_PCS]",
-							"storedProcedureParameters": {
-								"P_AS_AT_DT": {
-									"value": {
-										"value": "@pipeline().parameters.P_AS_AT_DT",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"P_PCS_NM": {
-									"value": {
-										"value": "@pipeline().parameters.P_PCS_NM",
-										"type": "Expression"
-									},
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "SqlServer1",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "RUN_PCS_1",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ACTIVATE STREAM",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "RUN_PCS_1",
-								"type": "PipelineReference"
+							"items": {
+								"value": "@pipeline().parameters.P_AS_AT_DT",
+								"type": "Expression"
 							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"P_PROCESS_NM": {
-									"value": "@pipeline().parameters.P_PCS_NM",
-									"type": "Expression"
+							"isSequential": false,
+							"batchCount": 5,
+							"activities": [
+								{
+									"name": "RUN_PCS_1",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "ACTIVATE STREAM",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "RUN_PCS_1",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"P_PROCESS_NM": {
+												"value": "@pipeline().parameters.P_PCS_NM",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "ACTIVATE STREAM",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[CNTL].[PROC_CNTL_ACTV_INDV_PCS]",
+										"storedProcedureParameters": {
+											"P_AS_AT_DT": {
+												"value": {
+													"value": "@item()",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_PCS_NM": {
+												"value": {
+													"value": "@pipeline().parameters.P_PCS_NM",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SqlServer1",
+										"type": "LinkedServiceReference"
+									}
 								}
-							}
+							]
 						}
 					}
 				],
 				"parameters": {
 					"P_AS_AT_DT": {
-						"type": "string",
-						"defaultValue": "999"
+						"type": "array",
+						"defaultValue": [
+							999
+						]
 					},
 					"P_PCS_NM": {
 						"type": "string",
