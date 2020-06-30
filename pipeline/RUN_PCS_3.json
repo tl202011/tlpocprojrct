@@ -978,11 +978,7 @@
 									"typeProperties": {
 										"source": {
 											"type": "MongoDbV2Source",
-											"batchSize": 100,
-											"filter": {
-												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
-												"type": "Expression"
-											}
+											"batchSize": 100
 										},
 										"sink": {
 											"type": "ParquetSink",
@@ -995,7 +991,13 @@
 									"inputs": [
 										{
 											"referenceName": "MongoDb_CustGeo",
-											"type": "DatasetReference"
+											"type": "DatasetReference",
+											"parameters": {
+												"Collection_name": {
+													"value": "@pipeline().parameters.SRC_TBL",
+													"type": "Expression"
+												}
+											}
 										}
 									],
 									"outputs": [
