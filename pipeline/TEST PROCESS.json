@@ -12,8 +12,7 @@
 						"value": "@pipeline().parameters.P_AS_AT_DT",
 						"type": "Expression"
 					},
-					"isSequential": false,
-					"batchCount": 5,
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "RUN_PCS_1",
