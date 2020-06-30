@@ -902,71 +902,12 @@
 							]
 						},
 						{
-							"value": "MONGO",
+							"value": "MONGO_ML_Detector",
 							"activities": [
 								{
-									"name": "MONGO UPDATE COUNT SOURCE",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
-										"storedProcedureParameters": {
-											"P_CNT_SRC": {
-												"value": null,
-												"type": "String"
-											},
-											"P_CNT_TGT": {
-												"value": null,
-												"type": "String"
-											},
-											"P_LOAD_ID": {
-												"value": {
-													"value": "@pipeline().parameters.P_LOAD_ID",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_PCS_NM": {
-												"value": {
-													"value": "@pipeline().parameters.P_PCS_NM",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_RMRK": {
-												"value": null,
-												"type": "String"
-											},
-											"P_ST": {
-												"value": "START",
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "SqlServer1",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "MONGO",
+									"name": "MONGO_ML_Detector",
 									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "MONGO UPDATE COUNT SOURCE",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"policy": {
 										"timeout": "7.00:00:00",
 										"retry": 0,
@@ -1022,11 +963,11 @@
 									]
 								},
 								{
-									"name": "MONGO UPDATE COUNT TARGET",
+									"name": "MONGO_ML_Detector UPDATE COUNT TARGET",
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [
 										{
-											"activity": "MONGO",
+											"activity": "MONGO_ML_Detector",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -1044,12 +985,143 @@
 										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
 										"storedProcedureParameters": {
 											"P_CNT_SRC": {
-												"value": null,
+												"value": {
+													"value": "@activity('MONGO_ML_Detector').output.rowsRead",
+													"type": "Expression"
+												},
 												"type": "String"
 											},
 											"P_CNT_TGT": {
 												"value": {
-													"value": "@activity('MONGO').output.rowsCopied",
+													"value": "@activity('MONGO_ML_Detector').output.rowsCopied",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_LOAD_ID": {
+												"value": {
+													"value": "@pipeline().parameters.P_LOAD_ID",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_PCS_NM": {
+												"value": {
+													"value": "@pipeline().parameters.P_PCS_NM",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_RMRK": {
+												"value": null,
+												"type": "String"
+											},
+											"P_ST": {
+												"value": "START",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SqlServer1",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						},
+						{
+							"value": "Case6",
+							"activities": [
+								{
+									"name": "MONGO_CustGeo",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "MongoDbV2Source",
+											"batchSize": 100
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "MongoDb_CustGeo",
+											"type": "DatasetReference",
+											"parameters": {
+												"Collection_name": {
+													"value": "@pipeline().parameters.SRC_TBL",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ParquetFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"file_name": {
+													"value": "@pipeline().parameters.SRC_TBL",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@pipeline().parameters.PATH",
+													"type": "Expression"
+												},
+												"asatdt": {
+													"value": "@pipeline().parameters.AS_AT_DT",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "MONGO_CustGeo UPDATE COUNT TARGET",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "MONGO_CustGeo",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+										"storedProcedureParameters": {
+											"P_CNT_SRC": {
+												"value": {
+													"value": "@activity('MONGO_CustGeo').output.rowsRead",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_CNT_TGT": {
+												"value": {
+													"value": "@activity('MONGO_CustGeo').output.rowsCopied",
 													"type": "Expression"
 												},
 												"type": "String"
