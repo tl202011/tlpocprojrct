@@ -1,12 +1,12 @@
 {
-	"name": "NetezzaTable",
+	"name": "MongoDb_CustGeo",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Netezza",
+			"referenceName": "MongoDb_CustGeo",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "NetezzaTable",
+		"type": "MongoDbV2Collection",
 		"schema": []
 	}
 }

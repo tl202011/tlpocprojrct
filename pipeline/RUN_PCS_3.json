@@ -54,7 +54,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "NetezzaTable1",
+											"referenceName": "NetezzaTable",
 											"type": "DatasetReference"
 										}
 									],
@@ -101,7 +101,7 @@
 											"partitionOption": "DataSlice"
 										},
 										"dataset": {
-											"referenceName": "NetezzaTable1",
+											"referenceName": "NetezzaTable",
 											"type": "DatasetReference"
 										}
 									}
@@ -252,15 +252,14 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "NetezzaSource",
+											"type": "PostgreSqlSource",
 											"query": {
 												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
 												"type": "Expression"
-											},
-											"partitionOption": "DataSlice"
+											}
 										},
 										"dataset": {
-											"referenceName": "NetezzaTable1",
+											"referenceName": "PostgreSqlTable",
 											"type": "DatasetReference"
 										}
 									}
@@ -348,12 +347,11 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "NetezzaSource",
+											"type": "PostgreSqlSource",
 											"query": {
 												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
 												"type": "Expression"
-											},
-											"partitionOption": "None"
+											}
 										},
 										"sink": {
 											"type": "ParquetSink",
@@ -365,7 +363,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "NetezzaTable1",
+											"referenceName": "PostgreSqlTable",
 											"type": "DatasetReference"
 										}
 									],
@@ -482,7 +480,7 @@
 											"partitionOption": "DataSlice"
 										},
 										"dataset": {
-											"referenceName": "NetezzaTable1",
+											"referenceName": "NetezzaTable",
 											"type": "DatasetReference"
 										}
 									}
@@ -587,7 +585,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "NetezzaTable1",
+											"referenceName": "NetezzaTable",
 											"type": "DatasetReference"
 										}
 									],
@@ -705,7 +703,7 @@
 											"queryTimeout": "02:00:00"
 										},
 										"dataset": {
-											"referenceName": "OracleTableForTest",
+											"referenceName": "OracleTable",
 											"type": "DatasetReference"
 										}
 									}
@@ -811,7 +809,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "OracleTableForTest",
+											"referenceName": "OracleTable",
 											"type": "DatasetReference"
 										}
 									],
@@ -920,15 +918,11 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "NetezzaSource",
-											"query": {
-												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
-												"type": "Expression"
-											},
-											"partitionOption": "DataSlice"
+											"type": "SqlServerSource",
+											"queryTimeout": "02:00:00"
 										},
 										"dataset": {
-											"referenceName": "NetezzaTable1",
+											"referenceName": "ControlTable",
 											"type": "DatasetReference"
 										}
 									}
@@ -1016,12 +1010,12 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "NetezzaSource",
-											"query": {
+											"type": "MongoDbV2Source",
+											"batchSize": 100,
+											"filter": {
 												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
 												"type": "Expression"
-											},
-											"partitionOption": "None"
+											}
 										},
 										"sink": {
 											"type": "ParquetSink",
@@ -1033,7 +1027,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "NetezzaTable1",
+											"referenceName": "MongoDb_CustGeo",
 											"type": "DatasetReference"
 										}
 									],

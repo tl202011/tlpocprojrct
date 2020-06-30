@@ -1,12 +1,12 @@
 {
-	"name": "NetezzaTable",
+	"name": "PostgreSqlTable",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Netezza",
+			"referenceName": "PostgreSql",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "NetezzaTable",
+		"type": "PostgreSqlTable",
 		"schema": []
 	}
 }

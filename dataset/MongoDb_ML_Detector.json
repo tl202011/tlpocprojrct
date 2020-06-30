@@ -1,12 +1,12 @@
 {
-	"name": "NetezzaTable",
+	"name": "MongoDb_ML_Detector",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Netezza",
+			"referenceName": "MongoDb_ML_Detector",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "NetezzaTable",
+		"type": "MongoDbV2Collection",
 		"schema": []
 	}
 }
