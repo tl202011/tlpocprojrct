@@ -1142,7 +1142,7 @@
 									]
 								},
 								{
-									"value": "Case6",
+									"value": "MONGO_CustGeo",
 									"activities": [
 										{
 											"name": "MONGO_CustGeo",
