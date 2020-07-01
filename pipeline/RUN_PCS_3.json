@@ -1055,7 +1055,15 @@
 												"type": "AzureBlobFSWriteSettings"
 											}
 										},
-										"enableStaging": false
+										"enableStaging": false,
+										"enableSkipIncompatibleRow": true,
+										"logStorageSettings": {
+											"linkedServiceName": {
+												"referenceName": "AzureDataLakeStorage1",
+												"type": "LinkedServiceReference"
+											},
+											"path": "logging"
+										}
 									},
 									"inputs": [
 										{
