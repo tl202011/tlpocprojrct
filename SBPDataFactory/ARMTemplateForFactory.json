@@ -2687,7 +2687,15 @@
 														"type": "AzureBlobFSWriteSettings"
 													}
 												},
-												"enableStaging": false
+												"enableStaging": false,
+												"enableSkipIncompatibleRow": true,
+												"logStorageSettings": {
+													"linkedServiceName": {
+														"referenceName": "AzureDataLakeStorage1",
+														"type": "LinkedServiceReference"
+													},
+													"path": "logging"
+												}
 											},
 											"inputs": [
 												{
@@ -2866,7 +2874,8 @@
 				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
 				"[concat(variables('factoryId'), '/datasets/PostgreSqlTable')]",
 				"[concat(variables('factoryId'), '/datasets/OracleTable')]",
-				"[concat(variables('factoryId'), '/datasets/MongoDb_CustGeo')]"
+				"[concat(variables('factoryId'), '/datasets/MongoDb_CustGeo')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
 			]
 		},
 		{
