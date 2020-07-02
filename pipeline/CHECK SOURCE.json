@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "NetezzaSource",
-						"query": "SELECT * FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL \nWHERE CAST(DATE AS DATE) = CAST('2018-01-14' AS DATE) ",
+						"query": "SELECT count(*),asat_dt FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL group by asat_dt ",
 						"partitionOption": "None"
 					},
 					"dataset": {

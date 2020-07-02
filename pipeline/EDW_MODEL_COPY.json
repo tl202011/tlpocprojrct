@@ -1,0 +1,342 @@
+{
+	"name": "EDW_MODEL_COPY",
+	"properties": {
+		"activities": [
+			{
+				"name": "GET BUSINESS DATE LIST",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "GET BUSINESS DATE LIST STMT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "NetezzaSource",
+						"query": {
+							"value": "@activity('GET BUSINESS DATE LIST STMT').output.firstrow.BUS_DATE_STMT",
+							"type": "Expression"
+						},
+						"partitionOption": "DataSlice"
+					},
+					"dataset": {
+						"referenceName": "NetezzaTable",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "GET BUSINESS DATE LIST STMT",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_BUS_DATE_LIST]",
+						"storedProcedureParameters": {
+							"P_AS_AT_DT": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.AS_AT_DT",
+									"type": "Expression"
+								}
+							},
+							"P_PCS_NM": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.PCS_NM",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "ControlTable",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "SET BUSINESS DATE LIST",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GET BUSINESS DATE LIST",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "BUSINESS DATE LIST",
+					"value": {
+						"value": "@activity('GET BUSINESS DATE LIST').output.value",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "SET BUSINESS DATE LIST",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('BUSINESS DATE LIST')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "EDW MODEL COPY",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "GET SELECT STATEMENT",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "NetezzaSource",
+									"query": {
+										"value": "@activity('GET SELECT STATEMENT').output.firstrow.SELECT_STMT",
+										"type": "Expression"
+									},
+									"partitionOption": "DataSlice"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "NetezzaTable",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ParquetFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"file_name": {
+											"value": "@pipeline().parameters.SRC_TBL",
+											"type": "Expression"
+										},
+										"path": {
+											"value": "@pipeline().parameters.PATH",
+											"type": "Expression"
+										},
+										"asatdt": {
+											"value": "@formatDateTime(item().BUS_DATE,'yyyyMMdd')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "GET SELECT STATEMENT",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_SELECT_STMT]",
+									"storedProcedureParameters": {
+										"P_AS_AT_DT": {
+											"type": "String",
+											"value": {
+												"value": "@formatDateTime(item().BUS_DATE,'yyyyMMdd')",
+												"type": "Expression"
+											}
+										},
+										"P_PCS_NM": {
+											"type": "String",
+											"value": {
+												"value": "@pipeline().parameters.PCS_NM",
+												"type": "Expression"
+											}
+										}
+									},
+									"queryTimeout": "02:00:00"
+								},
+								"dataset": {
+									"referenceName": "ControlTable",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Append variable1",
+							"type": "AppendVariable",
+							"dependsOn": [
+								{
+									"activity": "EDW MODEL COPY",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "COUNT EACH TARGET",
+								"value": {
+									"value": "@activity('EDW MODEL COPY').output.rowsCopied",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ForEach",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('COUNT EACH TARGET')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Lookup1",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": "SELECT ",
+									"queryTimeout": "02:00:00"
+								},
+								"dataset": {
+									"referenceName": "ControlTable",
+									"type": "DatasetReference"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"SRC_TBL": {
+				"type": "string",
+				"defaultValue": "T_PROVINCE_PROFILE_TRANSACTION_MODEL"
+			},
+			"PATH": {
+				"type": "string",
+				"defaultValue": "modelprovinceprofiletest"
+			},
+			"AS_AT_DT": {
+				"type": "string",
+				"defaultValue": "20200628"
+			},
+			"PCS_NM": {
+				"type": "string",
+				"defaultValue": "MODEL_PROVINCE_PROFILE_T_PROVINCE_PROFILE_TRANSACTION_MODEL"
+			}
+		},
+		"variables": {
+			"BUSINESS DATE LIST": {
+				"type": "Array",
+				"defaultValue": [
+					999
+				]
+			},
+			"COUNT EACH TARGET": {
+				"type": "Array",
+				"defaultValue": [
+					999
+				]
+			},
+			"COUNT TARGET": {
+				"type": "String",
+				"defaultValue": "999"
+			},
+			"xx": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "CUSTOM JOB"
+		},
+		"annotations": []
+	}
+}
