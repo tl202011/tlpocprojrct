@@ -33,13 +33,6 @@
 									"type": "Expression"
 								}
 							},
-							"P_SKIP_F": {
-								"type": "String",
-								"value": {
-									"value": "@variables('V_SKIP_PROCESS')",
-									"type": "Expression"
-								}
-							},
 							"P_STREAM_SEQ_ID": {
 								"type": "String",
 								"value": {
