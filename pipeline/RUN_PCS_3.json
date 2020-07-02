@@ -456,10 +456,10 @@
 							]
 						},
 						{
-							"value": "DV",
+							"value": "EDW MODEL",
 							"activities": [
 								{
-									"name": "DV COUNT SOURCE",
+									"name": "EDW MODEL COUNT SOURCE",
 									"type": "Lookup",
 									"dependsOn": [],
 									"policy": {
@@ -486,11 +486,11 @@
 									}
 								},
 								{
-									"name": "DV UPDATE COUNT SOURCE",
+									"name": "EDW MODEL UPDATE COUNT SOURCE",
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [
 										{
-											"activity": "DV COUNT SOURCE",
+											"activity": "EDW MODEL COUNT SOURCE",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -509,7 +509,7 @@
 										"storedProcedureParameters": {
 											"P_CNT_SRC": {
 												"value": {
-													"value": "@activity('DV COUNT SOURCE').output.FIRSTROW.COUNT",
+													"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
 													"type": "Expression"
 												},
 												"type": "String"
@@ -548,11 +548,11 @@
 									}
 								},
 								{
-									"name": "DV",
+									"name": "EDW MODEL",
 									"type": "Copy",
 									"dependsOn": [
 										{
-											"activity": "DV UPDATE COUNT SOURCE",
+											"activity": "EDW MODEL UPDATE COUNT SOURCE",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -611,11 +611,11 @@
 									]
 								},
 								{
-									"name": "DV UPDATE COUNT TARGET",
+									"name": "EDW MODEL UPDATE COUNT TARGET",
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [
 										{
-											"activity": "DV",
+											"activity": "EDW MODEL",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -634,14 +634,14 @@
 										"storedProcedureParameters": {
 											"P_CNT_SRC": {
 												"value": {
-													"value": "@activity('DV COUNT SOURCE').output.FIRSTROW.COUNT",
+													"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
 													"type": "Expression"
 												},
 												"type": "String"
 											},
 											"P_CNT_TGT": {
 												"value": {
-													"value": "@activity('DV').output.rowsCopied",
+													"value": "@activity('EDW MODEL').output.rowsCopied",
 													"type": "Expression"
 												},
 												"type": "String"
@@ -1047,7 +1047,11 @@
 									"typeProperties": {
 										"source": {
 											"type": "MongoDbV2Source",
-											"batchSize": 100
+											"batchSize": 100,
+											"filter": {
+												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+												"type": "Expression"
+											}
 										},
 										"sink": {
 											"type": "ParquetSink",
@@ -1056,14 +1060,7 @@
 											}
 										},
 										"enableStaging": false,
-										"enableSkipIncompatibleRow": true,
-										"logStorageSettings": {
-											"linkedServiceName": {
-												"referenceName": "AzureDataLakeStorage1",
-												"type": "LinkedServiceReference"
-											},
-											"path": "logging"
-										}
+										"enableSkipIncompatibleRow": false
 									},
 									"inputs": [
 										{
