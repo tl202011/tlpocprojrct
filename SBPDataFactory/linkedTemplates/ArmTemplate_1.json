@@ -2778,7 +2778,7 @@
 									"type": "Expression"
 								},
 								"P_SOURCE_CNT_STMT": {
-									"value": "@activity('GET SELECT STATEMEMT').output.firstrow,SRC_COUNT",
+									"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SRC_COUNT",
 									"type": "Expression"
 								},
 								"P_LOAD_ID": {
