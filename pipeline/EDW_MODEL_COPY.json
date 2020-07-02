@@ -1,0 +1,493 @@
+{
+	"name": "EDW_MODEL_COPY",
+	"properties": {
+		"activities": [
+			{
+				"name": "GET BUSINESS DATE LIST",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "GET BUSINESS DATE LIST STMT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "NetezzaSource",
+						"query": {
+							"value": "@activity('GET BUSINESS DATE LIST STMT').output.firstrow.BUS_DATE_STMT",
+							"type": "Expression"
+						},
+						"partitionOption": "DataSlice"
+					},
+					"dataset": {
+						"referenceName": "NetezzaTable",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "GET BUSINESS DATE LIST STMT",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "EDW MODEL UPDATE COUNT SOURCE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_BUS_DATE_LIST]",
+						"storedProcedureParameters": {
+							"P_AS_AT_DT": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.P_AS_AT_DT",
+									"type": "Expression"
+								}
+							},
+							"P_PCS_NM": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.P_PCS_NM",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "ControlTable",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "SET BUSINESS DATE LIST",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GET BUSINESS DATE LIST",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "V_BUS_DATE_LIST",
+					"value": {
+						"value": "@activity('GET BUSINESS DATE LIST').output.value",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "SET BUSINESS DATE LIST",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('V_BUS_DATE_LIST')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "EDW MODEL COPY",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "GET SELECT STATEMENT",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "NetezzaSource",
+									"query": {
+										"value": "@activity('GET SELECT STATEMENT').output.firstrow.SELECT_STMT",
+										"type": "Expression"
+									},
+									"partitionOption": "DataSlice"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "NetezzaTable",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ParquetFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"file_name": {
+											"value": "@pipeline().parameters.P_SRC_TBL",
+											"type": "Expression"
+										},
+										"path": {
+											"value": "@pipeline().parameters.P_PATH",
+											"type": "Expression"
+										},
+										"asatdt": {
+											"value": "@formatDateTime(item().BUS_DATE,'yyyyMMdd')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "GET SELECT STATEMENT",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_SELECT_STMT]",
+									"storedProcedureParameters": {
+										"P_AS_AT_DT": {
+											"type": "String",
+											"value": {
+												"value": "@formatDateTime(item().BUS_DATE,'yyyyMMdd')",
+												"type": "Expression"
+											}
+										},
+										"P_PCS_NM": {
+											"type": "String",
+											"value": {
+												"value": "@pipeline().parameters.P_PCS_NM",
+												"type": "Expression"
+											}
+										}
+									},
+									"queryTimeout": "02:00:00"
+								},
+								"dataset": {
+									"referenceName": "ControlTable",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Append variable1",
+							"type": "AppendVariable",
+							"dependsOn": [
+								{
+									"activity": "EDW MODEL COPY",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "V_COUNT_EACH_TARGET",
+								"value": {
+									"value": "@activity('EDW MODEL COPY').output.rowsCopied",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "SUM COUNT TARGET",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "ForEach",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select SUM(cast(value as int))\nas CNT_TGT from STRING_SPLIT\n(SUBSTRING(''',\nvariables('V_COUNT_EACH_TARGET'),'''\n, 2, LEN(''',\nvariables('V_COUNT_EACH_TARGET'),'''\n)-2) , '','' )  ')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "ControlTable",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "EDW MODEL UPDATE COUNT TARGET",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "SUM COUNT TARGET",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+					"storedProcedureParameters": {
+						"P_CNT_SRC": {
+							"value": {
+								"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_CNT_TGT": {
+							"value": {
+								"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.CNT_TGT",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_LOAD_ID": {
+							"value": {
+								"value": "@pipeline().parameters.P_LOAD_ID",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_PCS_NM": {
+							"value": {
+								"value": "@pipeline().parameters.P_PCS_NM",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_RMRK": {
+							"value": null,
+							"type": "String"
+						},
+						"P_ST": {
+							"value": "START",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "EDW MODEL COUNT SOURCE",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "NetezzaSource",
+						"query": {
+							"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
+							"type": "Expression"
+						},
+						"partitionOption": "DataSlice"
+					},
+					"dataset": {
+						"referenceName": "NetezzaTable",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "EDW MODEL UPDATE COUNT SOURCE",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "EDW MODEL COUNT SOURCE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+					"storedProcedureParameters": {
+						"P_CNT_SRC": {
+							"value": {
+								"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_CNT_TGT": {
+							"value": null,
+							"type": "String"
+						},
+						"P_LOAD_ID": {
+							"value": {
+								"value": "@pipeline().parameters.P_LOAD_ID",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_PCS_NM": {
+							"value": {
+								"value": "@pipeline().parameters.P_PCS_NM",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_RMRK": {
+							"value": null,
+							"type": "String"
+						},
+						"P_ST": {
+							"value": "START",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"P_SRC_TBL": {
+				"type": "string",
+				"defaultValue": "T_PROVINCE_PROFILE_TRANSACTION_MODEL"
+			},
+			"P_PATH": {
+				"type": "string",
+				"defaultValue": "modelprovinceprofiletest"
+			},
+			"P_AS_AT_DT": {
+				"type": "string",
+				"defaultValue": "20200628"
+			},
+			"P_PCS_NM": {
+				"type": "string",
+				"defaultValue": "MODEL_PROVINCE_PROFILE_T_PROVINCE_PROFILE_TRANSACTION_MODEL"
+			},
+			"P_SOURCE_CNT_STMT": {
+				"type": "string",
+				"defaultValue": "SELECT COUNT(*) AS COUNT FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL WHERE CAST(ASAT_DT AS DATE) = CAST('2020-06-28' AS DATE) "
+			},
+			"P_LOAD_ID": {
+				"type": "string",
+				"defaultValue": "999"
+			}
+		},
+		"variables": {
+			"V_BUS_DATE_LIST": {
+				"type": "Array",
+				"defaultValue": [
+					999
+				]
+			},
+			"V_COUNT_EACH_TARGET": {
+				"type": "Array",
+				"defaultValue": [
+					999
+				]
+			}
+		},
+		"folder": {
+			"name": "CUSTOM JOB"
+		},
+		"annotations": []
+	}
+}

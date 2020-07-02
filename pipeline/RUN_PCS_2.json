@@ -372,7 +372,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "AS_AT_DT",
+					"variableName": "V_AS_AT_DT",
 					"value": {
 						"value": "@activity('GET STREAM DATE').output.FIRSTROW.AS_AT_DT",
 						"type": "Expression"
@@ -531,7 +531,7 @@
 							"P_AS_AT_DT": {
 								"type": "String",
 								"value": {
-									"value": "@variables('AS_AT_DT')",
+									"value": "@variables('V_AS_AT_DT')",
 									"type": "Expression"
 								}
 							},
@@ -1043,7 +1043,7 @@
 							"P_AS_AT_DT": {
 								"type": "String",
 								"value": {
-									"value": "@variables('AS_AT_DT')",
+									"value": "@variables('V_AS_AT_DT')",
 									"type": "Expression"
 								}
 							},
@@ -1082,12 +1082,12 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"STREAM_NM": {
-							"value": "@variables('STREAM_NM')",
+						"P_STREAM_NM": {
+							"value": "@variables('V_STREAM_NM')",
 							"type": "Expression"
 						},
-						"SOURCE_CNT_STMT": {
-							"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SRC_COUNT",
+						"P_SOURCE_CNT_STMT": {
+							"value": "@activity('GET SELECT STATEMEMT').output.firstrow,SRC_COUNT",
 							"type": "Expression"
 						},
 						"P_LOAD_ID": {
@@ -1098,20 +1098,20 @@
 							"value": "@pipeline().parameters.P_PCS_NM",
 							"type": "Expression"
 						},
-						"SOURCE_TABLE_STMT": {
+						"P_SOURCE_TABLE_STMT": {
 							"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SELECT_STMT",
 							"type": "Expression"
 						},
-						"SRC_TBL": {
-							"value": "@variables('FILE_NAME')",
+						"P_SRC_TBL": {
+							"value": "@variables('V_FILE_NAME')",
 							"type": "Expression"
 						},
-						"PATH": {
-							"value": "@variables('FILE_PATH')",
+						"P_PATH": {
+							"value": "@variables('V_FILE_PATH')",
 							"type": "Expression"
 						},
-						"AS_AT_DT": {
-							"value": "@variables('AS_AT_DT')",
+						"P_AS_AT_DT": {
+							"value": "@variables('V_AS_AT_DT')",
 							"type": "Expression"
 						}
 					}
@@ -1130,7 +1130,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "FILE_NAME",
+					"variableName": "V_FILE_NAME",
 					"value": {
 						"value": "@activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL",
 						"type": "Expression"
@@ -1150,7 +1150,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "FILE_PATH",
+					"variableName": "V_FILE_PATH",
 					"value": {
 						"value": "@activity('GET PROCESS INFORMATION').output.firstrow.PATH",
 						"type": "Expression"
@@ -1170,7 +1170,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "STREAM_NM",
+					"variableName": "V_STREAM_NM",
 					"value": {
 						"value": "@activity('GET PROCESS INFORMATION').output.firstrow.STREAM_NM",
 						"type": "Expression"
@@ -1193,23 +1193,23 @@
 			}
 		},
 		"variables": {
-			"SKIP_PROCESS": {
+			"V_SKIP_PROCESS": {
 				"type": "String",
 				"defaultValue": "0"
 			},
-			"AS_AT_DT": {
+			"V_AS_AT_DT": {
 				"type": "String",
 				"defaultValue": "999"
 			},
-			"FILE_NAME": {
+			"V_FILE_NAME": {
 				"type": "String",
 				"defaultValue": "-999"
 			},
-			"STREAM_NM": {
+			"V_STREAM_NM": {
 				"type": "String",
 				"defaultValue": "-999"
 			},
-			"FILE_PATH": {
+			"V_FILE_PATH": {
 				"type": "String",
 				"defaultValue": "-999"
 			}

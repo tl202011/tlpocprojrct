@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@pipeline().parameters.STREAM_NM",
+						"value": "@pipeline().parameters.P_STREAM_NM",
 						"type": "Expression"
 					},
 					"cases": [
@@ -39,7 +39,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+												"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "None"
@@ -64,15 +64,15 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@pipeline().parameters.SRC_TBL",
+													"value": "@pipeline().parameters.P_SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@pipeline().parameters.PATH",
+													"value": "@pipeline().parameters.P_PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@pipeline().parameters.AS_AT_DT",
+													"value": "@pipeline().parameters.P_AS_AT_DT",
 													"type": "Expression"
 												}
 											}
@@ -95,7 +95,7 @@
 										"source": {
 											"type": "NetezzaSource",
 											"query": {
-												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
+												"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "DataSlice"
@@ -254,7 +254,7 @@
 										"source": {
 											"type": "PostgreSqlSource",
 											"query": {
-												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
+												"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
 												"type": "Expression"
 											}
 										},
@@ -349,7 +349,7 @@
 										"source": {
 											"type": "PostgreSqlSource",
 											"query": {
-												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+												"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
 												"type": "Expression"
 											}
 										},
@@ -373,15 +373,15 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@pipeline().parameters.SRC_TBL",
+													"value": "@pipeline().parameters.P_SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@pipeline().parameters.PATH",
+													"value": "@pipeline().parameters.P_PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@pipeline().parameters.AS_AT_DT",
+													"value": "@pipeline().parameters.P_AS_AT_DT",
 													"type": "Expression"
 												}
 											}
@@ -456,228 +456,6 @@
 							]
 						},
 						{
-							"value": "EDW MODEL",
-							"activities": [
-								{
-									"name": "EDW MODEL COUNT SOURCE",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "NetezzaSource",
-											"query": {
-												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
-												"type": "Expression"
-											},
-											"partitionOption": "DataSlice"
-										},
-										"dataset": {
-											"referenceName": "NetezzaTable",
-											"type": "DatasetReference"
-										}
-									}
-								},
-								{
-									"name": "EDW MODEL UPDATE COUNT SOURCE",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "EDW MODEL COUNT SOURCE",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
-										"storedProcedureParameters": {
-											"P_CNT_SRC": {
-												"value": {
-													"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_CNT_TGT": {
-												"value": null,
-												"type": "String"
-											},
-											"P_LOAD_ID": {
-												"value": {
-													"value": "@pipeline().parameters.P_LOAD_ID",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_PCS_NM": {
-												"value": {
-													"value": "@pipeline().parameters.P_PCS_NM",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_RMRK": {
-												"value": null,
-												"type": "String"
-											},
-											"P_ST": {
-												"value": "START",
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "SqlServer1",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "EDW MODEL",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "EDW MODEL UPDATE COUNT SOURCE",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "NetezzaSource",
-											"query": {
-												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
-												"type": "Expression"
-											},
-											"partitionOption": "None"
-										},
-										"sink": {
-											"type": "ParquetSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "NetezzaTable",
-											"type": "DatasetReference"
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ParquetFile",
-											"type": "DatasetReference",
-											"parameters": {
-												"file_name": {
-													"value": "@pipeline().parameters.SRC_TBL",
-													"type": "Expression"
-												},
-												"path": {
-													"value": "@pipeline().parameters.PATH",
-													"type": "Expression"
-												},
-												"asatdt": {
-													"value": "@pipeline().parameters.AS_AT_DT",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "EDW MODEL UPDATE COUNT TARGET",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "EDW MODEL",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
-										"storedProcedureParameters": {
-											"P_CNT_SRC": {
-												"value": {
-													"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_CNT_TGT": {
-												"value": {
-													"value": "@activity('EDW MODEL').output.rowsCopied",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_LOAD_ID": {
-												"value": {
-													"value": "@pipeline().parameters.P_LOAD_ID",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_PCS_NM": {
-												"value": {
-													"value": "@pipeline().parameters.P_PCS_NM",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_RMRK": {
-												"value": null,
-												"type": "String"
-											},
-											"P_ST": {
-												"value": "START",
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "SqlServer1",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						},
-						{
 							"value": "ORACLE",
 							"activities": [
 								{
@@ -696,7 +474,7 @@
 										"source": {
 											"type": "OracleSource",
 											"oracleReaderQuery": {
-												"value": "@pipeline().parameters.SOURCE_CNT_STMT",
+												"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "None",
@@ -793,7 +571,7 @@
 										"source": {
 											"type": "OracleSource",
 											"oracleReaderQuery": {
-												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+												"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
 												"type": "Expression"
 											},
 											"partitionOption": "None",
@@ -819,15 +597,15 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@pipeline().parameters.SRC_TBL",
+													"value": "@pipeline().parameters.P_SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@pipeline().parameters.PATH",
+													"value": "@pipeline().parameters.P_PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@pipeline().parameters.AS_AT_DT",
+													"value": "@pipeline().parameters.P_AS_AT_DT",
 													"type": "Expression"
 												}
 											}
@@ -935,7 +713,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"Collection_name": {
-													"value": "@pipeline().parameters.SRC_TBL",
+													"value": "@pipeline().parameters.P_SRC_TBL",
 													"type": "Expression"
 												}
 											}
@@ -947,15 +725,15 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@pipeline().parameters.SRC_TBL",
+													"value": "@pipeline().parameters.P_SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@pipeline().parameters.PATH",
+													"value": "@pipeline().parameters.P_PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@pipeline().parameters.AS_AT_DT",
+													"value": "@pipeline().parameters.P_AS_AT_DT",
 													"type": "Expression"
 												}
 											}
@@ -1049,7 +827,7 @@
 											"type": "MongoDbV2Source",
 											"batchSize": 100,
 											"filter": {
-												"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+												"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
 												"type": "Expression"
 											}
 										},
@@ -1068,7 +846,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"Collection_name": {
-													"value": "@pipeline().parameters.SRC_TBL",
+													"value": "@pipeline().parameters.P_SRC_TBL",
 													"type": "Expression"
 												}
 											}
@@ -1080,15 +858,15 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@pipeline().parameters.SRC_TBL",
+													"value": "@pipeline().parameters.P_SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@pipeline().parameters.PATH",
+													"value": "@pipeline().parameters.P_PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@pipeline().parameters.AS_AT_DT",
+													"value": "@pipeline().parameters.P_AS_AT_DT",
 													"type": "Expression"
 												}
 											}
@@ -1161,6 +939,50 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "EDW_MODEL",
+							"activities": [
+								{
+									"name": "EDW_MODEL_COPY",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "EDW_MODEL_COPY",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"P_SRC_TBL": {
+												"value": "@pipeline().parameters.P_SRC_TBL",
+												"type": "Expression"
+											},
+											"P_PATH": {
+												"value": "@pipeline().parameters.P_PATH",
+												"type": "Expression"
+											},
+											"P_AS_AT_DT": {
+												"value": "@pipeline().parameters.P_AS_AT_DT",
+												"type": "Expression"
+											},
+											"P_PCS_NM": {
+												"value": "@pipeline().parameters.P_PCS_NM",
+												"type": "Expression"
+											},
+											"P_SOURCE_CNT_STMT": {
+												"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
+												"type": "Expression"
+											},
+											"P_LOAD_ID": {
+												"value": "@pipeline().parameters.P_LOAD_ID",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
 						}
 					],
 					"defaultActivities": [
@@ -1193,11 +1015,11 @@
 			}
 		],
 		"parameters": {
-			"STREAM_NM": {
+			"P_STREAM_NM": {
 				"type": "string",
 				"defaultValue": "-999"
 			},
-			"SOURCE_CNT_STMT": {
+			"P_SOURCE_CNT_STMT": {
 				"type": "string",
 				"defaultValue": "-999"
 			},
@@ -1209,19 +1031,19 @@
 				"type": "string",
 				"defaultValue": "-999"
 			},
-			"SOURCE_TABLE_STMT": {
+			"P_SOURCE_TABLE_STMT": {
 				"type": "string",
 				"defaultValue": "-999"
 			},
-			"SRC_TBL": {
+			"P_SRC_TBL": {
 				"type": "string",
 				"defaultValue": "-999"
 			},
-			"PATH": {
+			"P_PATH": {
 				"type": "string",
 				"defaultValue": "-999"
 			},
-			"AS_AT_DT": {
+			"P_AS_AT_DT": {
 				"type": "string",
 				"defaultValue": "-999"
 			}
