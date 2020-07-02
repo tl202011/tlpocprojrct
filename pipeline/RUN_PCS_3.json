@@ -858,15 +858,15 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "@pipeline().parameters.SRC_TBL",
+													"value": "@pipeline().parameters.P_SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
-													"value": "@pipeline().parameters.PATH",
+													"value": "@pipeline().parameters.P_PATH",
 													"type": "Expression"
 												},
 												"asatdt": {
-													"value": "@pipeline().parameters.AS_AT_DT",
+													"value": "@pipeline().parameters.P_AS_AT_DT",
 													"type": "Expression"
 												}
 											}
@@ -947,17 +947,39 @@
 									"name": "EDW_MODEL_COPY",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
-									"userProperties": [
-										{
-											"name": ""
-										}
-									],
+									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
 											"referenceName": "EDW_MODEL_COPY",
 											"type": "PipelineReference"
 										},
-										"waitOnCompletion": true
+										"waitOnCompletion": true,
+										"parameters": {
+											"P_SRC_TBL": {
+												"value": "@pipeline().parameters.P_SRC_TBL",
+												"type": "Expression"
+											},
+											"P_PATH": {
+												"value": "@pipeline().parameters.P_PATH",
+												"type": "Expression"
+											},
+											"P_AS_AT_DT": {
+												"value": "@pipeline().parameters.P_AS_AT_DT",
+												"type": "Expression"
+											},
+											"P_PCS_NM": {
+												"value": "@pipeline().parameters.P_PCS_NM",
+												"type": "Expression"
+											},
+											"P_SOURCE_CNT_STMT": {
+												"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
+												"type": "Expression"
+											},
+											"P_LOAD_ID": {
+												"value": "@pipeline().parameters.P_LOAD_ID",
+												"type": "Expression"
+											}
+										}
 									}
 								}
 							]
