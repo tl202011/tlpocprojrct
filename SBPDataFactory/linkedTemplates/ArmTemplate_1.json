@@ -564,10 +564,10 @@
 									]
 								},
 								{
-									"value": "DV",
+									"value": "EDW MODEL",
 									"activities": [
 										{
-											"name": "DV COUNT SOURCE",
+											"name": "EDW MODEL COUNT SOURCE",
 											"type": "Lookup",
 											"dependsOn": [],
 											"policy": {
@@ -595,11 +595,11 @@
 											}
 										},
 										{
-											"name": "DV UPDATE COUNT SOURCE",
+											"name": "EDW MODEL UPDATE COUNT SOURCE",
 											"type": "SqlServerStoredProcedure",
 											"dependsOn": [
 												{
-													"activity": "DV COUNT SOURCE",
+													"activity": "EDW MODEL COUNT SOURCE",
 													"dependencyConditions": [
 														"Succeeded"
 													]
@@ -618,7 +618,7 @@
 												"storedProcedureParameters": {
 													"P_CNT_SRC": {
 														"value": {
-															"value": "@activity('DV COUNT SOURCE').output.FIRSTROW.COUNT",
+															"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
 															"type": "Expression"
 														},
 														"type": "String"
@@ -657,11 +657,11 @@
 											}
 										},
 										{
-											"name": "DV",
+											"name": "EDW MODEL",
 											"type": "Copy",
 											"dependsOn": [
 												{
-													"activity": "DV UPDATE COUNT SOURCE",
+													"activity": "EDW MODEL UPDATE COUNT SOURCE",
 													"dependencyConditions": [
 														"Succeeded"
 													]
@@ -721,11 +721,11 @@
 											]
 										},
 										{
-											"name": "DV UPDATE COUNT TARGET",
+											"name": "EDW MODEL UPDATE COUNT TARGET",
 											"type": "SqlServerStoredProcedure",
 											"dependsOn": [
 												{
-													"activity": "DV",
+													"activity": "EDW MODEL",
 													"dependencyConditions": [
 														"Succeeded"
 													]
@@ -744,14 +744,14 @@
 												"storedProcedureParameters": {
 													"P_CNT_SRC": {
 														"value": {
-															"value": "@activity('DV COUNT SOURCE').output.FIRSTROW.COUNT",
+															"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
 															"type": "Expression"
 														},
 														"type": "String"
 													},
 													"P_CNT_TGT": {
 														"value": {
-															"value": "@activity('DV').output.rowsCopied",
+															"value": "@activity('EDW MODEL').output.rowsCopied",
 															"type": "Expression"
 														},
 														"type": "String"
@@ -1159,7 +1159,11 @@
 											"typeProperties": {
 												"source": {
 													"type": "MongoDbV2Source",
-													"batchSize": 100
+													"batchSize": 100,
+													"filter": {
+														"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+														"type": "Expression"
+													}
 												},
 												"sink": {
 													"type": "ParquetSink",
@@ -1168,14 +1172,7 @@
 													}
 												},
 												"enableStaging": false,
-												"enableSkipIncompatibleRow": true,
-												"logStorageSettings": {
-													"linkedServiceName": {
-														"referenceName": "AzureDataLakeStorage1",
-														"type": "LinkedServiceReference"
-													},
-													"path": "logging"
-												}
+												"enableSkipIncompatibleRow": false
 											},
 											"inputs": [
 												{
@@ -2435,59 +2432,11 @@
 						}
 					},
 					{
-						"name": "GET SOURCE COUNT",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "GET SELECT STATEMEMT",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_GET_SRC_COUNT]",
-								"storedProcedureParameters": {
-									"P_AS_AT_DT": {
-										"type": "String",
-										"value": {
-											"value": "@variables('AS_AT_DT')",
-											"type": "Expression"
-										}
-									},
-									"P_PCS_NM": {
-										"type": "String",
-										"value": {
-											"value": "@pipeline().parameters.P_PCS_NM",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
 						"name": "COPY",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "GET SOURCE COUNT",
+								"activity": "GET SELECT STATEMEMT",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2506,7 +2455,7 @@
 									"type": "Expression"
 								},
 								"SOURCE_CNT_STMT": {
-									"value": "@activity('GET SOURCE COUNT').output.firstrow.SRC_COUNT",
+									"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SRC_COUNT",
 									"type": "Expression"
 								},
 								"P_LOAD_ID": {
