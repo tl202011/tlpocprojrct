@@ -40,7 +40,14 @@
 			{
 				"name": "GET BUSINESS DATE LIST STMT",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "EDW MODEL UPDATE COUNT SOURCE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -57,14 +64,14 @@
 							"P_AS_AT_DT": {
 								"type": "String",
 								"value": {
-									"value": "@pipeline().parameters.AS_AT_DT",
+									"value": "@pipeline().parameters.P_AS_AT_DT",
 									"type": "Expression"
 								}
 							},
 							"P_PCS_NM": {
 								"type": "String",
 								"value": {
-									"value": "@pipeline().parameters.PCS_NM",
+									"value": "@pipeline().parameters.P_PCS_NM",
 									"type": "Expression"
 								}
 							}
@@ -90,7 +97,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "BUSINESS DATE LIST",
+					"variableName": "V_BUS_DATE_LIST",
 					"value": {
 						"value": "@activity('GET BUSINESS DATE LIST').output.value",
 						"type": "Expression"
@@ -111,7 +118,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('BUSINESS DATE LIST')",
+						"value": "@variables('V_BUS_DATE_LIST')",
 						"type": "Expression"
 					},
 					"activities": [
@@ -171,11 +178,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"file_name": {
-											"value": "@pipeline().parameters.SRC_TBL",
+											"value": "@pipeline().parameters.P_SRC_TBL",
 											"type": "Expression"
 										},
 										"path": {
-											"value": "@pipeline().parameters.PATH",
+											"value": "@pipeline().parameters.P_PATH",
 											"type": "Expression"
 										},
 										"asatdt": {
@@ -213,7 +220,7 @@
 										"P_PCS_NM": {
 											"type": "String",
 											"value": {
-												"value": "@pipeline().parameters.PCS_NM",
+												"value": "@pipeline().parameters.P_PCS_NM",
 												"type": "Expression"
 											}
 										}
@@ -239,7 +246,7 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "COUNT EACH TARGET",
+								"variableName": "V_COUNT_EACH_TARGET",
 								"value": {
 									"value": "@activity('EDW MODEL COPY').output.rowsCopied",
 									"type": "Expression"
@@ -250,8 +257,8 @@
 				}
 			},
 			{
-				"name": "ForEach1",
-				"type": "ForEach",
+				"name": "SUM COUNT TARGET",
+				"type": "Lookup",
 				"dependsOn": [
 					{
 						"activity": "ForEach",
@@ -260,78 +267,222 @@
 						]
 					}
 				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"items": {
-						"value": "@variables('COUNT EACH TARGET')",
-						"type": "Expression"
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select SUM(cast(value as int))\nas CNT_TGT from STRING_SPLIT\n(SUBSTRING(''',\nvariables('V_COUNT_EACH_TARGET'),'''\n, 2, LEN(''',\nvariables('V_COUNT_EACH_TARGET'),'''\n)-2) , '','' )  ')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
 					},
-					"activities": [
-						{
-							"name": "Lookup1",
-							"type": "Lookup",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
+					"dataset": {
+						"referenceName": "ControlTable",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "EDW MODEL UPDATE COUNT TARGET",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "SUM COUNT TARGET",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+					"storedProcedureParameters": {
+						"P_CNT_SRC": {
+							"value": {
+								"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
+								"type": "Expression"
 							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "SqlServerSource",
-									"sqlReaderQuery": "SELECT ",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
-								}
-							}
+							"type": "String"
+						},
+						"P_CNT_TGT": {
+							"value": {
+								"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.CNT_TGT",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_LOAD_ID": {
+							"value": {
+								"value": "@pipeline().parameters.P_LOAD_ID",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_PCS_NM": {
+							"value": {
+								"value": "@pipeline().parameters.P_PCS_NM",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_RMRK": {
+							"value": null,
+							"type": "String"
+						},
+						"P_ST": {
+							"value": "START",
+							"type": "String"
 						}
-					]
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "EDW MODEL COUNT SOURCE",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "NetezzaSource",
+						"query": {
+							"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
+							"type": "Expression"
+						},
+						"partitionOption": "DataSlice"
+					},
+					"dataset": {
+						"referenceName": "NetezzaTable",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "EDW MODEL UPDATE COUNT SOURCE",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "EDW MODEL COUNT SOURCE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
+					"storedProcedureParameters": {
+						"P_CNT_SRC": {
+							"value": {
+								"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_CNT_TGT": {
+							"value": null,
+							"type": "String"
+						},
+						"P_LOAD_ID": {
+							"value": {
+								"value": "@pipeline().parameters.P_LOAD_ID",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_PCS_NM": {
+							"value": {
+								"value": "@pipeline().parameters.P_PCS_NM",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_RMRK": {
+							"value": null,
+							"type": "String"
+						},
+						"P_ST": {
+							"value": "START",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
 		"parameters": {
-			"SRC_TBL": {
+			"P_SRC_TBL": {
 				"type": "string",
 				"defaultValue": "T_PROVINCE_PROFILE_TRANSACTION_MODEL"
 			},
-			"PATH": {
+			"P_PATH": {
 				"type": "string",
 				"defaultValue": "modelprovinceprofiletest"
 			},
-			"AS_AT_DT": {
+			"P_AS_AT_DT": {
 				"type": "string",
 				"defaultValue": "20200628"
 			},
-			"PCS_NM": {
+			"P_PCS_NM": {
 				"type": "string",
 				"defaultValue": "MODEL_PROVINCE_PROFILE_T_PROVINCE_PROFILE_TRANSACTION_MODEL"
+			},
+			"P_SOURCE_CNT_STMT": {
+				"type": "string",
+				"defaultValue": "SELECT COUNT(*) AS COUNT FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL WHERE CAST(ASAT_DT AS DATE) = CAST('2020-06-28' AS DATE) "
+			},
+			"P_LOAD_ID": {
+				"type": "string",
+				"defaultValue": "999"
 			}
 		},
 		"variables": {
-			"BUSINESS DATE LIST": {
+			"V_BUS_DATE_LIST": {
 				"type": "Array",
 				"defaultValue": [
 					999
 				]
 			},
-			"COUNT EACH TARGET": {
+			"V_COUNT_EACH_TARGET": {
 				"type": "Array",
 				"defaultValue": [
 					999
 				]
-			},
-			"COUNT TARGET": {
-				"type": "String",
-				"defaultValue": "999"
-			},
-			"xx": {
-				"type": "Array"
 			}
 		},
 		"folder": {
