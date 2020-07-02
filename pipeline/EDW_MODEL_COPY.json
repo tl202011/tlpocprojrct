@@ -321,7 +321,7 @@
 						},
 						"P_CNT_TGT": {
 							"value": {
-								"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.CNT_TGT",
+								"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -464,7 +464,7 @@
 			},
 			"P_SOURCE_CNT_STMT": {
 				"type": "string",
-				"defaultValue": "SELECT COUNT(*) AS COUNT FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL WHERE CAST(ASAT_DT AS DATE) = CAST('2020-06-28' AS DATE) "
+				"defaultValue": "SELECT COUNT(*) AS COUNT  FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL  WHERE CAST(DATE AS DATE) IN  (SELECT DISTINCT DATE AS BUS_DATE FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL  WHERE CAST(ASAT_DT AS DATE) = CAST('2020-06-28' AS DATE))"
 			},
 			"P_LOAD_ID": {
 				"type": "string",
@@ -480,9 +480,7 @@
 			},
 			"V_COUNT_EACH_TARGET": {
 				"type": "Array",
-				"defaultValue": [
-					999
-				]
+				"defaultValue": []
 			}
 		},
 		"folder": {
