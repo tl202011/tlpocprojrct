@@ -89,7 +89,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "SELECT * FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL \nWHERE CAST(DATE AS DATE) = CAST('2018-01-14' AS DATE) ",
+								"query": "SELECT count(*),asat_dt FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL group by asat_dt ",
 								"partitionOption": "None"
 							},
 							"dataset": {
@@ -108,6 +108,513 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EDW_MODEL_COPY')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GET BUSINESS DATE LIST",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "GET BUSINESS DATE LIST STMT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "NetezzaSource",
+								"query": {
+									"value": "@activity('GET BUSINESS DATE LIST STMT').output.firstrow.BUS_DATE_STMT",
+									"type": "Expression"
+								},
+								"partitionOption": "DataSlice"
+							},
+							"dataset": {
+								"referenceName": "NetezzaTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "GET BUSINESS DATE LIST STMT",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "EDW MODEL UPDATE COUNT SOURCE",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_GET_BUS_DATE_LIST]",
+								"storedProcedureParameters": {
+									"P_AS_AT_DT": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_AS_AT_DT",
+											"type": "Expression"
+										}
+									},
+									"P_PCS_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_PCS_NM",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "ControlTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "SET BUSINESS DATE LIST",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "GET BUSINESS DATE LIST",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "V_BUS_DATE_LIST",
+							"value": {
+								"value": "@activity('GET BUSINESS DATE LIST').output.value",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ForEach",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "SET BUSINESS DATE LIST",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('V_BUS_DATE_LIST')",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "EDW MODEL COPY",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "GET SELECT STATEMENT",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "NetezzaSource",
+											"query": {
+												"value": "@activity('GET SELECT STATEMENT').output.firstrow.SELECT_STMT",
+												"type": "Expression"
+											},
+											"partitionOption": "DataSlice"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "NetezzaTable",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ParquetFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"file_name": {
+													"value": "@pipeline().parameters.P_SRC_TBL",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@pipeline().parameters.P_PATH",
+													"type": "Expression"
+												},
+												"asatdt": {
+													"value": "@formatDateTime(item().BUS_DATE,'yyyyMMdd')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "GET SELECT STATEMENT",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderStoredProcedureName": "[[CNTL].[PROC_GET_SELECT_STMT]",
+											"storedProcedureParameters": {
+												"P_AS_AT_DT": {
+													"type": "String",
+													"value": {
+														"value": "@formatDateTime(item().BUS_DATE,'yyyyMMdd')",
+														"type": "Expression"
+													}
+												},
+												"P_PCS_NM": {
+													"type": "String",
+													"value": {
+														"value": "@pipeline().parameters.P_PCS_NM",
+														"type": "Expression"
+													}
+												}
+											},
+											"queryTimeout": "02:00:00"
+										},
+										"dataset": {
+											"referenceName": "ControlTable",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								},
+								{
+									"name": "Append variable1",
+									"type": "AppendVariable",
+									"dependsOn": [
+										{
+											"activity": "EDW MODEL COPY",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "V_COUNT_EACH_TARGET",
+										"value": {
+											"value": "@activity('EDW MODEL COPY').output.rowsCopied",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "SUM COUNT TARGET",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "ForEach",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": {
+									"value": "@concat('select SUM(cast(value as int))\nas CNT_TGT from STRING_SPLIT\n(SUBSTRING(''',\nvariables('V_COUNT_EACH_TARGET'),'''\n, 2, LEN(''',\nvariables('V_COUNT_EACH_TARGET'),'''\n)-2) , '','' )  ')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "ControlTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "EDW MODEL UPDATE COUNT TARGET",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "SUM COUNT TARGET",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+							"storedProcedureParameters": {
+								"P_CNT_SRC": {
+									"value": {
+										"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_CNT_TGT": {
+									"value": {
+										"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.CNT_TGT",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_LOAD_ID": {
+									"value": {
+										"value": "@pipeline().parameters.P_LOAD_ID",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_PCS_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_RMRK": {
+									"value": null,
+									"type": "String"
+								},
+								"P_ST": {
+									"value": "START",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "EDW MODEL COUNT SOURCE",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "NetezzaSource",
+								"query": {
+									"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
+									"type": "Expression"
+								},
+								"partitionOption": "DataSlice"
+							},
+							"dataset": {
+								"referenceName": "NetezzaTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "EDW MODEL UPDATE COUNT SOURCE",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "EDW MODEL COUNT SOURCE",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+							"storedProcedureParameters": {
+								"P_CNT_SRC": {
+									"value": {
+										"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_CNT_TGT": {
+									"value": null,
+									"type": "String"
+								},
+								"P_LOAD_ID": {
+									"value": {
+										"value": "@pipeline().parameters.P_LOAD_ID",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_PCS_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_RMRK": {
+									"value": null,
+									"type": "String"
+								},
+								"P_ST": {
+									"value": "START",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"parameters": {
+					"P_SRC_TBL": {
+						"type": "string",
+						"defaultValue": "T_PROVINCE_PROFILE_TRANSACTION_MODEL"
+					},
+					"P_PATH": {
+						"type": "string",
+						"defaultValue": "modelprovinceprofiletest"
+					},
+					"P_AS_AT_DT": {
+						"type": "string",
+						"defaultValue": "20200628"
+					},
+					"P_PCS_NM": {
+						"type": "string",
+						"defaultValue": "MODEL_PROVINCE_PROFILE_T_PROVINCE_PROFILE_TRANSACTION_MODEL"
+					},
+					"P_SOURCE_CNT_STMT": {
+						"type": "string",
+						"defaultValue": "SELECT COUNT(*) AS COUNT FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL WHERE CAST(ASAT_DT AS DATE) = CAST('2020-06-28' AS DATE) "
+					},
+					"P_LOAD_ID": {
+						"type": "string",
+						"defaultValue": "999"
+					}
+				},
+				"variables": {
+					"V_BUS_DATE_LIST": {
+						"type": "Array",
+						"defaultValue": [
+							999
+						]
+					},
+					"V_COUNT_EACH_TARGET": {
+						"type": "Array",
+						"defaultValue": [
+							999
+						]
+					}
+				},
+				"folder": {
+					"name": "CUSTOM JOB"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]",
+				"[concat(variables('factoryId'), '/datasets/ControlTable')]",
+				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
+				"[concat(variables('factoryId'), '/datasets/ParquetFile')]"
 			]
 		},
 		{
@@ -147,13 +654,6 @@
 											"type": "Expression"
 										}
 									},
-									"P_SKIP_F": {
-										"type": "String",
-										"value": {
-											"value": "@variables('SKIP_PROCESS')",
-											"type": "Expression"
-										}
-									},
 									"P_STREAM_SEQ_ID": {
 										"type": "String",
 										"value": {
@@ -185,7 +685,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "SKIP_PROCESS",
+							"variableName": "V_SKIP_PROCESS",
 							"value": {
 								"value": "@activity('INSERT PROCESS LOG').output.FIRSTROW.SKIP_PROCESS",
 								"type": "Expression"
@@ -212,7 +712,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@equals(variables('SKIP_PROCESS'),'0')",
+								"value": "@equals(variables('V_SKIP_PROCESS'),'0')",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
@@ -264,7 +764,7 @@
 												"type": "Expression"
 											},
 											"P_LOAD_ID": {
-												"value": "@variables('LOAD_ID')",
+												"value": "@variables('V_LOAD_ID')",
 												"type": "Expression"
 											}
 										}
@@ -286,7 +786,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "LOAD_ID",
+							"variableName": "V_LOAD_ID",
 							"value": {
 								"value": "@activity('INSERT PROCESS LOG').output.FIRSTROW.LOAD_ID",
 								"type": "Expression"
@@ -309,11 +809,11 @@
 					}
 				},
 				"variables": {
-					"SKIP_PROCESS": {
+					"V_SKIP_PROCESS": {
 						"type": "String",
 						"defaultValue": "999"
 					},
-					"LOAD_ID": {
+					"V_LOAD_ID": {
 						"type": "String",
 						"defaultValue": "999"
 					}
@@ -712,7 +1212,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "AS_AT_DT",
+							"variableName": "V_AS_AT_DT",
 							"value": {
 								"value": "@activity('GET STREAM DATE').output.FIRSTROW.AS_AT_DT",
 								"type": "Expression"
@@ -874,7 +1374,7 @@
 									"P_AS_AT_DT": {
 										"type": "String",
 										"value": {
-											"value": "@variables('AS_AT_DT')",
+											"value": "@variables('V_AS_AT_DT')",
 											"type": "Expression"
 										}
 									},
@@ -1389,7 +1889,7 @@
 									"P_AS_AT_DT": {
 										"type": "String",
 										"value": {
-											"value": "@variables('AS_AT_DT')",
+											"value": "@variables('V_AS_AT_DT')",
 											"type": "Expression"
 										}
 									},
@@ -1429,12 +1929,12 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"STREAM_NM": {
-									"value": "@variables('STREAM_NM')",
+								"P_STREAM_NM": {
+									"value": "@variables('V_STREAM_NM')",
 									"type": "Expression"
 								},
-								"SOURCE_CNT_STMT": {
-									"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SRC_COUNT",
+								"P_SOURCE_CNT_STMT": {
+									"value": "@activity('GET SELECT STATEMEMT').output.firstrow,SRC_COUNT",
 									"type": "Expression"
 								},
 								"P_LOAD_ID": {
@@ -1445,20 +1945,20 @@
 									"value": "@pipeline().parameters.P_PCS_NM",
 									"type": "Expression"
 								},
-								"SOURCE_TABLE_STMT": {
+								"P_SOURCE_TABLE_STMT": {
 									"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SELECT_STMT",
 									"type": "Expression"
 								},
-								"SRC_TBL": {
-									"value": "@variables('FILE_NAME')",
+								"P_SRC_TBL": {
+									"value": "@variables('V_FILE_NAME')",
 									"type": "Expression"
 								},
-								"PATH": {
-									"value": "@variables('FILE_PATH')",
+								"P_PATH": {
+									"value": "@variables('V_FILE_PATH')",
 									"type": "Expression"
 								},
-								"AS_AT_DT": {
-									"value": "@variables('AS_AT_DT')",
+								"P_AS_AT_DT": {
+									"value": "@variables('V_AS_AT_DT')",
 									"type": "Expression"
 								}
 							}
@@ -1477,7 +1977,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "FILE_NAME",
+							"variableName": "V_FILE_NAME",
 							"value": {
 								"value": "@activity('GET PROCESS INFORMATION').output.firstrow.SRC_TBL",
 								"type": "Expression"
@@ -1497,7 +1997,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "FILE_PATH",
+							"variableName": "V_FILE_PATH",
 							"value": {
 								"value": "@activity('GET PROCESS INFORMATION').output.firstrow.PATH",
 								"type": "Expression"
@@ -1517,7 +2017,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "STREAM_NM",
+							"variableName": "V_STREAM_NM",
 							"value": {
 								"value": "@activity('GET PROCESS INFORMATION').output.firstrow.STREAM_NM",
 								"type": "Expression"
@@ -1540,23 +2040,23 @@
 					}
 				},
 				"variables": {
-					"SKIP_PROCESS": {
+					"V_SKIP_PROCESS": {
 						"type": "String",
 						"defaultValue": "0"
 					},
-					"AS_AT_DT": {
+					"V_AS_AT_DT": {
 						"type": "String",
 						"defaultValue": "999"
 					},
-					"FILE_NAME": {
+					"V_FILE_NAME": {
 						"type": "String",
 						"defaultValue": "-999"
 					},
-					"STREAM_NM": {
+					"V_STREAM_NM": {
 						"type": "String",
 						"defaultValue": "-999"
 					},
-					"FILE_PATH": {
+					"V_FILE_PATH": {
 						"type": "String",
 						"defaultValue": "-999"
 					}
@@ -1585,7 +2085,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"on": {
-								"value": "@pipeline().parameters.STREAM_NM",
+								"value": "@pipeline().parameters.P_STREAM_NM",
 								"type": "Expression"
 							},
 							"cases": [
@@ -1615,7 +2115,7 @@
 												"source": {
 													"type": "NetezzaSource",
 													"query": {
-														"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+														"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
 														"type": "Expression"
 													},
 													"partitionOption": "None"
@@ -1641,15 +2141,15 @@
 													"type": "DatasetReference",
 													"parameters": {
 														"file_name": {
-															"value": "@pipeline().parameters.SRC_TBL",
+															"value": "@pipeline().parameters.P_SRC_TBL",
 															"type": "Expression"
 														},
 														"path": {
-															"value": "@pipeline().parameters.PATH",
+															"value": "@pipeline().parameters.P_PATH",
 															"type": "Expression"
 														},
 														"asatdt": {
-															"value": "@pipeline().parameters.AS_AT_DT",
+															"value": "@pipeline().parameters.P_AS_AT_DT",
 															"type": "Expression"
 														}
 													}
@@ -1672,7 +2172,7 @@
 												"source": {
 													"type": "NetezzaSource",
 													"query": {
-														"value": "@pipeline().parameters.SOURCE_CNT_STMT",
+														"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
 														"type": "Expression"
 													},
 													"partitionOption": "DataSlice"
@@ -1832,7 +2332,7 @@
 												"source": {
 													"type": "PostgreSqlSource",
 													"query": {
-														"value": "@pipeline().parameters.SOURCE_CNT_STMT",
+														"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
 														"type": "Expression"
 													}
 												},
@@ -1928,7 +2428,7 @@
 												"source": {
 													"type": "PostgreSqlSource",
 													"query": {
-														"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+														"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
 														"type": "Expression"
 													}
 												},
@@ -1953,15 +2453,15 @@
 													"type": "DatasetReference",
 													"parameters": {
 														"file_name": {
-															"value": "@pipeline().parameters.SRC_TBL",
+															"value": "@pipeline().parameters.P_SRC_TBL",
 															"type": "Expression"
 														},
 														"path": {
-															"value": "@pipeline().parameters.PATH",
+															"value": "@pipeline().parameters.P_PATH",
 															"type": "Expression"
 														},
 														"asatdt": {
-															"value": "@pipeline().parameters.AS_AT_DT",
+															"value": "@pipeline().parameters.P_AS_AT_DT",
 															"type": "Expression"
 														}
 													}
@@ -2036,230 +2536,6 @@
 									]
 								},
 								{
-									"value": "EDW MODEL",
-									"activities": [
-										{
-											"name": "EDW MODEL COUNT SOURCE",
-											"type": "Lookup",
-											"dependsOn": [],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"source": {
-													"type": "NetezzaSource",
-													"query": {
-														"value": "@pipeline().parameters.SOURCE_CNT_STMT",
-														"type": "Expression"
-													},
-													"partitionOption": "DataSlice"
-												},
-												"dataset": {
-													"referenceName": "NetezzaTable",
-													"type": "DatasetReference",
-													"parameters": {}
-												}
-											}
-										},
-										{
-											"name": "EDW MODEL UPDATE COUNT SOURCE",
-											"type": "SqlServerStoredProcedure",
-											"dependsOn": [
-												{
-													"activity": "EDW MODEL COUNT SOURCE",
-													"dependencyConditions": [
-														"Succeeded"
-													]
-												}
-											],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
-												"storedProcedureParameters": {
-													"P_CNT_SRC": {
-														"value": {
-															"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_CNT_TGT": {
-														"value": null,
-														"type": "String"
-													},
-													"P_LOAD_ID": {
-														"value": {
-															"value": "@pipeline().parameters.P_LOAD_ID",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_PCS_NM": {
-														"value": {
-															"value": "@pipeline().parameters.P_PCS_NM",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_RMRK": {
-														"value": null,
-														"type": "String"
-													},
-													"P_ST": {
-														"value": "START",
-														"type": "String"
-													}
-												}
-											},
-											"linkedServiceName": {
-												"referenceName": "SqlServer1",
-												"type": "LinkedServiceReference"
-											}
-										},
-										{
-											"name": "EDW MODEL",
-											"type": "Copy",
-											"dependsOn": [
-												{
-													"activity": "EDW MODEL UPDATE COUNT SOURCE",
-													"dependencyConditions": [
-														"Succeeded"
-													]
-												}
-											],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"source": {
-													"type": "NetezzaSource",
-													"query": {
-														"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
-														"type": "Expression"
-													},
-													"partitionOption": "None"
-												},
-												"sink": {
-													"type": "ParquetSink",
-													"storeSettings": {
-														"type": "AzureBlobFSWriteSettings"
-													}
-												},
-												"enableStaging": false
-											},
-											"inputs": [
-												{
-													"referenceName": "NetezzaTable",
-													"type": "DatasetReference",
-													"parameters": {}
-												}
-											],
-											"outputs": [
-												{
-													"referenceName": "ParquetFile",
-													"type": "DatasetReference",
-													"parameters": {
-														"file_name": {
-															"value": "@pipeline().parameters.SRC_TBL",
-															"type": "Expression"
-														},
-														"path": {
-															"value": "@pipeline().parameters.PATH",
-															"type": "Expression"
-														},
-														"asatdt": {
-															"value": "@pipeline().parameters.AS_AT_DT",
-															"type": "Expression"
-														}
-													}
-												}
-											]
-										},
-										{
-											"name": "EDW MODEL UPDATE COUNT TARGET",
-											"type": "SqlServerStoredProcedure",
-											"dependsOn": [
-												{
-													"activity": "EDW MODEL",
-													"dependencyConditions": [
-														"Succeeded"
-													]
-												}
-											],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
-												"storedProcedureParameters": {
-													"P_CNT_SRC": {
-														"value": {
-															"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_CNT_TGT": {
-														"value": {
-															"value": "@activity('EDW MODEL').output.rowsCopied",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_LOAD_ID": {
-														"value": {
-															"value": "@pipeline().parameters.P_LOAD_ID",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_PCS_NM": {
-														"value": {
-															"value": "@pipeline().parameters.P_PCS_NM",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_RMRK": {
-														"value": null,
-														"type": "String"
-													},
-													"P_ST": {
-														"value": "START",
-														"type": "String"
-													}
-												}
-											},
-											"linkedServiceName": {
-												"referenceName": "SqlServer1",
-												"type": "LinkedServiceReference"
-											}
-										}
-									]
-								},
-								{
 									"value": "ORACLE",
 									"activities": [
 										{
@@ -2278,7 +2554,7 @@
 												"source": {
 													"type": "OracleSource",
 													"oracleReaderQuery": {
-														"value": "@pipeline().parameters.SOURCE_CNT_STMT",
+														"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
 														"type": "Expression"
 													},
 													"partitionOption": "None",
@@ -2376,7 +2652,7 @@
 												"source": {
 													"type": "OracleSource",
 													"oracleReaderQuery": {
-														"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+														"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
 														"type": "Expression"
 													},
 													"partitionOption": "None",
@@ -2403,15 +2679,15 @@
 													"type": "DatasetReference",
 													"parameters": {
 														"file_name": {
-															"value": "@pipeline().parameters.SRC_TBL",
+															"value": "@pipeline().parameters.P_SRC_TBL",
 															"type": "Expression"
 														},
 														"path": {
-															"value": "@pipeline().parameters.PATH",
+															"value": "@pipeline().parameters.P_PATH",
 															"type": "Expression"
 														},
 														"asatdt": {
-															"value": "@pipeline().parameters.AS_AT_DT",
+															"value": "@pipeline().parameters.P_AS_AT_DT",
 															"type": "Expression"
 														}
 													}
@@ -2519,7 +2795,7 @@
 													"type": "DatasetReference",
 													"parameters": {
 														"Collection_name": {
-															"value": "@pipeline().parameters.SRC_TBL",
+															"value": "@pipeline().parameters.P_SRC_TBL",
 															"type": "Expression"
 														}
 													}
@@ -2531,15 +2807,15 @@
 													"type": "DatasetReference",
 													"parameters": {
 														"file_name": {
-															"value": "@pipeline().parameters.SRC_TBL",
+															"value": "@pipeline().parameters.P_SRC_TBL",
 															"type": "Expression"
 														},
 														"path": {
-															"value": "@pipeline().parameters.PATH",
+															"value": "@pipeline().parameters.P_PATH",
 															"type": "Expression"
 														},
 														"asatdt": {
-															"value": "@pipeline().parameters.AS_AT_DT",
+															"value": "@pipeline().parameters.P_AS_AT_DT",
 															"type": "Expression"
 														}
 													}
@@ -2633,7 +2909,7 @@
 													"type": "MongoDbV2Source",
 													"batchSize": 100,
 													"filter": {
-														"value": "@pipeline().parameters.SOURCE_TABLE_STMT",
+														"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
 														"type": "Expression"
 													}
 												},
@@ -2652,7 +2928,7 @@
 													"type": "DatasetReference",
 													"parameters": {
 														"Collection_name": {
-															"value": "@pipeline().parameters.SRC_TBL",
+															"value": "@pipeline().parameters.P_SRC_TBL",
 															"type": "Expression"
 														}
 													}
@@ -2664,15 +2940,15 @@
 													"type": "DatasetReference",
 													"parameters": {
 														"file_name": {
-															"value": "@pipeline().parameters.SRC_TBL",
+															"value": "@pipeline().parameters.P_SRC_TBL",
 															"type": "Expression"
 														},
 														"path": {
-															"value": "@pipeline().parameters.PATH",
+															"value": "@pipeline().parameters.P_PATH",
 															"type": "Expression"
 														},
 														"asatdt": {
-															"value": "@pipeline().parameters.AS_AT_DT",
+															"value": "@pipeline().parameters.P_AS_AT_DT",
 															"type": "Expression"
 														}
 													}
@@ -2745,6 +3021,50 @@
 											}
 										}
 									]
+								},
+								{
+									"value": "EDW_MODEL",
+									"activities": [
+										{
+											"name": "EDW_MODEL_COPY",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "EDW_MODEL_COPY",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"P_SRC_TBL": {
+														"value": "@pipeline().parameters.P_SRC_TBL",
+														"type": "Expression"
+													},
+													"P_PATH": {
+														"value": "@pipeline().parameters.P_PATH",
+														"type": "Expression"
+													},
+													"P_AS_AT_DT": {
+														"value": "@pipeline().parameters.P_AS_AT_DT",
+														"type": "Expression"
+													},
+													"P_PCS_NM": {
+														"value": "@pipeline().parameters.P_PCS_NM",
+														"type": "Expression"
+													},
+													"P_SOURCE_CNT_STMT": {
+														"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
+														"type": "Expression"
+													},
+													"P_LOAD_ID": {
+														"value": "@pipeline().parameters.P_LOAD_ID",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
 								}
 							],
 							"defaultActivities": [
@@ -2778,11 +3098,11 @@
 					}
 				],
 				"parameters": {
-					"STREAM_NM": {
+					"P_STREAM_NM": {
 						"type": "string",
 						"defaultValue": "-999"
 					},
-					"SOURCE_CNT_STMT": {
+					"P_SOURCE_CNT_STMT": {
 						"type": "string",
 						"defaultValue": "-999"
 					},
@@ -2794,19 +3114,19 @@
 						"type": "string",
 						"defaultValue": "-999"
 					},
-					"SOURCE_TABLE_STMT": {
+					"P_SOURCE_TABLE_STMT": {
 						"type": "string",
 						"defaultValue": "-999"
 					},
-					"SRC_TBL": {
+					"P_SRC_TBL": {
 						"type": "string",
 						"defaultValue": "-999"
 					},
-					"PATH": {
+					"P_PATH": {
 						"type": "string",
 						"defaultValue": "-999"
 					},
-					"AS_AT_DT": {
+					"P_AS_AT_DT": {
 						"type": "string",
 						"defaultValue": "-999"
 					}
@@ -2823,7 +3143,8 @@
 				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
 				"[concat(variables('factoryId'), '/datasets/PostgreSqlTable')]",
 				"[concat(variables('factoryId'), '/datasets/OracleTable')]",
-				"[concat(variables('factoryId'), '/datasets/MongoDb_CustGeo')]"
+				"[concat(variables('factoryId'), '/datasets/MongoDb_CustGeo')]",
+				"[concat(variables('factoryId'), '/pipelines/EDW_MODEL_COPY')]"
 			]
 		},
 		{
@@ -2857,7 +3178,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "PCS_NM_LIST",
+							"variableName": "V_PCS_NM_LIST",
 							"value": {
 								"value": "@activity('GET PROCESS LIST').output.value",
 								"type": "Expression"
@@ -2891,7 +3212,7 @@
 									"P_STREAM_NM": {
 										"type": "String",
 										"value": {
-											"value": "@pipeline().parameters.STREAM_NM",
+											"value": "@pipeline().parameters.P_STREAM_NM",
 											"type": "Expression"
 										}
 									}
@@ -2920,7 +3241,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@variables('PCS_NM_LIST')",
+								"value": "@variables('V_PCS_NM_LIST')",
 								"type": "Expression"
 							},
 							"isSequential": false,
@@ -2943,11 +3264,11 @@
 												"type": "Expression"
 											},
 											"P_RUN_MODE": {
-												"value": "@pipeline().parameters.RUN_MODE",
+												"value": "@pipeline().parameters.P_RUN_MODE",
 												"type": "Expression"
 											},
 											"P_STREAM_SEQ_ID": {
-												"value": "@variables('STREAM_SEQ_ID')",
+												"value": "@variables('V_STREAM_SEQ_ID')",
 												"type": "Expression"
 											}
 										}
@@ -2983,14 +3304,14 @@
 									"P_STREAM_NM": {
 										"type": "String",
 										"value": {
-											"value": "@pipeline().parameters.STREAM_NM",
+											"value": "@pipeline().parameters.P_STREAM_NM",
 											"type": "Expression"
 										}
 									},
 									"P_STREAM_SEQ_ID": {
 										"type": "String",
 										"value": {
-											"value": "@variables('STREAM_SEQ_ID')",
+											"value": "@variables('V_STREAM_SEQ_ID')",
 											"type": "Expression"
 										}
 									}
@@ -3032,21 +3353,21 @@
 									"P_AS_AT_DT": {
 										"type": "String",
 										"value": {
-											"value": "@variables('AS_AT_DT')",
+											"value": "@variables('V_AS_AT_DT')",
 											"type": "Expression"
 										}
 									},
 									"P_STREAM_NM": {
 										"type": "String",
 										"value": {
-											"value": "@pipeline().parameters.STREAM_NM",
+											"value": "@pipeline().parameters.P_STREAM_NM",
 											"type": "Expression"
 										}
 									},
 									"P_STREAM_SEQ_ID": {
 										"type": "String",
 										"value": {
-											"value": "@variables('STREAM_SEQ_ID')",
+											"value": "@variables('V_STREAM_SEQ_ID')",
 											"type": "Expression"
 										}
 									}
@@ -3092,7 +3413,7 @@
 								"Content-Type": "application/json"
 							},
 							"body": {
-								"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\",\n\"Asat_dt\":\"@{activity('FINAL STREAM').output.firstrow.AS_AT_DT_FORMAT}\",\n\"StreamName\":\"@{pipeline().parameters.STREAM_NM}\"\n}",
+								"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\",\n\"Asat_dt\":\"@{activity('FINAL STREAM').output.firstrow.AS_AT_DT_FORMAT}\",\n\"StreamName\":\"@{pipeline().parameters.P_STREAM_NM}\"\n}",
 								"type": "Expression"
 							}
 						}
@@ -3124,7 +3445,7 @@
 									"P_STREAM_NM": {
 										"type": "String",
 										"value": {
-											"value": "@pipeline().parameters.STREAM_NM",
+											"value": "@pipeline().parameters.P_STREAM_NM",
 											"type": "Expression"
 										}
 									},
@@ -3159,7 +3480,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "AS_AT_DT",
+							"variableName": "V_AS_AT_DT",
 							"value": {
 								"value": "@activity('START STREAM').output.FIRSTROW.AS_AT_DT",
 								"type": "Expression"
@@ -3179,7 +3500,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "STREAM_SEQ_ID",
+							"variableName": "V_STREAM_SEQ_ID",
 							"value": {
 								"value": "@activity('START STREAM').output.FIRSTROW.STREAM_SEQ_ID",
 								"type": "Expression"
@@ -3206,14 +3527,14 @@
 									"P_RUN_MODE": {
 										"type": "String",
 										"value": {
-											"value": "@pipeline().parameters.RUN_MODE",
+											"value": "@pipeline().parameters.P_RUN_MODE",
 											"type": "Expression"
 										}
 									},
 									"P_STREAM_NM": {
 										"type": "String",
 										"value": {
-											"value": "@pipeline().parameters.STREAM_NM",
+											"value": "@pipeline().parameters.P_STREAM_NM",
 											"type": "Expression"
 										}
 									}
@@ -3229,31 +3550,31 @@
 					}
 				],
 				"parameters": {
-					"STREAM_NM": {
+					"P_STREAM_NM": {
 						"type": "string",
 						"defaultValue": "ORACLE"
 					},
-					"RUN_MODE": {
+					"P_RUN_MODE": {
 						"type": "string",
 						"defaultValue": "R"
 					}
 				},
 				"variables": {
-					"STREAM_RESULT": {
+					"V_STREAM_RESULT": {
 						"type": "String",
 						"defaultValue": "-999"
 					},
-					"PCS_NM_LIST": {
+					"V_PCS_NM_LIST": {
 						"type": "Array",
 						"defaultValue": [
 							999
 						]
 					},
-					"AS_AT_DT": {
+					"V_AS_AT_DT": {
 						"type": "String",
 						"defaultValue": "19000101"
 					},
-					"STREAM_SEQ_ID": {
+					"V_STREAM_SEQ_ID": {
 						"type": "String",
 						"defaultValue": "-999"
 					}
