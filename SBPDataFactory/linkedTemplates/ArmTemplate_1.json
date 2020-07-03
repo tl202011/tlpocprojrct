@@ -80,12 +80,13 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "NetezzaSource",
-								"query": "SELECT count(*),asat_dt FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL group by asat_dt ",
-								"partitionOption": "None"
+								"type": "OracleSource",
+								"oracleReaderQuery": "SELECT COUNT(*) AS COUNT FROM SINGHA.GENERATE_TARGET WHERE KEY_DATE= TO_DATE('2020-01-01', 'YYYY-MM-DD') ",
+								"partitionOption": "None",
+								"queryTimeout": "02:00:00"
 							},
 							"dataset": {
-								"referenceName": "NetezzaTable",
+								"referenceName": "OracleTable",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
@@ -98,7 +99,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/OracleTable')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/EDW_MODEL_COPY')]",
@@ -1319,7 +1322,7 @@
 											},
 											"inputs": [
 												{
-													"referenceName": "MongoDb_CustGeo",
+													"referenceName": "MongoDb_ML_Detector",
 													"type": "DatasetReference",
 													"parameters": {
 														"Collection_name": {
