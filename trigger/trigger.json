@@ -1,0 +1,28 @@
+{
+	"name": "trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "RUN_STREAM",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"P_STREAM_NM": "EDW",
+					"P_RUN_MODE": "N"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2020-07-03T15:15:00.000Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
