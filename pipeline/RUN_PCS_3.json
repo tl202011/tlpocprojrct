@@ -709,7 +709,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "MongoDb_CustGeo",
+											"referenceName": "MongoDb_ML_Detector",
 											"type": "DatasetReference",
 											"parameters": {
 												"Collection_name": {
