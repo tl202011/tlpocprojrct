@@ -827,7 +827,7 @@
 											"type": "MongoDbV2Source",
 											"batchSize": 100,
 											"filter": {
-												"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
+												"value": "{TIME_STAMP: {$gte: ISODate(\"2018-09-15T00:00:00.000Z\"),$lt: ISODate(\"2018-09-16T00:00:00.000Z\")} }",
 												"type": "Expression"
 											}
 										},
@@ -1017,7 +1017,7 @@
 		"parameters": {
 			"P_STREAM_NM": {
 				"type": "string",
-				"defaultValue": "-999"
+				"defaultValue": "MONGO_CustGeo"
 			},
 			"P_SOURCE_CNT_STMT": {
 				"type": "string",
@@ -1029,7 +1029,7 @@
 			},
 			"P_PCS_NM": {
 				"type": "string",
-				"defaultValue": "-999"
+				"defaultValue": "GET_LOCATION_FACE_RECOGNITION_CustGeoInfo"
 			},
 			"P_SOURCE_TABLE_STMT": {
 				"type": "string",
@@ -1037,11 +1037,11 @@
 			},
 			"P_SRC_TBL": {
 				"type": "string",
-				"defaultValue": "-999"
+				"defaultValue": "CustGeoInfo"
 			},
 			"P_PATH": {
 				"type": "string",
-				"defaultValue": "-999"
+				"defaultValue": "getlocationfacerecognition"
 			},
 			"P_AS_AT_DT": {
 				"type": "string",

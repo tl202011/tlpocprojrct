@@ -15,10 +15,7 @@
 		"type": "MongoDbV2Collection",
 		"schema": [],
 		"typeProperties": {
-			"collection": {
-				"value": "@dataset().Collection_name",
-				"type": "Expression"
-			}
+			"collection": "CustGeoInfo"
 		}
 	}
 }
