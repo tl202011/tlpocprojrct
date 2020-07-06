@@ -6,6 +6,14 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "SBPDataFactory"
+		},
+		"trigger_properties_RUN_STREAM_parameters_P_STREAM_NM": {
+			"type": "string",
+			"defaultValue": "EDW"
+		},
+		"trigger_properties_RUN_STREAM_parameters_P_RUN_MODE": {
+			"type": "string",
+			"defaultValue": "N"
 		}
 	},
 	"variables": {
@@ -3669,6 +3677,40 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/RUN_PCS_1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "RUN_STREAM",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"P_STREAM_NM": "[parameters('trigger_properties_RUN_STREAM_parameters_P_STREAM_NM')]",
+							"P_RUN_MODE": "[parameters('trigger_properties_RUN_STREAM_parameters_P_RUN_MODE')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2020-07-06T03:10:00.000Z",
+						"timeZone": "UTC",
+						"schedule": {}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/RUN_STREAM')]"
 			]
 		}
 	]
