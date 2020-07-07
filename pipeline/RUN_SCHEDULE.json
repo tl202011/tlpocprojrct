@@ -1,0 +1,95 @@
+{
+	"name": "RUN_SCHEDULE",
+	"properties": {
+		"activities": [
+			{
+				"name": "ORACLE",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "RUN_STREAM",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "ORACLE",
+						"P_RUN_MODE": "N"
+					}
+				}
+			},
+			{
+				"name": "EDW",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "RUN_STREAM",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "EDW",
+						"P_RUN_MODE": "N"
+					}
+				}
+			},
+			{
+				"name": "EDW MODEL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "RUN_STREAM",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "EDW_MODEL"
+					}
+				}
+			},
+			{
+				"name": "MONGO_CustGeo",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "RUN_STREAM",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "MONGO_CustGeo",
+						"P_RUN_MODE": "N"
+					}
+				}
+			},
+			{
+				"name": "MONGO_ML_Detector",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "RUN_STREAM",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "MONGO_ML_Detector",
+						"P_RUN_MODE": "N"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "COMMON JOB"
+		},
+		"annotations": []
+	}
+}
