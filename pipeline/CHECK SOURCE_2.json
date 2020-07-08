@@ -1,0 +1,37 @@
+{
+	"name": "CHECK SOURCE_2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "OracleSource",
+						"oracleReaderQuery": "SELECT COUNT(*) AS COUNT FROM SINGHA.GENERATE_TARGET WHERE KEY_DATE= TO_DATE('2020-01-01', 'YYYY-MM-DD') ",
+						"partitionOption": "None",
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "OracleTable",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"folder": {
+			"name": "TEST"
+		},
+		"annotations": []
+	}
+}
