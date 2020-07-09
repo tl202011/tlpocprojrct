@@ -1,5 +1,5 @@
 {
-	"name": "RUN_PCS_1",
+	"name": "PCS_COMMON_1",
 	"properties": {
 		"activities": [
 			{
@@ -127,7 +127,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "RUN_PCS_2",
+									"referenceName": "PCS_COMMON_2",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,

@@ -1,5 +1,5 @@
 {
-	"name": "RUN_PCS_3",
+	"name": "PCS_COMMON_3",
 	"properties": {
 		"activities": [
 			{
@@ -950,7 +950,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "EDW_MODEL_COPY",
+											"referenceName": "PCS_CUSTOM_EDW_MODEL",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,

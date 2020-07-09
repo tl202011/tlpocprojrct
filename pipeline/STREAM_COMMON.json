@@ -1,5 +1,5 @@
 {
-	"name": "RUN_STREAM",
+	"name": "STREAM_COMMON",
 	"properties": {
 		"activities": [
 			{
@@ -102,7 +102,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "RUN_PCS_1",
+									"referenceName": "PCS_COMMON_1",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
