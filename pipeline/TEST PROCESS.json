@@ -28,7 +28,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "RUN_PCS_1",
+									"referenceName": "PCS_COMMON_1",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,

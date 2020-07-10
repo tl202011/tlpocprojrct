@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "RUN_STREAM",
+						"referenceName": "STREAM_COMMON",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -26,7 +26,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "RUN_STREAM",
+						"referenceName": "STREAM_COMMON",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -43,7 +43,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "RUN_STREAM",
+						"referenceName": "STREAM_COMMON",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -59,7 +59,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "RUN_STREAM",
+						"referenceName": "STREAM_COMMON",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -76,7 +76,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "RUN_STREAM",
+						"referenceName": "STREAM_COMMON",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -87,9 +87,6 @@
 				}
 			}
 		],
-		"folder": {
-			"name": "COMMON JOB"
-		},
 		"annotations": []
 	}
 }
