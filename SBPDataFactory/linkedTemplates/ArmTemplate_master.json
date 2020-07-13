@@ -63,14 +63,6 @@
 			"type": "string",
 			"defaultValue": "ML_Detector"
 		},
-		"trigger_properties_RUN_STREAM_parameters_P_STREAM_NM": {
-			"type": "string",
-			"defaultValue": "EDW"
-		},
-		"trigger_properties_RUN_STREAM_parameters_P_RUN_MODE": {
-			"type": "string",
-			"defaultValue": "N"
-		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -157,12 +149,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"trigger_properties_RUN_STREAM_parameters_P_STREAM_NM": {
-						"value": "[parameters('trigger_properties_RUN_STREAM_parameters_P_STREAM_NM')]"
-					},
-					"trigger_properties_RUN_STREAM_parameters_P_RUN_MODE": {
-						"value": "[parameters('trigger_properties_RUN_STREAM_parameters_P_RUN_MODE')]"
 					}
 				}
 			},

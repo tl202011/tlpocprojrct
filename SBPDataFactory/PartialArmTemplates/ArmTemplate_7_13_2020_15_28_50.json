@@ -6,62 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "SBPDataFactory"
-		},
-		"AzureDataLakeStorage1_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
-		},
-		"AzureDatabricks1_accessToken": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
-		},
-		"Databrickslinked_accessToken": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accessToken' of 'Databrickslinked'"
-		},
-		"MongoDb_CustGeo_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'MongoDb_CustGeo'"
-		},
-		"MongoDb_ML_Detector_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'MongoDb_ML_Detector'"
-		},
-		"Netezza_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Netezza'"
-		},
-		"Oracle_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Oracle'"
-		},
-		"Oracle1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Oracle1'"
-		},
-		"PostgreSql_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'PostgreSql'"
-		},
-		"SqlServer1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
-		},
-		"SqlServer2_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlServer2'"
-		},
-		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://sbpstorage202006.dfs.core.windows.net"
-		},
-		"MongoDb_CustGeo_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "CustGeo"
-		},
-		"MongoDb_ML_Detector_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "ML_Detector"
 		}
 	},
 	"variables": {
@@ -94,8 +38,7 @@
 							},
 							"dataset": {
 								"referenceName": "NetezzaTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -137,8 +80,7 @@
 							},
 							"dataset": {
 								"referenceName": "OracleTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -202,8 +144,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": true
 						}
@@ -272,8 +213,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -408,8 +348,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -435,8 +374,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -540,8 +478,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -567,8 +504,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -613,8 +549,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -640,8 +575,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -677,8 +611,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -730,8 +663,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -793,8 +725,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -820,8 +751,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -878,8 +808,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -933,8 +862,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -1158,8 +1086,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -1201,8 +1128,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -1441,8 +1367,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -1603,7 +1528,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
 				"[concat(variables('factoryId'), '/datasets/ControlTable')]",
 				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_3')]"
 			]
@@ -1667,8 +1591,7 @@
 											"inputs": [
 												{
 													"referenceName": "NetezzaTable",
-													"type": "DatasetReference",
-													"parameters": {}
+													"type": "DatasetReference"
 												}
 											],
 											"outputs": [
@@ -1715,8 +1638,7 @@
 												},
 												"dataset": {
 													"referenceName": "NetezzaTable",
-													"type": "DatasetReference",
-													"parameters": {}
+													"type": "DatasetReference"
 												}
 											}
 										},
@@ -1874,8 +1796,7 @@
 												},
 												"dataset": {
 													"referenceName": "PostgreSqlTable",
-													"type": "DatasetReference",
-													"parameters": {}
+													"type": "DatasetReference"
 												}
 											}
 										},
@@ -1979,8 +1900,7 @@
 											"inputs": [
 												{
 													"referenceName": "PostgreSqlTable",
-													"type": "DatasetReference",
-													"parameters": {}
+													"type": "DatasetReference"
 												}
 											],
 											"outputs": [
@@ -2098,8 +2018,7 @@
 												},
 												"dataset": {
 													"referenceName": "OracleTable",
-													"type": "DatasetReference",
-													"parameters": {}
+													"type": "DatasetReference"
 												}
 											}
 										},
@@ -2205,8 +2124,7 @@
 											"inputs": [
 												{
 													"referenceName": "OracleTable",
-													"type": "DatasetReference",
-													"parameters": {}
+													"type": "DatasetReference"
 												}
 											],
 											"outputs": [
@@ -2624,8 +2542,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -2676,7 +2593,6 @@
 				"[concat(variables('factoryId'), '/datasets/ControlTable')]",
 				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]",
 				"[concat(variables('factoryId'), '/datasets/ParquetFile')]",
-				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
 				"[concat(variables('factoryId'), '/datasets/PostgreSqlTable')]",
 				"[concat(variables('factoryId'), '/datasets/OracleTable')]",
 				"[concat(variables('factoryId'), '/datasets/MongoDb_ML_Detector')]",
@@ -2720,8 +2636,7 @@
 							},
 							"dataset": {
 								"referenceName": "NetezzaTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -2769,8 +2684,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -2859,8 +2773,7 @@
 									"inputs": [
 										{
 											"referenceName": "NetezzaTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									],
 									"outputs": [
@@ -2920,8 +2833,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								},
@@ -2978,8 +2890,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -3071,8 +2982,7 @@
 							},
 							"dataset": {
 								"referenceName": "NetezzaTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -3185,7 +3095,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]",
 				"[concat(variables('factoryId'), '/datasets/ControlTable')]",
-				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
 				"[concat(variables('factoryId'), '/datasets/ParquetFile')]"
 			]
 		},
@@ -3360,8 +3269,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -3459,8 +3367,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": true
 						}
@@ -3515,8 +3422,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -3600,8 +3506,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": true
 						}
@@ -3682,8 +3587,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					}
@@ -3770,8 +3674,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": true
 						}
@@ -3929,8 +3832,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_1')]",
-				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]"
+				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_1')]"
 			]
 		},
 		{
@@ -3977,12 +3879,9 @@
 				},
 				"annotations": [],
 				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {}
+				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/MongoDb_CustGeo')]",
@@ -4009,9 +3908,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MongoDb_CustGeo')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/MongoDb_ML_Detector')]",
@@ -4038,9 +3935,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MongoDb_ML_Detector')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/NetezzaTable')]",
@@ -4053,12 +3948,9 @@
 				},
 				"annotations": [],
 				"type": "NetezzaTable",
-				"schema": [],
-				"typeProperties": {}
+				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Netezza')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/OracleTable')]",
@@ -4071,12 +3963,9 @@
 				},
 				"annotations": [],
 				"type": "OracleTable",
-				"schema": [],
-				"typeProperties": {}
+				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Oracle')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/OracleTableForTest')]",
@@ -4089,12 +3978,9 @@
 				},
 				"annotations": [],
 				"type": "OracleTable",
-				"schema": [],
-				"typeProperties": {}
+				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Oracle1')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ParquetFile')]",
@@ -4156,12 +4042,9 @@
 				},
 				"annotations": [],
 				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {}
+				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/PostgreSql')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
@@ -4171,10 +4054,10 @@
 				"annotations": [],
 				"type": "AzureBlobFS",
 				"typeProperties": {
-					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"url": "https://sbpstorage202006.dfs.core.windows.net",
 					"accountKey": {
 						"type": "SecureString",
-						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+						"value": "**********"
 					}
 				}
 			},
@@ -4191,7 +4074,7 @@
 					"domain": "https://adb-4782257477703584.4.azuredatabricks.net",
 					"accessToken": {
 						"type": "SecureString",
-						"value": "[parameters('AzureDatabricks1_accessToken')]"
+						"value": "**********"
 					},
 					"newClusterNodeType": "Standard_DS3_v2",
 					"newClusterNumOfWorker": "1",
@@ -4214,7 +4097,7 @@
 					"domain": "https://adb-542410929817436.16.azuredatabricks.net",
 					"accessToken": {
 						"type": "SecureString",
-						"value": "[parameters('Databrickslinked_accessToken')]"
+						"value": "**********"
 					},
 					"newClusterNodeType": "Standard_DS3_v2",
 					"newClusterNumOfWorker": "2",
@@ -4227,160 +4110,12 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MongoDb_CustGeo')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "MongoDbV2",
-				"typeProperties": {
-					"connectionString": "[parameters('MongoDb_CustGeo_connectionString')]",
-					"database": "[parameters('MongoDb_CustGeo_properties_typeProperties_database')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MongoDb_ML_Detector')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "MongoDbV2",
-				"typeProperties": {
-					"connectionString": "[parameters('MongoDb_ML_Detector_connectionString')]",
-					"database": "[parameters('MongoDb_ML_Detector_properties_typeProperties_database')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Netezza')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Netezza",
-				"typeProperties": {
-					"connectionString": "[parameters('Netezza_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Oracle')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Oracle",
-				"typeProperties": {
-					"connectionString": "[parameters('Oracle_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Oracle1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Oracle",
-				"typeProperties": {
-					"connectionString": "[parameters('Oracle1_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "OracleIRforTest",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/OracleIRforTest')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PostgreSql')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "PostgreSql",
-				"typeProperties": {
-					"connectionString": "[parameters('PostgreSql_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServer1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"connectionString": "[parameters('SqlServer1_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServer2')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"connectionString": "[parameters('SqlServer2_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipelines": [],
 				"type": "ScheduleTrigger",
 				"typeProperties": {
@@ -4406,8 +4141,7 @@
 						"pipelineReference": {
 							"referenceName": "RUN_SCHEDULE",
 							"type": "PipelineReference"
-						},
-						"parameters": {}
+						}
 					}
 				],
 				"type": "ScheduleTrigger",
@@ -4423,27 +4157,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/RUN_SCHEDULE')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleIRforTest')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"description": "Pan created ka. can remove",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntime')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
 		}
 	]
 }

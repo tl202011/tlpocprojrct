@@ -6,20 +6,28 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "SBPDataFactory"
-		},
-		"trigger_properties_RUN_STREAM_parameters_P_STREAM_NM": {
-			"type": "string",
-			"defaultValue": "EDW"
-		},
-		"trigger_properties_RUN_STREAM_parameters_P_RUN_MODE": {
-			"type": "string",
-			"defaultValue": "N"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/NetezzaTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Netezza",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "NetezzaTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/OracleTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -88,6 +96,48 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
+								"type": "NetezzaSource",
+								"query": "SELECT DISTINCT CAST (BILLINGDATE AS DATE) AS BUS_DATE FROM ODS.SALES_DW_SD_BL_ITEM WHERE CAST(ASAT_DT AS DATE) = CAST('2020-06-20' AS DATE)",
+								"partitionOption": "DataSlice"
+							},
+							"dataset": {
+								"referenceName": "NetezzaTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					}
+				],
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CHECK SOURCE_2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
 								"type": "OracleSource",
 								"oracleReaderQuery": "SELECT COUNT(*) AS COUNT FROM SINGHA.GENERATE_TARGET WHERE KEY_DATE= TO_DATE('2020-01-01', 'YYYY-MM-DD') ",
 								"partitionOption": "None",
@@ -112,7 +162,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/EDW_MODEL_COPY')]",
+			"name": "[concat(parameters('factoryName'), '/PCS_CUSTOM_EDW_MODEL')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -331,7 +381,7 @@
 												"P_AS_AT_DT": {
 													"type": "String",
 													"value": {
-														"value": "@formatDateTime(item().BUS_DATE,'yyyyMMdd')",
+														"value": "@item().BUS_DATE",
 														"type": "Expression"
 													}
 												},
@@ -609,10 +659,12 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]"
+			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RUN_PCS_3')]",
+			"name": "[concat(parameters('factoryName'), '/PCS_COMMON_3')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1571,7 +1623,7 @@
 											"userProperties": [],
 											"typeProperties": {
 												"pipeline": {
-													"referenceName": "EDW_MODEL_COPY",
+													"referenceName": "PCS_CUSTOM_EDW_MODEL",
 													"type": "PipelineReference"
 												},
 												"waitOnCompletion": true,
@@ -1676,13 +1728,14 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]",
 				"[concat(variables('factoryId'), '/datasets/PostgreSqlTable')]",
 				"[concat(variables('factoryId'), '/datasets/OracleTable')]",
-				"[concat(variables('factoryId'), '/pipelines/EDW_MODEL_COPY')]"
+				"[concat(variables('factoryId'), '/pipelines/PCS_CUSTOM_EDW_MODEL')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RUN_PCS_2')]",
+			"name": "[concat(parameters('factoryName'), '/PCS_COMMON_2')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2777,7 +2830,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "RUN_PCS_3",
+								"referenceName": "PCS_COMMON_3",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -2920,11 +2973,11 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/RUN_PCS_3')]"
+				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_3')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RUN_PCS_1')]",
+			"name": "[concat(parameters('factoryName'), '/PCS_COMMON_1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -3056,7 +3109,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "RUN_PCS_2",
+											"referenceName": "PCS_COMMON_2",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -3130,11 +3183,11 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/RUN_PCS_2')]"
+				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_2')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RUN_STREAM')]",
+			"name": "[concat(parameters('factoryName'), '/STREAM_COMMON')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -3240,7 +3293,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "RUN_PCS_1",
+											"referenceName": "PCS_COMMON_1",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -3571,7 +3624,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/RUN_PCS_1')]"
+				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_1')]"
 			]
 		},
 		{
@@ -3606,7 +3659,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "RUN_PCS_1",
+											"referenceName": "PCS_COMMON_1",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -3676,11 +3729,108 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/RUN_PCS_1')]"
+				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_1')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/trigger')]",
+			"name": "[concat(parameters('factoryName'), '/RUN_SCHEDULE')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ORACLE",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "ORACLE",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "EDW",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "EDW",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "EDW MODEL",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "EDW_MODEL"
+							}
+						}
+					},
+					{
+						"name": "MONGO_CustGeo",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "MONGO_CustGeo",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "MONGO_ML_Detector",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "MONGO_ML_Detector",
+								"P_RUN_MODE": "N"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/STREAM_COMMON')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -3689,13 +3839,10 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "RUN_STREAM",
+							"referenceName": "RUN_SCHEDULE",
 							"type": "PipelineReference"
 						},
-						"parameters": {
-							"P_STREAM_NM": "[parameters('trigger_properties_RUN_STREAM_parameters_P_STREAM_NM')]",
-							"P_RUN_MODE": "[parameters('trigger_properties_RUN_STREAM_parameters_P_RUN_MODE')]"
-						}
+						"parameters": {}
 					}
 				],
 				"type": "ScheduleTrigger",
@@ -3703,14 +3850,13 @@
 					"recurrence": {
 						"frequency": "Day",
 						"interval": 1,
-						"startTime": "2020-07-06T07:10:00.000Z",
-						"timeZone": "UTC",
-						"schedule": {}
+						"startTime": "2020-07-07T03:00:00.000Z",
+						"timeZone": "UTC"
 					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/RUN_STREAM')]"
+				"[concat(variables('factoryId'), '/pipelines/RUN_SCHEDULE')]"
 			]
 		}
 	]

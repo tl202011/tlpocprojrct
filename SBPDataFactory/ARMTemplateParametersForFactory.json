@@ -46,12 +46,6 @@
 		},
 		"MongoDb_ML_Detector_properties_typeProperties_database": {
 			"value": "ML_Detector"
-		},
-		"trigger_properties_RUN_STREAM_parameters_P_STREAM_NM": {
-			"value": "EDW"
-		},
-		"trigger_properties_RUN_STREAM_parameters_P_RUN_MODE": {
-			"value": "N"
 		}
 	}
 }
