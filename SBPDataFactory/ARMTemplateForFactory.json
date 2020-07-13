@@ -89,7 +89,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "SELECT DISTINCT CAST (BILLINGDATE AS DATE) AS BUS_DATE FROM ODS.SALES_DW_SD_BL_ITEM WHERE CAST(ASAT_DT AS DATE) = CAST('2020-06-20' AS DATE)",
+								"query": "SELECT DISTINCT TO_DATE(BILLINGDATE,'DD/MM/YYYY') AS BUS_DATE FROM ODS.SALES_DW_SD_BL_ITEM WHERE ASAT_DT  = TO_DATE('2020-06-20' , 'YYYY-MM-DD') ",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
@@ -2904,7 +2904,7 @@
 												"P_AS_AT_DT": {
 													"type": "String",
 													"value": {
-														"value": "@item().BUS_DATE",
+														"value": "@formatDateTime(item().BUS_DATE,'yyyyMMdd')",
 														"type": "Expression"
 													}
 												},
@@ -4380,7 +4380,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipelines": [],
 				"type": "ScheduleTrigger",
 				"typeProperties": {
