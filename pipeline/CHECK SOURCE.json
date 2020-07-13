@@ -16,13 +16,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "OracleSource",
-						"oracleReaderQuery": "SELECT COUNT(*) AS COUNT FROM SINGHA.GENERATE_TARGET WHERE KEY_DATE= TO_DATE('2020-01-01', 'YYYY-MM-DD') ",
-						"partitionOption": "None",
-						"queryTimeout": "02:00:00"
+						"type": "NetezzaSource",
+						"query": "SELECT cast(BILLINGDATE as date) FROM ODS.SALES_DW_SD_BL_ITEM",
+						"partitionOption": "DataSlice"
 					},
 					"dataset": {
-						"referenceName": "OracleTable",
+						"referenceName": "NetezzaTable",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
