@@ -213,7 +213,7 @@
 										"P_AS_AT_DT": {
 											"type": "String",
 											"value": {
-												"value": "item().BUS_DATE",
+												"value": "@item().BUS_DATE",
 												"type": "Expression"
 											}
 										},
