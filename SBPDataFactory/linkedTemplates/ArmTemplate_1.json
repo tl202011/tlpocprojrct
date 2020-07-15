@@ -97,7 +97,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "SELECT DISTINCT TO_DATE(BILLINGDATE,'DD/MM/YYYY') AS BUS_DATE FROM ODS.SALES_DW_SD_BL_ITEM WHERE ASAT_DT  = TO_DATE('2020-06-20' , 'YYYY-MM-DD') ",
+								"query": "SML_SML_IC_TRANS",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
@@ -3850,7 +3850,7 @@
 					"recurrence": {
 						"frequency": "Day",
 						"interval": 1,
-						"startTime": "2020-07-07T03:00:00.000Z",
+						"startTime": "2020-07-15T09:00:00.000Z",
 						"timeZone": "UTC"
 					}
 				}
