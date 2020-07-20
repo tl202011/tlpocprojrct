@@ -48,7 +48,8 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"P_STREAM_NM": "EDW_MODEL"
+						"P_STREAM_NM": "EDW_MODEL",
+						"P_RUN_MODE": "N"
 					}
 				}
 			},
