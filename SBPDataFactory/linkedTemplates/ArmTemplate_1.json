@@ -97,7 +97,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "SELECT COUNT(*) AS COUNT FROM MODEL.SINGHA_SURVEY_V2_ACTIVITY WHERE CAST(CREATE_DATE AS DATE) IN (SELECT DISTINCT CAST(CREATE_DATE AS DATE) AS BUS_DATE FROM MODEL.SINGHA_SURVEY_V2_ACTIVITY WHERE ASAT_DT  = TO_DATE('2020-06-03' , 'YYYY-MM-DD') )",
+								"query": "SELECT COUNT(*) AS COUNT FROM MODEL.SINGHA_SURVEY_V2_VISIT WHERE CAST(VISIT_DATE AS DATE) IN (SELECT DISTINCT CAST(VISIT_DATE AS DATE) AS BUS_DATE FROM MODEL.SINGHA_SURVEY_V2_VISIT WHERE ASAT_DT  = TO_DATE('2020-06-03' , 'YYYY-MM-DD') )",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
@@ -3836,7 +3836,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
