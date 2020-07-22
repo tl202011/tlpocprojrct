@@ -89,7 +89,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "select COUNT(*) from ODS.DW_SALES_DIM_TIME\n",
+								"query": "SELECT COUNT(*) AS COUNT \nFROM ODS.SALES_DW_SD_BL_ITEM \nWHERE TO_DATE(BILLINGDATE,'DD/MM/YYYY')= TO_DATE('2020-06-06', 'YYYY-MM-DD') ",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
@@ -1884,228 +1884,6 @@
 									]
 								},
 								{
-									"value": "POSTGRE_STAGING",
-									"activities": [
-										{
-											"name": "POSTGRE_STAGING COUNT SOURCE",
-											"type": "Lookup",
-											"dependsOn": [],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"source": {
-													"type": "PostgreSqlSource",
-													"query": {
-														"value": "@pipeline().parameters.P_SOURCE_CNT_STMT",
-														"type": "Expression"
-													}
-												},
-												"dataset": {
-													"referenceName": "PostgreSqlTable",
-													"type": "DatasetReference",
-													"parameters": {}
-												}
-											}
-										},
-										{
-											"name": "POSTGRE_STAGING UPDATE COUNT SOURCE",
-											"type": "SqlServerStoredProcedure",
-											"dependsOn": [
-												{
-													"activity": "POSTGRE_STAGING COUNT SOURCE",
-													"dependencyConditions": [
-														"Succeeded"
-													]
-												}
-											],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
-												"storedProcedureParameters": {
-													"P_CNT_SRC": {
-														"value": {
-															"value": "@activity('POSTGRE_STAGING COUNT SOURCE').output.FIRSTROW.COUNT",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_CNT_TGT": {
-														"value": null,
-														"type": "String"
-													},
-													"P_LOAD_ID": {
-														"value": {
-															"value": "@pipeline().parameters.P_LOAD_ID",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_PCS_NM": {
-														"value": {
-															"value": "@pipeline().parameters.P_PCS_NM",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_RMRK": {
-														"value": null,
-														"type": "String"
-													},
-													"P_ST": {
-														"value": "START",
-														"type": "String"
-													}
-												}
-											},
-											"linkedServiceName": {
-												"referenceName": "SqlServer1",
-												"type": "LinkedServiceReference"
-											}
-										},
-										{
-											"name": "POSTGRE_STAGING",
-											"type": "Copy",
-											"dependsOn": [
-												{
-													"activity": "POSTGRE_STAGING UPDATE COUNT SOURCE",
-													"dependencyConditions": [
-														"Succeeded"
-													]
-												}
-											],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"source": {
-													"type": "PostgreSqlSource",
-													"query": {
-														"value": "@pipeline().parameters.P_SOURCE_TABLE_STMT",
-														"type": "Expression"
-													}
-												},
-												"sink": {
-													"type": "ParquetSink",
-													"storeSettings": {
-														"type": "AzureBlobFSWriteSettings"
-													}
-												},
-												"enableStaging": false
-											},
-											"inputs": [
-												{
-													"referenceName": "PostgreSqlTable",
-													"type": "DatasetReference",
-													"parameters": {}
-												}
-											],
-											"outputs": [
-												{
-													"referenceName": "ParquetFile",
-													"type": "DatasetReference",
-													"parameters": {
-														"file_name": {
-															"value": "@pipeline().parameters.P_SRC_TBL",
-															"type": "Expression"
-														},
-														"path": {
-															"value": "@pipeline().parameters.P_PATH",
-															"type": "Expression"
-														},
-														"asatdt": {
-															"value": "@pipeline().parameters.P_AS_AT_DT",
-															"type": "Expression"
-														}
-													}
-												}
-											]
-										},
-										{
-											"name": "POSTGRE_STAGING UPDATE COUNT TARGET",
-											"type": "SqlServerStoredProcedure",
-											"dependsOn": [
-												{
-													"activity": "POSTGRE_STAGING",
-													"dependencyConditions": [
-														"Succeeded"
-													]
-												}
-											],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
-												"storedProcedureParameters": {
-													"P_CNT_SRC": {
-														"value": {
-															"value": "@activity('POSTGRE_STAGING COUNT SOURCE').output.FIRSTROW.COUNT",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_CNT_TGT": {
-														"value": {
-															"value": "@activity('POSTGRE_STAGING').output.rowsCopied",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_LOAD_ID": {
-														"value": {
-															"value": "@pipeline().parameters.P_LOAD_ID",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_PCS_NM": {
-														"value": {
-															"value": "@pipeline().parameters.P_PCS_NM",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_RMRK": {
-														"value": null,
-														"type": "String"
-													},
-													"P_ST": {
-														"value": "START",
-														"type": "String"
-													}
-												}
-											},
-											"linkedServiceName": {
-												"referenceName": "SqlServer1",
-												"type": "LinkedServiceReference"
-											}
-										}
-									]
-								},
-								{
 									"value": "ORACLE",
 									"activities": [
 										{
@@ -2593,16 +2371,16 @@
 									]
 								},
 								{
-									"value": "EDW_MODEL",
+									"value": "EDW_TXN",
 									"activities": [
 										{
-											"name": "EDW_MODEL_COPY",
+											"name": "PCS_CUSTOM_EDW_TXN",
 											"type": "ExecutePipeline",
 											"dependsOn": [],
 											"userProperties": [],
 											"typeProperties": {
 												"pipeline": {
-													"referenceName": "PCS_CUSTOM_EDW_MODEL",
+													"referenceName": "PCS_CUSTOM_EDW_TXN",
 													"type": "PipelineReference"
 												},
 												"waitOnCompletion": true,
@@ -2715,15 +2493,14 @@
 				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]",
 				"[concat(variables('factoryId'), '/datasets/ParquetFile')]",
 				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
-				"[concat(variables('factoryId'), '/datasets/PostgreSqlTable')]",
 				"[concat(variables('factoryId'), '/datasets/OracleTable')]",
 				"[concat(variables('factoryId'), '/datasets/MongoDb_ML_Detector')]",
 				"[concat(variables('factoryId'), '/datasets/MongoDb_CustGeo')]",
-				"[concat(variables('factoryId'), '/pipelines/PCS_CUSTOM_EDW_MODEL')]"
+				"[concat(variables('factoryId'), '/pipelines/PCS_CUSTOM_EDW_TXN')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/PCS_CUSTOM_EDW_MODEL')]",
+			"name": "[concat(parameters('factoryName'), '/PCS_CUSTOM_EDW_TXN')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
