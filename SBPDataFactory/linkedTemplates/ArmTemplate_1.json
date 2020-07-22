@@ -97,7 +97,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "SELECT COUNT(*) AS COUNT FROM MODEL.SINGHA_SURVEY_V2_VISIT WHERE CAST(VISIT_DATE AS DATE) IN (SELECT DISTINCT CAST(VISIT_DATE AS DATE) AS BUS_DATE FROM MODEL.SINGHA_SURVEY_V2_VISIT WHERE ASAT_DT  = TO_DATE('2020-06-03' , 'YYYY-MM-DD') )",
+								"query": "select COUNT(*) from ODS.DW_SALES_DIM_TIME\n",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
@@ -676,7 +676,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"on": {
-								"value": "@pipeline().parameters.P_STREAM_NM",
+								"value": "@pipeline().parameters.P_CONNECTION_NM",
 								"type": "Expression"
 							},
 							"cases": [
@@ -1720,6 +1720,10 @@
 					"P_AS_AT_DT": {
 						"type": "string",
 						"defaultValue": "-999"
+					},
+					"P_CONNECTION_NM": {
+						"type": "string",
+						"defaultValue": "-999"
 					}
 				},
 				"folder": {
@@ -2070,6 +2074,12 @@
 							},
 							{
 								"activity": "SET FILE_NAME",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SET CONNECTION_NM",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2929,6 +2939,26 @@
 								"type": "Expression"
 							}
 						}
+					},
+					{
+						"name": "SET CONNECTION_NM",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "CHECK PROCESS INFORMATION",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "V_CONNECTION_NM",
+							"value": {
+								"value": "@activity('GET PROCESS INFORMATION').output.firstrow.CONNECTION_NM",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"parameters": {
@@ -2963,6 +2993,10 @@
 						"defaultValue": "-999"
 					},
 					"V_FILE_PATH": {
+						"type": "String",
+						"defaultValue": "-999"
+					},
+					"V_CONNECTION_NM": {
 						"type": "String",
 						"defaultValue": "-999"
 					}
