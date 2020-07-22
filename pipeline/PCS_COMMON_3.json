@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@pipeline().parameters.P_STREAM_NM",
+						"value": "@pipeline().parameters.P_CONNECTION_NM",
 						"type": "Expression"
 					},
 					"cases": [
@@ -1044,6 +1044,10 @@
 				"defaultValue": "getlocationfacerecognition"
 			},
 			"P_AS_AT_DT": {
+				"type": "string",
+				"defaultValue": "-999"
+			},
+			"P_CONNECTION_NM": {
 				"type": "string",
 				"defaultValue": "-999"
 			}

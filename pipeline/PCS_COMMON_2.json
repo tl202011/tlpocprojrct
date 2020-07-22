@@ -328,6 +328,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "SET CONNECTION_NM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -1176,6 +1182,26 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "SET CONNECTION_NM",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "CHECK PROCESS INFORMATION",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "V_CONNECTION_NM",
+					"value": {
+						"value": "@activity('GET PROCESS INFORMATION').output.firstrow.CONNECTION_NM",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -1210,6 +1236,10 @@
 				"defaultValue": "-999"
 			},
 			"V_FILE_PATH": {
+				"type": "String",
+				"defaultValue": "-999"
+			},
+			"V_CONNECTION_NM": {
 				"type": "String",
 				"defaultValue": "-999"
 			}
