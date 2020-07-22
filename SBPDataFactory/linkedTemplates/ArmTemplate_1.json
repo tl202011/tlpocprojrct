@@ -1885,12 +1885,18 @@
 								"dependencyConditions": [
 									"Succeeded"
 								]
+							},
+							{
+								"activity": "SET CONNECTION_NM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
 							}
 						],
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@equals(activity('GET STREAM DATE').output.FIRSTROW.CHECK_STREAM_F,'1')",
+								"value": "@equals(activity('GET STREAM INFORMATION').output.FIRSTROW.CHECK_STREAM_F,'1')",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
@@ -2057,7 +2063,7 @@
 						}
 					},
 					{
-						"name": "GET STREAM DATE",
+						"name": "GET STREAM INFORMATION",
 						"type": "Lookup",
 						"dependsOn": [
 							{
@@ -2074,12 +2080,6 @@
 							},
 							{
 								"activity": "SET FILE_NAME",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "SET CONNECTION_NM",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2120,7 +2120,7 @@
 						"type": "SetVariable",
 						"dependsOn": [
 							{
-								"activity": "GET STREAM DATE",
+								"activity": "GET STREAM INFORMATION",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2130,7 +2130,7 @@
 						"typeProperties": {
 							"variableName": "V_AS_AT_DT",
 							"value": {
-								"value": "@activity('GET STREAM DATE').output.FIRSTROW.AS_AT_DT",
+								"value": "@activity('GET STREAM INFORMATION').output.FIRSTROW.AS_AT_DT",
 								"type": "Expression"
 							}
 						}
@@ -2945,7 +2945,7 @@
 						"type": "SetVariable",
 						"dependsOn": [
 							{
-								"activity": "CHECK PROCESS INFORMATION",
+								"activity": "GET STREAM INFORMATION",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2955,7 +2955,7 @@
 						"typeProperties": {
 							"variableName": "V_CONNECTION_NM",
 							"value": {
-								"value": "@activity('GET PROCESS INFORMATION').output.firstrow.CONNECTION_NM",
+								"value": "@activity('GET STREAM INFORMATION').output.firstrow.CONNECTION_NM",
 								"type": "Expression"
 							}
 						}
