@@ -1119,6 +1119,10 @@
 						"P_AS_AT_DT": {
 							"value": "@variables('V_AS_AT_DT')",
 							"type": "Expression"
+						},
+						"P_CONNECTION_NM": {
+							"value": "@variables('V_CONNECTION_NM')",
+							"type": "Expression"
 						}
 					}
 				}
