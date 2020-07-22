@@ -321,7 +321,7 @@
 						},
 						"P_CNT_TGT": {
 							"value": {
-								"value": "@activity('EDW MODEL COUNT SOURCE').output.FIRSTROW.COUNT",
+								"value": "@activity('SUM COUNT TARGET').output.FIRSTROW.CNT_TGT",
 								"type": "Expression"
 							},
 							"type": "String"
