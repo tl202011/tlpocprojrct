@@ -664,6 +664,815 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PCS_CUSTOM_MONGO')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Switch1",
+						"type": "Switch",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"on": {
+								"value": "@pipeline().parameters.P_SRC_TBL",
+								"type": "Expression"
+							},
+							"cases": [
+								{
+									"value": "MapFaceRegFaceExtention",
+									"activities": [
+										{
+											"name": "COPY MapFaceRegFaceExtention",
+											"type": "Copy",
+											"dependsOn": [],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"source": {
+													"type": "MongoDbV2Source",
+													"batchSize": 100
+												},
+												"sink": {
+													"type": "ParquetSink",
+													"storeSettings": {
+														"type": "AzureBlobFSWriteSettings"
+													}
+												},
+												"enableStaging": false,
+												"translator": {
+													"type": "TabularTranslator",
+													"mappings": [
+														{
+															"source": {
+																"path": "$['_id']['$oid']"
+															},
+															"sink": {
+																"name": "_id",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['faceRecId']"
+															},
+															"sink": {
+																"name": "faceRecId",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['faceExtenId']"
+															},
+															"sink": {
+																"name": "faceExtenId",
+																"type": "String"
+															}
+														}
+													]
+												}
+											},
+											"inputs": [
+												{
+													"referenceName": "MongoDb_ML_Detector",
+													"type": "DatasetReference",
+													"parameters": {
+														"Collection_name": "MapFaceRegFaceExtention"
+													}
+												}
+											],
+											"outputs": [
+												{
+													"referenceName": "ParquetFile",
+													"type": "DatasetReference",
+													"parameters": {
+														"file_name": {
+															"value": "@pipeline().parameters.P_SRC_TBL",
+															"type": "Expression"
+														},
+														"path": {
+															"value": "@pipeline().parameters.P_PATH",
+															"type": "Expression"
+														},
+														"asatdt": {
+															"value": "@pipeline().parameters.P_AS_AT_DT",
+															"type": "Expression"
+														}
+													}
+												}
+											]
+										},
+										{
+											"name": "MapFaceRegFaceExtention UPDATE COUNT TARGET",
+											"type": "SqlServerStoredProcedure",
+											"dependsOn": [
+												{
+													"activity": "COPY MapFaceRegFaceExtention",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+												"storedProcedureParameters": {
+													"P_CNT_SRC": {
+														"value": {
+															"value": "@activity('COPY MapFaceRegFaceExtention').output.rowsRead",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_CNT_TGT": {
+														"value": {
+															"value": "@activity('COPY MapFaceRegFaceExtention').output.rowsCopied",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_LOAD_ID": {
+														"value": {
+															"value": "@pipeline().parameters.P_LOAD_ID",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_PCS_NM": {
+														"value": {
+															"value": "@pipeline().parameters.P_PCS_NM",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_RMRK": {
+														"value": null,
+														"type": "String"
+													},
+													"P_ST": {
+														"value": "START",
+														"type": "String"
+													}
+												}
+											},
+											"linkedServiceName": {
+												"referenceName": "SqlServer1",
+												"type": "LinkedServiceReference"
+											}
+										}
+									]
+								},
+								{
+									"value": "FaceExtension",
+									"activities": [
+										{
+											"name": "COPY FaceExtension",
+											"type": "Copy",
+											"dependsOn": [],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"source": {
+													"type": "MongoDbV2Source",
+													"batchSize": 100
+												},
+												"sink": {
+													"type": "ParquetSink",
+													"storeSettings": {
+														"type": "AzureBlobFSWriteSettings"
+													}
+												},
+												"enableStaging": false,
+												"translator": {
+													"type": "TabularTranslator",
+													"mappings": [
+														{
+															"source": {
+																"path": "$['_id']['$oid']"
+															},
+															"sink": {
+																"name": "_id",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['Timestamp']"
+															},
+															"sink": {
+																"name": "Timestamp",
+																"type": "Int64"
+															}
+														},
+														{
+															"source": {
+																"path": "$['base64']"
+															},
+															"sink": {
+																"name": "base64",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['detectResult']"
+															},
+															"sink": {
+																"name": "detectResult"
+															}
+														},
+														{
+															"source": {
+																"path": "$['__v']"
+															},
+															"sink": {
+																"name": "__v",
+																"type": "Int64"
+															}
+														}
+													],
+													"mapComplexValuesToString": true
+												}
+											},
+											"inputs": [
+												{
+													"referenceName": "MongoDb_ML_Detector",
+													"type": "DatasetReference",
+													"parameters": {
+														"Collection_name": "FaceExtension"
+													}
+												}
+											],
+											"outputs": [
+												{
+													"referenceName": "ParquetFile",
+													"type": "DatasetReference",
+													"parameters": {
+														"file_name": {
+															"value": "@pipeline().parameters.P_SRC_TBL",
+															"type": "Expression"
+														},
+														"path": {
+															"value": "@pipeline().parameters.P_PATH",
+															"type": "Expression"
+														},
+														"asatdt": {
+															"value": "@pipeline().parameters.P_AS_AT_DT",
+															"type": "Expression"
+														}
+													}
+												}
+											]
+										},
+										{
+											"name": "FaceExtension UPDATE COUNT TARGET_copy1",
+											"type": "SqlServerStoredProcedure",
+											"dependsOn": [
+												{
+													"activity": "COPY FaceExtension",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+												"storedProcedureParameters": {
+													"P_CNT_SRC": {
+														"value": {
+															"value": "@activity('COPY FaceExtension').output.rowsRead",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_CNT_TGT": {
+														"value": {
+															"value": "@activity('COPY FaceExtension').output.rowsCopied",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_LOAD_ID": {
+														"value": {
+															"value": "@pipeline().parameters.P_LOAD_ID",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_PCS_NM": {
+														"value": {
+															"value": "@pipeline().parameters.P_PCS_NM",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_RMRK": {
+														"value": null,
+														"type": "String"
+													},
+													"P_ST": {
+														"value": "START",
+														"type": "String"
+													}
+												}
+											},
+											"linkedServiceName": {
+												"referenceName": "SqlServer1",
+												"type": "LinkedServiceReference"
+											}
+										}
+									]
+								},
+								{
+									"value": "FaceRecognition",
+									"activities": [
+										{
+											"name": "COPY FaceRecognition",
+											"type": "Copy",
+											"dependsOn": [],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"source": {
+													"type": "MongoDbV2Source",
+													"batchSize": 100
+												},
+												"sink": {
+													"type": "ParquetSink",
+													"storeSettings": {
+														"type": "AzureBlobFSWriteSettings"
+													}
+												},
+												"enableStaging": false,
+												"translator": {
+													"type": "TabularTranslator",
+													"mappings": [
+														{
+															"source": {
+																"path": "$['_id']['$oid']"
+															},
+															"sink": {
+																"name": "_id"
+															}
+														},
+														{
+															"source": {
+																"path": "$['FaceResult']"
+															},
+															"sink": {
+																"name": "FaceResult"
+															}
+														},
+														{
+															"source": {
+																"path": "$['Timestamp']['$date']"
+															},
+															"sink": {
+																"name": "Timestamp"
+															}
+														},
+														{
+															"source": {
+																"path": "$['__v']"
+															},
+															"sink": {
+																"name": "__v",
+																"type": "Int64"
+															}
+														},
+														{
+															"source": {
+																"path": "$['UploadFileResponse']"
+															},
+															"sink": {
+																"name": "UploadFileResponse"
+															}
+														},
+														{
+															"source": {
+																"path": "$['created_at']"
+															},
+															"sink": {
+																"name": "created_at"
+															}
+														},
+														{
+															"source": {
+																"path": "$['updated_at']"
+															},
+															"sink": {
+																"name": "updated_at"
+															}
+														}
+													],
+													"collectionReference": "",
+													"mapComplexValuesToString": true
+												}
+											},
+											"inputs": [
+												{
+													"referenceName": "MongoDb_ML_Detector",
+													"type": "DatasetReference",
+													"parameters": {
+														"Collection_name": "FaceRecognition"
+													}
+												}
+											],
+											"outputs": [
+												{
+													"referenceName": "ParquetFile",
+													"type": "DatasetReference",
+													"parameters": {
+														"file_name": {
+															"value": "@pipeline().parameters.P_SRC_TBL",
+															"type": "Expression"
+														},
+														"path": {
+															"value": "@pipeline().parameters.P_PATH",
+															"type": "Expression"
+														},
+														"asatdt": {
+															"value": "@pipeline().parameters.P_AS_AT_DT",
+															"type": "Expression"
+														}
+													}
+												}
+											]
+										},
+										{
+											"name": "FaceRecognitionUPDATE COUNT TARGET",
+											"type": "SqlServerStoredProcedure",
+											"dependsOn": [
+												{
+													"activity": "COPY FaceRecognition",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+												"storedProcedureParameters": {
+													"P_CNT_SRC": {
+														"value": {
+															"value": "@activity('COPY FaceRecognition').output.rowsRead",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_CNT_TGT": {
+														"value": {
+															"value": "@activity('COPY FaceRecognition').output.rowsCopied",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_LOAD_ID": {
+														"value": {
+															"value": "@pipeline().parameters.P_LOAD_ID",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_PCS_NM": {
+														"value": {
+															"value": "@pipeline().parameters.P_PCS_NM",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_RMRK": {
+														"value": null,
+														"type": "String"
+													},
+													"P_ST": {
+														"value": "START",
+														"type": "String"
+													}
+												}
+											},
+											"linkedServiceName": {
+												"referenceName": "SqlServer1",
+												"type": "LinkedServiceReference"
+											}
+										}
+									]
+								},
+								{
+									"value": "CustGeo",
+									"activities": [
+										{
+											"name": "COPY CustGeo",
+											"type": "Copy",
+											"dependsOn": [],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"source": {
+													"type": "MongoDbV2Source",
+													"batchSize": 100
+												},
+												"sink": {
+													"type": "ParquetSink",
+													"storeSettings": {
+														"type": "AzureBlobFSWriteSettings"
+													}
+												},
+												"enableStaging": false,
+												"translator": {
+													"type": "TabularTranslator",
+													"mappings": [
+														{
+															"source": {
+																"path": "$['_id']['$oid']"
+															},
+															"sink": {
+																"name": "_id",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['EMP_ID']"
+															},
+															"sink": {
+																"name": "EMP_ID",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['AGENT_ID']"
+															},
+															"sink": {
+																"name": "AGENT_ID",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['CUSTOMER_ID']"
+															},
+															"sink": {
+																"name": "CUSTOMER_ID",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['ARMCODE']"
+															},
+															"sink": {
+																"name": "ARMCODE",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['LATITUDE']"
+															},
+															"sink": {
+																"name": "LATITUDE",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['LONGITUDE']"
+															},
+															"sink": {
+																"name": "LONGITUDE",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['ALTITUDE']"
+															},
+															"sink": {
+																"name": "ALTITUDE",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['TIME_STAMP']['$date']"
+															},
+															"sink": {
+																"name": "TIME_STAMP",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['MOBILE_DEVICE']"
+															},
+															"sink": {
+																"name": "MOBILE_DEVICE",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['APP_SOURCE']"
+															},
+															"sink": {
+																"name": "APP_SOURCE",
+																"type": "String"
+															}
+														},
+														{
+															"source": {
+																"path": "$['ACTION_ID']"
+															},
+															"sink": {
+																"name": "ACTION_ID",
+																"type": "String"
+															}
+														}
+													],
+													"collectionReference": "",
+													"mapComplexValuesToString": true
+												}
+											},
+											"inputs": [
+												{
+													"referenceName": "MongoDb_CustGeo",
+													"type": "DatasetReference",
+													"parameters": {
+														"Collection_name": "CustGeo"
+													}
+												}
+											],
+											"outputs": [
+												{
+													"referenceName": "ParquetFile",
+													"type": "DatasetReference",
+													"parameters": {
+														"file_name": {
+															"value": "@pipeline().parameters.P_SRC_TBL",
+															"type": "Expression"
+														},
+														"path": {
+															"value": "@pipeline().parameters.P_PATH",
+															"type": "Expression"
+														},
+														"asatdt": {
+															"value": "@pipeline().parameters.P_AS_AT_DT",
+															"type": "Expression"
+														}
+													}
+												}
+											]
+										},
+										{
+											"name": "CustGeo COUNT TARGET",
+											"type": "SqlServerStoredProcedure",
+											"dependsOn": [
+												{
+													"activity": "COPY CustGeo",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+												"storedProcedureParameters": {
+													"P_CNT_SRC": {
+														"value": {
+															"value": "@activity('COPY CustGeo').output.rowsRead",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_CNT_TGT": {
+														"value": {
+															"value": "@activity('COPY CustGeo').output.rowsCopied",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_LOAD_ID": {
+														"value": {
+															"value": "@pipeline().parameters.P_LOAD_ID",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_PCS_NM": {
+														"value": {
+															"value": "@pipeline().parameters.P_PCS_NM",
+															"type": "Expression"
+														},
+														"type": "String"
+													},
+													"P_RMRK": {
+														"value": null,
+														"type": "String"
+													},
+													"P_ST": {
+														"value": "START",
+														"type": "String"
+													}
+												}
+											},
+											"linkedServiceName": {
+												"referenceName": "SqlServer1",
+												"type": "LinkedServiceReference"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"P_SRC_TBL": {
+						"type": "string",
+						"defaultValue": "FaceExtension"
+					},
+					"P_PATH": {
+						"type": "string",
+						"defaultValue": "getlocationfacerecognition"
+					},
+					"P_AS_AT_DT": {
+						"type": "string",
+						"defaultValue": "20200101"
+					},
+					"P_LOAD_ID": {
+						"type": "string"
+					},
+					"P_PCS_NM": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "CUSTOM JOB"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PCS_COMMON_3')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1131,267 +1940,6 @@
 									]
 								},
 								{
-									"value": "MONGO_ML_Detector",
-									"activities": [
-										{
-											"name": "MONGO_ML_Detector",
-											"type": "Copy",
-											"dependsOn": [],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"source": {
-													"type": "MongoDbV2Source",
-													"batchSize": 100
-												},
-												"sink": {
-													"type": "ParquetSink",
-													"storeSettings": {
-														"type": "AzureBlobFSWriteSettings"
-													}
-												},
-												"enableStaging": false
-											},
-											"inputs": [
-												{
-													"referenceName": "MongoDb_ML_Detector",
-													"type": "DatasetReference",
-													"parameters": {
-														"Collection_name": {
-															"value": "@pipeline().parameters.P_SRC_TBL",
-															"type": "Expression"
-														}
-													}
-												}
-											],
-											"outputs": [
-												{
-													"referenceName": "ParquetFile",
-													"type": "DatasetReference",
-													"parameters": {
-														"file_name": {
-															"value": "@pipeline().parameters.P_SRC_TBL",
-															"type": "Expression"
-														},
-														"path": {
-															"value": "@pipeline().parameters.P_PATH",
-															"type": "Expression"
-														},
-														"asatdt": {
-															"value": "@pipeline().parameters.P_AS_AT_DT",
-															"type": "Expression"
-														}
-													}
-												}
-											]
-										},
-										{
-											"name": "MONGO_ML_Detector UPDATE COUNT TARGET",
-											"type": "SqlServerStoredProcedure",
-											"dependsOn": [
-												{
-													"activity": "MONGO_ML_Detector",
-													"dependencyConditions": [
-														"Succeeded"
-													]
-												}
-											],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
-												"storedProcedureParameters": {
-													"P_CNT_SRC": {
-														"value": {
-															"value": "@activity('MONGO_ML_Detector').output.rowsRead",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_CNT_TGT": {
-														"value": {
-															"value": "@activity('MONGO_ML_Detector').output.rowsCopied",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_LOAD_ID": {
-														"value": {
-															"value": "@pipeline().parameters.P_LOAD_ID",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_PCS_NM": {
-														"value": {
-															"value": "@pipeline().parameters.P_PCS_NM",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_RMRK": {
-														"value": null,
-														"type": "String"
-													},
-													"P_ST": {
-														"value": "START",
-														"type": "String"
-													}
-												}
-											},
-											"linkedServiceName": {
-												"referenceName": "SqlServer1",
-												"type": "LinkedServiceReference"
-											}
-										}
-									]
-								},
-								{
-									"value": "MONGO_CustGeo",
-									"activities": [
-										{
-											"name": "MONGO_CustGeo",
-											"type": "Copy",
-											"dependsOn": [],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"source": {
-													"type": "MongoDbV2Source",
-													"batchSize": 100,
-													"filter": {
-														"value": "{TIME_STAMP: {$gte: ISODate(\"2018-09-15T00:00:00.000Z\"),$lt: ISODate(\"2018-09-16T00:00:00.000Z\")} }",
-														"type": "Expression"
-													}
-												},
-												"sink": {
-													"type": "ParquetSink",
-													"storeSettings": {
-														"type": "AzureBlobFSWriteSettings"
-													}
-												},
-												"enableStaging": false,
-												"enableSkipIncompatibleRow": false
-											},
-											"inputs": [
-												{
-													"referenceName": "MongoDb_CustGeo",
-													"type": "DatasetReference",
-													"parameters": {
-														"Collection_name": {
-															"value": "@pipeline().parameters.P_SRC_TBL",
-															"type": "Expression"
-														}
-													}
-												}
-											],
-											"outputs": [
-												{
-													"referenceName": "ParquetFile",
-													"type": "DatasetReference",
-													"parameters": {
-														"file_name": {
-															"value": "@pipeline().parameters.P_SRC_TBL",
-															"type": "Expression"
-														},
-														"path": {
-															"value": "@pipeline().parameters.P_PATH",
-															"type": "Expression"
-														},
-														"asatdt": {
-															"value": "@pipeline().parameters.P_AS_AT_DT",
-															"type": "Expression"
-														}
-													}
-												}
-											]
-										},
-										{
-											"name": "MONGO_CustGeo UPDATE COUNT TARGET",
-											"type": "SqlServerStoredProcedure",
-											"dependsOn": [
-												{
-													"activity": "MONGO_CustGeo",
-													"dependencyConditions": [
-														"Succeeded"
-													]
-												}
-											],
-											"policy": {
-												"timeout": "7.00:00:00",
-												"retry": 0,
-												"retryIntervalInSeconds": 30,
-												"secureOutput": false,
-												"secureInput": false
-											},
-											"userProperties": [],
-											"typeProperties": {
-												"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
-												"storedProcedureParameters": {
-													"P_CNT_SRC": {
-														"value": {
-															"value": "@activity('MONGO_CustGeo').output.rowsRead",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_CNT_TGT": {
-														"value": {
-															"value": "@activity('MONGO_CustGeo').output.rowsCopied",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_LOAD_ID": {
-														"value": {
-															"value": "@pipeline().parameters.P_LOAD_ID",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_PCS_NM": {
-														"value": {
-															"value": "@pipeline().parameters.P_PCS_NM",
-															"type": "Expression"
-														},
-														"type": "String"
-													},
-													"P_RMRK": {
-														"value": null,
-														"type": "String"
-													},
-													"P_ST": {
-														"value": "START",
-														"type": "String"
-													}
-												}
-											},
-											"linkedServiceName": {
-												"referenceName": "SqlServer1",
-												"type": "LinkedServiceReference"
-											}
-										}
-									]
-								},
-								{
 									"value": "EDW_TXN",
 									"activities": [
 										{
@@ -1428,6 +1976,46 @@
 													},
 													"P_LOAD_ID": {
 														"value": "@pipeline().parameters.P_LOAD_ID",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "MONGO",
+									"activities": [
+										{
+											"name": "PCS_CUSTOM_MONGO",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "PCS_CUSTOM_MONGO",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"P_SRC_TBL": {
+														"value": "@pipeline().parameters.P_SRC_TBL",
+														"type": "Expression"
+													},
+													"P_PATH": {
+														"value": "@pipeline().parameters.P_PATH",
+														"type": "Expression"
+													},
+													"P_AS_AT_DT": {
+														"value": "@pipeline().parameters.P_AS_AT_DT",
+														"type": "Expression"
+													},
+													"P_LOAD_ID": {
+														"value": "@pipeline().parameters.P_LOAD_ID",
+														"type": "Expression"
+													},
+													"P_PCS_NM": {
+														"value": "@pipeline().parameters.P_PCS_NM",
 														"type": "Expression"
 													}
 												}
@@ -1512,7 +2100,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]",
 				"[concat(variables('factoryId'), '/datasets/OracleTable')]",
-				"[concat(variables('factoryId'), '/pipelines/PCS_CUSTOM_EDW_TXN')]"
+				"[concat(variables('factoryId'), '/pipelines/PCS_CUSTOM_EDW_TXN')]",
+				"[concat(variables('factoryId'), '/pipelines/PCS_CUSTOM_MONGO')]"
 			]
 		},
 		{
