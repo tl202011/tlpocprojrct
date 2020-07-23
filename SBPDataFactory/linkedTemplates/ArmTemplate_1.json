@@ -1047,7 +1047,8 @@
 																"path": "$['_id']['$oid']"
 															},
 															"sink": {
-																"name": "_id"
+																"name": "_id",
+																"type": "String"
 															}
 														},
 														{
@@ -1055,7 +1056,8 @@
 																"path": "$['FaceResult']"
 															},
 															"sink": {
-																"name": "FaceResult"
+																"name": "FaceResult",
+																"type": "String"
 															}
 														},
 														{
@@ -1063,7 +1065,8 @@
 																"path": "$['Timestamp']['$date']"
 															},
 															"sink": {
-																"name": "Timestamp"
+																"name": "Timestamp",
+																"type": "String"
 															}
 														},
 														{
@@ -1080,7 +1083,8 @@
 																"path": "$['UploadFileResponse']"
 															},
 															"sink": {
-																"name": "UploadFileResponse"
+																"name": "UploadFileResponse",
+																"type": "String"
 															}
 														},
 														{
@@ -1088,7 +1092,8 @@
 																"path": "$['created_at']"
 															},
 															"sink": {
-																"name": "created_at"
+																"name": "created_at",
+																"type": "String"
 															}
 														},
 														{
@@ -1096,7 +1101,8 @@
 																"path": "$['updated_at']"
 															},
 															"sink": {
-																"name": "updated_at"
+																"name": "updated_at",
+																"type": "String"
 															}
 														}
 													],
@@ -4273,8 +4279,7 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2020-07-15T09:00:00.000Z",
-						"timeZone": "UTC",
-						"schedule": {}
+						"timeZone": "UTC"
 					}
 				}
 			},
