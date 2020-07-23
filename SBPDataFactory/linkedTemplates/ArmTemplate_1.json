@@ -4143,7 +4143,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "ORACLE",
+						"name": "ORACLE_D",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"userProperties": [],
@@ -4154,13 +4154,13 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"P_STREAM_NM": "ORACLE",
+								"P_STREAM_NM": "ORACLE_d",
 								"P_RUN_MODE": "N"
 							}
 						}
 					},
 					{
-						"name": "EDW",
+						"name": "EDW_D",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"userProperties": [],
@@ -4171,13 +4171,13 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"P_STREAM_NM": "EDW",
+								"P_STREAM_NM": "EDW_D",
 								"P_RUN_MODE": "N"
 							}
 						}
 					},
 					{
-						"name": "EDW MODEL",
+						"name": "EDW_TXN_M",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"userProperties": [],
@@ -4188,13 +4188,13 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"P_STREAM_NM": "EDW_MODEL",
+								"P_STREAM_NM": "EDW_TXN_M",
 								"P_RUN_MODE": "N"
 							}
 						}
 					},
 					{
-						"name": "MONGO_CustGeo",
+						"name": "MONGO",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"userProperties": [],
@@ -4205,13 +4205,13 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"P_STREAM_NM": "MONGO_CustGeo",
+								"P_STREAM_NM": "MONGO",
 								"P_RUN_MODE": "N"
 							}
 						}
 					},
 					{
-						"name": "MONGO_ML_Detector",
+						"name": "ORACLE_M",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"userProperties": [],
@@ -4222,7 +4222,24 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"P_STREAM_NM": "MONGO_ML_Detector",
+								"P_STREAM_NM": "ORACLE_M",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "EDW_M",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "EDW_M",
 								"P_RUN_MODE": "N"
 							}
 						}
@@ -4256,7 +4273,8 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2020-07-15T09:00:00.000Z",
-						"timeZone": "UTC"
+						"timeZone": "UTC",
+						"schedule": {}
 					}
 				}
 			},
