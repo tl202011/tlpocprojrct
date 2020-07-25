@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup1",
-				"type": "Lookup",
+				"name": "Copy data1",
+				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -16,17 +16,162 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "OracleSource",
-						"oracleReaderQuery": "SELECT COUNT(*) AS COUNT FROM SINGHA.GENERATE_TARGET WHERE KEY_DATE= TO_DATE('2020-01-01', 'YYYY-MM-DD') ",
-						"partitionOption": "None",
-						"queryTimeout": "02:00:00"
+						"type": "MongoDbV2Source",
+						"batchSize": 100,
+						"filter": "{FaceResult:{ $ne: \"\"}}"
 					},
-					"dataset": {
-						"referenceName": "OracleTable",
-						"type": "DatasetReference"
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
 					},
-					"firstRowOnly": false
-				}
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['_id']['$oid']"
+								},
+								"sink": {
+									"name": "_id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']"
+								},
+								"sink": {
+									"name": "FaceResult",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Timestamp']['$date']"
+								},
+								"sink": {
+									"name": "Timestamp",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['__v']"
+								},
+								"sink": {
+									"name": "__v",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UploadFileResponse']['_id']['$oid']"
+								},
+								"sink": {
+									"name": "_id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UploadFileResponse']['folderID']"
+								},
+								"sink": {
+									"name": "folderID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UploadFileResponse']['FileInfoId']"
+								},
+								"sink": {
+									"name": "FileInfoId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UploadFileResponse']['GridFsId']"
+								},
+								"sink": {
+									"name": "GridFsId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UploadFileResponse']['SysName']"
+								},
+								"sink": {
+									"name": "SysName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UploadFileResponse']['DownloadUrl']"
+								},
+								"sink": {
+									"name": "DownloadUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UploadFileResponse']['ImageUrl']"
+								},
+								"sink": {
+									"name": "ImageUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['created_at']"
+								},
+								"sink": {
+									"name": "created_at",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['updated_at']"
+								},
+								"sink": {
+									"name": "updated_at",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "",
+						"mapComplexValuesToString": true
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "MongoDb_ML_Detector",
+						"type": "DatasetReference",
+						"parameters": {
+							"Collection_name": "FaceRecognition"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ParquetFile",
+						"type": "DatasetReference",
+						"parameters": {
+							"file_name": "FaceRecognition",
+							"path": "getlocationfacerecognition",
+							"asatdt": "20200101"
+						}
+					}
+				]
 			}
 		],
 		"folder": {
