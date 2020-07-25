@@ -140,15 +140,6 @@
 							},
 							{
 								"source": {
-									"path": "$['created_at']"
-								},
-								"sink": {
-									"name": "created_at",
-									"type": "Double"
-								}
-							},
-							{
-								"source": {
 									"path": "$['FaceResult']['_id']['$oid']"
 								},
 								"sink": {
@@ -180,7 +171,7 @@
 								},
 								"sink": {
 									"name": "FaceResult.Confident",
-									"type": "String"
+									"type": "Double"
 								}
 							},
 							{
