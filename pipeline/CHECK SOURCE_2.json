@@ -68,11 +68,19 @@
 							},
 							{
 								"source": {
+									"path": "$['UploadFileResponse']"
+								},
+								"sink": {
+									"name": "UploadFileResponse",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
 									"path": "$['UploadFileResponse']['_id']['$oid']"
 								},
 								"sink": {
-									"name": "_id",
-									"type": "String"
+									"name": "UploadFileResponse._id"
 								}
 							},
 							{
@@ -80,7 +88,7 @@
 									"path": "$['UploadFileResponse']['folderID']"
 								},
 								"sink": {
-									"name": "folderID",
+									"name": "UploadFileResponse.folderID",
 									"type": "String"
 								}
 							},
@@ -89,7 +97,7 @@
 									"path": "$['UploadFileResponse']['FileInfoId']"
 								},
 								"sink": {
-									"name": "FileInfoId",
+									"name": "UploadFileResponse.FileInfoId",
 									"type": "String"
 								}
 							},
@@ -98,7 +106,7 @@
 									"path": "$['UploadFileResponse']['GridFsId']"
 								},
 								"sink": {
-									"name": "GridFsId",
+									"name": "UploadFileResponse.GridFsId",
 									"type": "String"
 								}
 							},
@@ -107,7 +115,7 @@
 									"path": "$['UploadFileResponse']['SysName']"
 								},
 								"sink": {
-									"name": "SysName",
+									"name": "UploadFileResponse.SysName",
 									"type": "String"
 								}
 							},
@@ -116,7 +124,7 @@
 									"path": "$['UploadFileResponse']['DownloadUrl']"
 								},
 								"sink": {
-									"name": "DownloadUrl",
+									"name": "UploadFileResponse.DownloadUrl",
 									"type": "String"
 								}
 							},
@@ -125,7 +133,43 @@
 									"path": "$['UploadFileResponse']['ImageUrl']"
 								},
 								"sink": {
-									"name": "ImageUrl",
+									"name": "UploadFileResponse.ImageUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['_id']['$oid']"
+								},
+								"sink": {
+									"name": "FaceResult._id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Name']"
+								},
+								"sink": {
+									"name": "FaceResult.Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Position']"
+								},
+								"sink": {
+									"name": "FaceResult.Confident",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Confident']"
+								},
+								"sink": {
+									"name": "FaceResult.",
 									"type": "String"
 								}
 							},
@@ -135,7 +179,7 @@
 								},
 								"sink": {
 									"name": "created_at",
-									"type": "String"
+									"type": "Double"
 								}
 							},
 							{
@@ -144,6 +188,15 @@
 								},
 								"sink": {
 									"name": "updated_at",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Current_Path']"
+								},
+								"sink": {
+									"name": "Current_Path",
 									"type": "String"
 								}
 							}
