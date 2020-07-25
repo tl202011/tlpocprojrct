@@ -50,56 +50,11 @@
 							},
 							{
 								"source": {
-									"path": "$['FaceResult']['_id']['$oid']"
-								},
-								"sink": {
-									"name": "FaceResult._id",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['FaceResult']['Name']"
-								},
-								"sink": {
-									"name": "FaceResult.Name",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['FaceResult']['Position']"
-								},
-								"sink": {
-									"name": "FaceResult.Confident",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['FaceResult']['Confident']"
-								},
-								"sink": {
-									"name": "FaceResult.",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['FaceResult']['Current_Path']"
-								},
-								"sink": {
-									"name": "Current_Path",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"path": "$['Timestamp']['$date']"
 								},
 								"sink": {
 									"name": "Timestamp",
-									"type": "String"
+									"type": "Int64"
 								}
 							},
 							{
@@ -108,7 +63,7 @@
 								},
 								"sink": {
 									"name": "__v",
-									"type": "Int64"
+									"type": "String"
 								}
 							},
 							{
@@ -194,11 +149,65 @@
 							},
 							{
 								"source": {
+									"path": "$['FaceResult']['_id']['$oid']"
+								},
+								"sink": {
+									"name": "FaceResult._id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Name']"
+								},
+								"sink": {
+									"name": "FaceResult.Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Position']"
+								},
+								"sink": {
+									"name": "FaceResult.Position",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Confident']"
+								},
+								"sink": {
+									"name": "FaceResult.Confident",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['created_at']"
+								},
+								"sink": {
+									"name": "created_at",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
 									"path": "$['updated_at']"
 								},
 								"sink": {
 									"name": "updated_at",
 									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Current_Path']"
+								},
+								"sink": {
+									"name": "Current_Path",
+									"type": "String"
 								}
 							}
 						],
