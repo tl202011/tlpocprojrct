@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MongoDbV2Source",
 						"batchSize": 100,
-						"filter": "{FaceResult:{ $ne: \"\"}}"
+						"filter": ""
 					},
 					"sink": {
 						"type": "ParquetSink",
@@ -50,11 +50,56 @@
 							},
 							{
 								"source": {
+									"path": "$['FaceResult']['_id']['$oid']"
+								},
+								"sink": {
+									"name": "FaceResult._id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Name']"
+								},
+								"sink": {
+									"name": "FaceResult.Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Position']"
+								},
+								"sink": {
+									"name": "FaceResult.Confident",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Confident']"
+								},
+								"sink": {
+									"name": "FaceResult.",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FaceResult']['Current_Path']"
+								},
+								"sink": {
+									"name": "Current_Path",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
 									"path": "$['Timestamp']['$date']"
 								},
 								"sink": {
 									"name": "Timestamp",
-									"type": "Int64"
+									"type": "String"
 								}
 							},
 							{
@@ -80,7 +125,8 @@
 									"path": "$['UploadFileResponse']['_id']['$oid']"
 								},
 								"sink": {
-									"name": "UploadFileResponse._id"
+									"name": "UploadFileResponse._id",
+									"type": "String"
 								}
 							},
 							{
@@ -139,42 +185,6 @@
 							},
 							{
 								"source": {
-									"path": "$['FaceResult']['_id']['$oid']"
-								},
-								"sink": {
-									"name": "FaceResult._id",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['FaceResult']['Name']"
-								},
-								"sink": {
-									"name": "FaceResult.Name",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['FaceResult']['Position']"
-								},
-								"sink": {
-									"name": "FaceResult.Confident",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['FaceResult']['Confident']"
-								},
-								"sink": {
-									"name": "FaceResult.",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"path": "$['created_at']"
 								},
 								"sink": {
@@ -189,15 +199,6 @@
 								"sink": {
 									"name": "updated_at",
 									"type": "Double"
-								}
-							},
-							{
-								"source": {
-									"path": "$['FaceResult']['Current_Path']"
-								},
-								"sink": {
-									"name": "Current_Path",
-									"type": "String"
 								}
 							}
 						],
