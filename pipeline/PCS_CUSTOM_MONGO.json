@@ -556,7 +556,7 @@
 														"path": "$['FaceResult']['_id']['$oid']"
 													},
 													"sink": {
-														"name": "_id",
+														"name": "FaceResult._id",
 														"type": "String"
 													}
 												},
@@ -565,7 +565,7 @@
 														"path": "$['FaceResult']['Name']"
 													},
 													"sink": {
-														"name": "Name",
+														"name": "FaceResult.Name",
 														"type": "String"
 													}
 												},
@@ -574,7 +574,7 @@
 														"path": "$['FaceResult']['Position']"
 													},
 													"sink": {
-														"name": "Position",
+														"name": "FaceResult.Position",
 														"type": "String"
 													}
 												},
@@ -583,7 +583,7 @@
 														"path": "$['FaceResult']['Confident']"
 													},
 													"sink": {
-														"name": "Confident",
+														"name": "FaceResult.Confident",
 														"type": "String"
 													}
 												},
