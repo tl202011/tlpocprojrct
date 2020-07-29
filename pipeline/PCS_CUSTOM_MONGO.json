@@ -351,131 +351,6 @@
 							"value": "FaceRecognition",
 							"activities": [
 								{
-									"name": "COPY FaceRecognition",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "MongoDbV2Source",
-											"batchSize": 100
-										},
-										"sink": {
-											"type": "ParquetSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"mappings": [
-												{
-													"source": {
-														"path": "$['_id']['$oid']"
-													},
-													"sink": {
-														"name": "_id",
-														"type": "String"
-													}
-												},
-												{
-													"source": {
-														"path": "$['FaceResult']"
-													},
-													"sink": {
-														"name": "FaceResult",
-														"type": "String"
-													}
-												},
-												{
-													"source": {
-														"path": "$['Timestamp']['$date']"
-													},
-													"sink": {
-														"name": "Timestamp",
-														"type": "String"
-													}
-												},
-												{
-													"source": {
-														"path": "$['__v']"
-													},
-													"sink": {
-														"name": "__v",
-														"type": "Int64"
-													}
-												},
-												{
-													"source": {
-														"path": "$['UploadFileResponse']"
-													},
-													"sink": {
-														"name": "UploadFileResponse",
-														"type": "String"
-													}
-												},
-												{
-													"source": {
-														"path": "$['created_at']"
-													},
-													"sink": {
-														"name": "created_at",
-														"type": "String"
-													}
-												},
-												{
-													"source": {
-														"path": "$['updated_at']"
-													},
-													"sink": {
-														"name": "updated_at",
-														"type": "String"
-													}
-												}
-											],
-											"collectionReference": "",
-											"mapComplexValuesToString": true
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "MongoDb_ML_Detector",
-											"type": "DatasetReference",
-											"parameters": {
-												"Collection_name": "FaceRecognition"
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ParquetFile",
-											"type": "DatasetReference",
-											"parameters": {
-												"file_name": {
-													"value": "@pipeline().parameters.P_SRC_TBL",
-													"type": "Expression"
-												},
-												"path": {
-													"value": "@pipeline().parameters.P_PATH",
-													"type": "Expression"
-												},
-												"asatdt": {
-													"value": "@pipeline().parameters.P_AS_AT_DT",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
 									"name": "FaceRecognitionUPDATE COUNT TARGET",
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [
@@ -539,6 +414,240 @@
 										"referenceName": "SqlServer1",
 										"type": "LinkedServiceReference"
 									}
+								},
+								{
+									"name": "COPY FaceRecognition",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "MongoDbV2Source",
+											"batchSize": 100,
+											"filter": ""
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"path": "$['_id']['$oid']"
+													},
+													"sink": {
+														"name": "_id",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['FaceResult']"
+													},
+													"sink": {
+														"name": "FaceResult",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['Timestamp']"
+													},
+													"sink": {
+														"name": "Timestamp",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['__v']"
+													},
+													"sink": {
+														"name": "__v",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['UploadFileResponse']"
+													},
+													"sink": {
+														"name": "UploadFileResponse",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['UploadFileResponse']['_id']['$oid']"
+													},
+													"sink": {
+														"name": "UploadFileResponse._id",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['UploadFileResponse']['folderID']"
+													},
+													"sink": {
+														"name": "UploadFileResponse.folderID",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['UploadFileResponse']['FileInfoId']"
+													},
+													"sink": {
+														"name": "UploadFileResponse.FileInfoId",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['UploadFileResponse']['GridFsId']"
+													},
+													"sink": {
+														"name": "UploadFileResponse.GridFsId",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['UploadFileResponse']['SysName']"
+													},
+													"sink": {
+														"name": "UploadFileResponse.SysName",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['UploadFileResponse']['DownloadUrl']"
+													},
+													"sink": {
+														"name": "UploadFileResponse.DownloadUrl",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['UploadFileResponse']['ImageUrl']"
+													},
+													"sink": {
+														"name": "UploadFileResponse.ImageUrl",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['FaceResult']['_id']['$oid']"
+													},
+													"sink": {
+														"name": "_id",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['FaceResult']['Name']"
+													},
+													"sink": {
+														"name": "Name",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['FaceResult']['Position']"
+													},
+													"sink": {
+														"name": "Position",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['FaceResult']['Confident']"
+													},
+													"sink": {
+														"name": "Confident",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['created_at']"
+													},
+													"sink": {
+														"name": "created_at",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['updated_at']"
+													},
+													"sink": {
+														"name": "updated_at",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['FaceResult']['Current_Path']"
+													},
+													"sink": {
+														"name": "Current_Path",
+														"type": "String"
+													}
+												}
+											],
+											"collectionReference": "",
+											"mapComplexValuesToString": true
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "MongoDb_ML_Detector",
+											"type": "DatasetReference",
+											"parameters": {
+												"Collection_name": "FaceRecognition"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ParquetFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"file_name": {
+													"value": "@pipeline().parameters.P_SRC_TBL",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@pipeline().parameters.P_PATH",
+													"type": "Expression"
+												},
+												"asatdt": {
+													"value": "@pipeline().parameters.P_AS_AT_DT",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						},
