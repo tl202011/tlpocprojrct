@@ -22,7 +22,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users"
+					"notebookPath": "/Users/"
 				},
 				"linkedServiceName": {
 					"referenceName": "Databrickslinked",
@@ -67,62 +67,6 @@
 						"referenceName": "ControlTable",
 						"type": "DatasetReference"
 					}
-				}
-			},
-			{
-				"name": "UPDATE STREAM SUCCESS",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "SET STREAM RESULT SUCCESS",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "SET STREAM RESULT FAILED",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[CNTL].[PROC_UPD_STREAM]",
-					"storedProcedureParameters": {
-						"P_STREAM_NM": {
-							"value": {
-								"value": "@variables('V_STREAM_NM')",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"P_STREAM_RESULT": {
-							"value": {
-								"value": "@variables('V_STREAM_RESULT')",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"P_STREAM_SEQ_ID": {
-							"value": {
-								"value": "@variables('V_STREAM_SEQ_ID')",
-								"type": "Expression"
-							},
-							"type": "String"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "SqlServer1",
-					"type": "LinkedServiceReference"
 				}
 			},
 			{
@@ -184,7 +128,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "UPDATE STREAM SUCCESS",
+						"activity": "UPDATE STREAM",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -259,7 +203,7 @@
 						"Content-Type": "application/json"
 					},
 					"body": {
-						"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\",\n\"Asat_dt\":\"@{activity('UPDATE STREAM SUCCESS').output.firstrow.AS_AT_DT_FORMAT}\",\n\"StreamName\":\"@{variables('V_STREAM_NM')}\"\n}",
+						"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\",\n\"Asat_dt\":\"@{activity('UPDATE STREAM').output.firstrow.AS_AT_DT_FORMAT}\",\n\"StreamName\":\"@{variables('V_STREAM_NM')}\"\n}",
 						"type": "Expression"
 					}
 				}
@@ -269,7 +213,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "UPDATE STREAM SUCCESS",
+						"activity": "UPDATE STREAM",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -310,6 +254,76 @@
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "SALES PREDICTION MODEL",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 7
+				}
+			},
+			{
+				"name": "UPDATE STREAM",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_UPD_STREAM]",
+						"storedProcedureParameters": {
+							"P_STREAM_NM": {
+								"type": "String",
+								"value": {
+									"value": "@variables('V_STREAM_NM')",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_RESULT": {
+								"type": "String",
+								"value": {
+									"value": "@variables('V_STREAM_RESULT')",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_SEQ_ID": {
+								"type": "String",
+								"value": {
+									"value": "@variables('V_STREAM_SEQ_ID')",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "ControlTable",
+						"type": "DatasetReference"
+					}
 				}
 			}
 		],
