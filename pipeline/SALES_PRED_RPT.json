@@ -1,0 +1,211 @@
+{
+	"name": "SALES_PRED_RPT",
+	"properties": {
+		"activities": [
+			{
+				"name": "SALES PREDICTION MODEL",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "START STREAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users"
+				},
+				"linkedServiceName": {
+					"referenceName": "Databrickslinked",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "START STREAM",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_CNTL_ACTV_STREAM]",
+						"storedProcedureParameters": {
+							"P_RUN_MODE": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.P_RUN_MODE",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_NM": {
+								"type": "String",
+								"value": {
+									"value": "@variables('V_STREAM_NM')",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "ControlTable",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "UPDATE STREAM SUCCESS",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "SALES PREDICTION MODEL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[CNTL].[PROC_UPD_STREAM]",
+					"storedProcedureParameters": {
+						"P_STREAM_NM": {
+							"value": {
+								"value": "@variables('V_STREAM_NM')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_STREAM_RESULT": {
+							"value": {
+								"value": "1",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_STREAM_SEQ_ID": {
+							"value": {
+								"value": "@variables('V_STREAM_SEQ_ID')",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "UPDATE STREAM FAILED",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "SALES PREDICTION MODEL",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[CNTL].[PROC_UPD_STREAM]",
+					"storedProcedureParameters": {
+						"P_STREAM_NM": {
+							"value": {
+								"value": "@variables('V_STREAM_NM')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_STREAM_RESULT": {
+							"value": {
+								"value": "0",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_STREAM_SEQ_ID": {
+							"value": {
+								"value": "@variables('V_STREAM_SEQ_ID')",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "SET STREAM_SEQ_ID",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "START STREAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "V_STREAM_SEQ_ID",
+					"value": {
+						"value": "@activity('START STREAM').output.FIRSTROW.STREAM_SEQ_ID",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"P_RUN_MODE": {
+				"type": "string",
+				"defaultValue": "R"
+			}
+		},
+		"variables": {
+			"V_STREAM_NM": {
+				"type": "String",
+				"defaultValue": "SALES_PRED"
+			},
+			"V_STREAM_SEQ_ID": {
+				"type": "String",
+				"defaultValue": "-999"
+			}
+		},
+		"annotations": []
+	}
+}
