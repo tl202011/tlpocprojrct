@@ -145,7 +145,18 @@
 												"referenceName": "SALES_PRED_RPT",
 												"type": "PipelineReference"
 											},
-											"waitOnCompletion": true
+											"waitOnCompletion": true,
+											"parameters": {
+												"P_RUN_MODE": {
+													"value": "@pipeline().parameters.P_RUN_MODE",
+													"type": "Expression"
+												},
+												"P_PCS_NM": "@item().PCS_NM",
+												"P_STREAM_SEQ_ID": {
+													"value": "@variables('V_STREAM_SEQ_ID')",
+													"type": "Expression"
+												}
+											}
 										}
 									}
 								]
