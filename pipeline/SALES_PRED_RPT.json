@@ -104,7 +104,7 @@
 							"P_LOAD_ID": {
 								"type": "String",
 								"value": {
-									"value": "@pipeline().parameters.P_LOAD_ID",
+									"value": "@variables('V_LOAD_ID')",
 									"type": "Expression"
 								}
 							},
@@ -341,7 +341,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "V_LOAD_ID",
-					"value": "@activity('INSERT PROCESS LOG').output.FIRSTROW.LOAD_ID"
+					"value": {
+						"value": "@activity('INSERT PROCESS LOG').output.FIRSTROW.LOAD_ID",
+						"type": "Expression"
+					}
 				}
 			},
 			{
@@ -376,7 +379,7 @@
 						},
 						"P_LOAD_ID": {
 							"value": {
-								"value": "@pipeline().parameters.P_LOAD_ID",
+								"value": "@variables('V_LOAD_ID')",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -435,7 +438,7 @@
 						},
 						"P_LOAD_ID": {
 							"value": {
-								"value": "@pipeline().parameters.P_LOAD_ID",
+								"value": "@variables('V_LOAD_ID')",
 								"type": "Expression"
 							},
 							"type": "String"
