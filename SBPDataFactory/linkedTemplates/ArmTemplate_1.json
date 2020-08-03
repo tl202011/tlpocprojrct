@@ -124,7 +124,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "SELECT COUNT(*) AS COUNT \nFROM ODS.SALES_DW_SD_BL_ITEM \nWHERE TO_DATE(BILLINGDATE,'DD/MM/YYYY')= TO_DATE('2020-06-06', 'YYYY-MM-DD') ",
+								"query": "select distinct asat_dt from ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2016TO2017",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
@@ -570,10 +570,7 @@
 											"referenceName": "ParquetFile",
 											"type": "DatasetReference",
 											"parameters": {
-												"file_name": {
-													"value": "@pipeline().parameters.P_SRC_TBL",
-													"type": "Expression"
-												},
+												"file_name": "T_SALES_ACTUAL_TG",
 												"path": {
 													"value": "@pipeline().parameters.P_PATH",
 													"type": "Expression"
@@ -4100,7 +4097,10 @@
 															"value": "@pipeline().parameters.P_RUN_MODE",
 															"type": "Expression"
 														},
-														"P_PCS_NM": "@item().PCS_NM",
+														"P_PCS_NM": {
+															"value": "@item().PCS_NM",
+															"type": "Expression"
+														},
 														"P_STREAM_SEQ_ID": {
 															"value": "@variables('V_STREAM_SEQ_ID')",
 															"type": "Expression"
