@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "NetezzaSource",
-						"query": "SELECT COUNT(*) AS COUNT \nFROM ODS.SALES_DW_SD_BL_ITEM \nWHERE TO_DATE(BILLINGDATE,'DD/MM/YYYY')= TO_DATE('2020-06-06', 'YYYY-MM-DD') ",
+						"query": "select distinct asat_dt from ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2016TO2017",
 						"partitionOption": "DataSlice"
 					},
 					"dataset": {
