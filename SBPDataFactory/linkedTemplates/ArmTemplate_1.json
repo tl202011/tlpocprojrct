@@ -13,6 +13,33 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/MongoDb_ML_Detector')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MongoDb_ML_Detector",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Collection_name": {
+						"type": "string",
+						"defaultValue": "999"
+					}
+				},
+				"annotations": [],
+				"type": "MongoDbV2Collection",
+				"schema": [],
+				"typeProperties": {
+					"collection": {
+						"value": "@dataset().Collection_name",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/NetezzaTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -355,7 +382,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MongoDb_ML_Detector')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/PCS_CUSTOM_EDW_TXN')]",
@@ -1793,7 +1822,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MongoDb_ML_Detector')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/PCS_COMMON_3')]",
@@ -3789,7 +3820,7 @@
 								]
 							},
 							{
-								"activity": "GET LOAD PROCESS ID",
+								"activity": "GET LOAD ID",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -3860,7 +3891,7 @@
 						}
 					},
 					{
-						"name": "GET LOAD PROCESS ID",
+						"name": "GET LOAD ID",
 						"type": "SetVariable",
 						"dependsOn": [
 							{
@@ -4014,30 +4045,60 @@
 							"batchCount": 20,
 							"activities": [
 								{
-									"name": "RUN_PCS_1",
-									"type": "ExecutePipeline",
+									"name": "IF STREAM IS SALES_PRED",
+									"type": "IfCondition",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
-										"pipeline": {
-											"referenceName": "PCS_COMMON_1",
-											"type": "PipelineReference"
+										"expression": {
+											"value": "@equals(pipeline().parameters.P_STREAM_NM,'SALES_PRED')",
+											"type": "Expression"
 										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"P_PROCESS_NM": {
-												"value": "@item().PCS_NM",
-												"type": "Expression"
-											},
-											"P_RUN_MODE": {
-												"value": "@pipeline().parameters.P_RUN_MODE",
-												"type": "Expression"
-											},
-											"P_STREAM_SEQ_ID": {
-												"value": "@variables('V_STREAM_SEQ_ID')",
-												"type": "Expression"
+										"ifFalseActivities": [
+											{
+												"name": "RUN_PCS_1",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "PCS_COMMON_1",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"P_PROCESS_NM": {
+															"value": "@item().PCS_NM",
+															"type": "Expression"
+														},
+														"P_RUN_MODE": {
+															"value": "@pipeline().parameters.P_RUN_MODE",
+															"type": "Expression"
+														},
+														"P_STREAM_SEQ_ID": {
+															"value": "@variables('V_STREAM_SEQ_ID')",
+															"type": "Expression"
+														}
+													}
+												}
 											}
-										}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "SALES_PRED_RPT",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "SALES_PRED_RPT",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {}
+												}
+											}
+										]
 									}
 								}
 							]
@@ -4048,7 +4109,7 @@
 						"type": "Lookup",
 						"dependsOn": [
 							{
-								"activity": "FINAL STREAM",
+								"activity": "UPDATE STREAM",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -4312,6 +4373,56 @@
 								"type": "DatasetReference",
 								"parameters": {}
 							}
+						}
+					},
+					{
+						"name": "UPDATE STREAM",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "FINAL STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_STREAM]",
+							"storedProcedureParameters": {
+								"P_STREAM_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_STREAM_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_STREAM_RESULT": {
+									"value": {
+										"value": "@activity('FINAL STREAM').output.firstrow.STREAM_RESULT",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_STREAM_SEQ_ID": {
+									"value": {
+										"value": "@variables('V_STREAM_SEQ_ID')",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
 						}
 					}
 				],
