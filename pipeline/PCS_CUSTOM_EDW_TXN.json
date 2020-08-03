@@ -177,10 +177,7 @@
 									"referenceName": "ParquetFile",
 									"type": "DatasetReference",
 									"parameters": {
-										"file_name": {
-											"value": "@pipeline().parameters.P_SRC_TBL",
-											"type": "Expression"
-										},
+										"file_name": "T_SALES_ACTUAL_TG",
 										"path": {
 											"value": "@pipeline().parameters.P_PATH",
 											"type": "Expression"
