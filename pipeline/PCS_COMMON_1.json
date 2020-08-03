@@ -81,7 +81,7 @@
 						]
 					},
 					{
-						"activity": "GET LOAD PROCESS ID",
+						"activity": "GET LOAD ID",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -151,7 +151,7 @@
 				}
 			},
 			{
-				"name": "GET LOAD PROCESS ID",
+				"name": "GET LOAD ID",
 				"type": "SetVariable",
 				"dependsOn": [
 					{

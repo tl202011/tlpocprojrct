@@ -96,30 +96,59 @@
 					"batchCount": 20,
 					"activities": [
 						{
-							"name": "RUN_PCS_1",
-							"type": "ExecutePipeline",
+							"name": "IF STREAM IS SALES_PRED",
+							"type": "IfCondition",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"pipeline": {
-									"referenceName": "PCS_COMMON_1",
-									"type": "PipelineReference"
+								"expression": {
+									"value": "@equals(pipeline().parameters.P_STREAM_NM,'SALES_PRED')",
+									"type": "Expression"
 								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"P_PROCESS_NM": {
-										"value": "@item().PCS_NM",
-										"type": "Expression"
-									},
-									"P_RUN_MODE": {
-										"value": "@pipeline().parameters.P_RUN_MODE",
-										"type": "Expression"
-									},
-									"P_STREAM_SEQ_ID": {
-										"value": "@variables('V_STREAM_SEQ_ID')",
-										"type": "Expression"
+								"ifFalseActivities": [
+									{
+										"name": "RUN_PCS_1",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "PCS_COMMON_1",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"P_PROCESS_NM": {
+													"value": "@item().PCS_NM",
+													"type": "Expression"
+												},
+												"P_RUN_MODE": {
+													"value": "@pipeline().parameters.P_RUN_MODE",
+													"type": "Expression"
+												},
+												"P_STREAM_SEQ_ID": {
+													"value": "@variables('V_STREAM_SEQ_ID')",
+													"type": "Expression"
+												}
+											}
+										}
 									}
-								}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "SALES_PRED_RPT",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "SALES_PRED_RPT",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true
+										}
+									}
+								]
 							}
 						}
 					]
@@ -130,7 +159,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "FINAL STREAM",
+						"activity": "UPDATE STREAM",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -390,6 +419,56 @@
 						"referenceName": "ControlTable",
 						"type": "DatasetReference"
 					}
+				}
+			},
+			{
+				"name": "UPDATE STREAM",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "FINAL STREAM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[CNTL].[PROC_UDT_STREAM]",
+					"storedProcedureParameters": {
+						"P_STREAM_NM": {
+							"value": {
+								"value": "@pipeline().parameters.P_STREAM_NM",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_STREAM_RESULT": {
+							"value": {
+								"value": "@activity('FINAL STREAM').output.firstrow.STREAM_RESULT",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"P_STREAM_SEQ_ID": {
+							"value": {
+								"value": "@variables('V_STREAM_SEQ_ID')",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
