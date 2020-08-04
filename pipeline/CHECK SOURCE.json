@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "NetezzaSource",
-						"query": "select distinct asat_dt from ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2016TO2017",
+						"query": "SELECT DISTINCT CAST(DATE AS DATE) AS BUS_DATE FROM ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2016TO2017 WHERE ASAT_DT  <= TO_DATE('2020-08-03','YYYY-MM-DD') ",
 						"partitionOption": "DataSlice"
 					},
 					"dataset": {
