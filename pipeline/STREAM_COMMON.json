@@ -66,7 +66,8 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
@@ -151,7 +152,10 @@
 													"value": "@pipeline().parameters.P_RUN_MODE",
 													"type": "Expression"
 												},
-												"P_PCS_NM": "@item().PCS_NM",
+												"P_PCS_NM": {
+													"value": "@item().PCS_NM",
+													"type": "Expression"
+												},
 												"P_STREAM_SEQ_ID": {
 													"value": "@variables('V_STREAM_SEQ_ID')",
 													"type": "Expression"
@@ -204,7 +208,8 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
@@ -259,7 +264,8 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
@@ -293,7 +299,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://prod-08.southeastasia.logic.azure.com:443/workflows/4d3633648b8e4170a54134728e1215fb/triggers/request/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Frequest%2Frun&sv=1.0&sig=H2ABmTH98dea6_SDk6_X9hSJ6NwxIun4UfYXoFTTdPQ",
+					"url": "https://prod-05.southeastasia.logic.azure.com:443/workflows/87cb500b80b74094a5bea5f149f3b45a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=U4UdfX5WK2SF1bQKwro9Wmujq8RKOiGaTvcvclI17pw",
 					"method": "POST",
 					"headers": {
 						"Content-Type": "application/json"
@@ -343,7 +349,8 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
@@ -424,7 +431,8 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
