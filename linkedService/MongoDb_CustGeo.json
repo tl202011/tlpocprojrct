@@ -7,10 +7,10 @@
 		"typeProperties": {
 			"connectionString": "mongodb://readDataCustGeo:@10.7.10.40/CustGeo",
 			"database": "CustGeo",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjNDA2Mjc2Mi0xZDE2LTQzNDMtYWQ1ZS00MjI1NmJhNjU4MGQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIwNGY5MWVhOC0zNTUwLTRiM2EtYTdiOC1lZThmZjhiMzEyZWUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
-			"referenceName": "integrationRuntime",
+			"referenceName": "integrationRuntimeSBP",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
