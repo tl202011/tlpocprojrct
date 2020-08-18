@@ -103,6 +103,42 @@
 						"P_RUN_MODE": "N"
 					}
 				}
+			},
+			{
+				"name": "SALES_PRED_RPT",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EDW_TXN_M",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "EDW_D",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "EDW_M",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "SALES_PRED",
+						"P_RUN_MODE": "N"
+					}
+				}
 			}
 		],
 		"annotations": []
