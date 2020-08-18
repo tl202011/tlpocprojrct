@@ -7,10 +7,10 @@
 		"typeProperties": {
 			"connectionString": "mongodb://readAnyData:@10.7.10.40/ML_Detector",
 			"database": "ML_Detector",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI4N2IwY2ZkZi04YjFlLTQ5NDgtOWQ2ZC04ZTkxYzRmODQxOGQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJlNjhjOGRjZi1jMWNiLTQ0Y2ItODRlNy05ZDA3OWQ4ZmJjYjAiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
-			"referenceName": "integrationRuntime",
+			"referenceName": "integrationRuntimeSBP",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
