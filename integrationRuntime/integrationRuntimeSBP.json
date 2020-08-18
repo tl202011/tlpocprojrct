@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimeSBP",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
