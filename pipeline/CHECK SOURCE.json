@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "NetezzaSource",
-						"query": "SELECT * FROM PROVINCE_PROFILE.T_PROVINCE_PROFILE_TRANSACTION_MODEL WHERE CAST(DATE AS DATE) =TO_DATE('20190314','YYYYMMDD') order by TARGET desc",
+						"query": "SELECT * FROM ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2016TO2017",
 						"partitionOption": "DataSlice"
 					},
 					"dataset": {
