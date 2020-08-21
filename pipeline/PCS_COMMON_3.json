@@ -474,10 +474,7 @@
 										},
 										"waitOnCompletion": true,
 										"parameters": {
-											"P_SRC_TBL": {
-												"value": "@pipeline().parameters.P_SRC_TBL",
-												"type": "Expression"
-											},
+											"P_SRC_TBL": "T_SALES_ACTUAL_TG",
 											"P_PATH": {
 												"value": "@pipeline().parameters.P_PATH",
 												"type": "Expression"
@@ -561,7 +558,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1/0",
-									"queryTimeout": "02:00:00"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"dataset": {
 									"referenceName": "ControlTable",
