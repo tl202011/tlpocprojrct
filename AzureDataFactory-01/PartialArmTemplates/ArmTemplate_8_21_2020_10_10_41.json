@@ -6,347 +6,12 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "AzureDataFactory-01"
-		},
-		"AzureDataLakeStorage1_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
-		},
-		"Databrickslinked_accessToken": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accessToken' of 'Databrickslinked'"
-		},
-		"SqlServer1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
-		},
-		"MongoDb_CustGeo_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'MongoDb_CustGeo'"
-		},
-		"MongoDb_ML_Detector_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'MongoDb_ML_Detector'"
-		},
-		"Netezza_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Netezza'"
-		},
-		"Oracle_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Oracle'"
-		},
-		"OracleTest_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'OracleTest'"
-		},
-		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://sbpdisbigdatadl01.dfs.core.windows.net"
-		},
-		"MongoDb_CustGeo_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "CustGeo"
-		},
-		"MongoDb_ML_Detector_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "ML_Detector"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/TRIGGER_M')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "SCHEDULE_M",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Month",
-						"interval": 1,
-						"startTime": "2020-08-21T18:00:00.000Z",
-						"timeZone": "UTC",
-						"schedule": {
-							"monthDays": [
-								-1
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Databrickslinked')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureDatabricks",
-				"typeProperties": {
-					"domain": "https://adb-8889427580922704.4.azuredatabricks.net/",
-					"accessToken": {
-						"type": "SecureString",
-						"value": "[parameters('Databrickslinked_accessToken')]"
-					},
-					"existingClusterId": "0818-022253-knock288"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServer1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"connectionString": "[parameters('SqlServer1_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntimeSBP')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TEST DATABRICKS')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "test",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Users/sbpdl_int_202006@outlook.com/createmodel"
-						},
-						"linkedServiceName": {
-							"referenceName": "Databrickslinked",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"folder": {
-					"name": "TEST"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Databrickslinked')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ControlTable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SqlServer1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ParquetFile')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"file_name": {
-						"type": "string",
-						"defaultValue": "9999"
-					},
-					"path": {
-						"type": "string",
-						"defaultValue": "9999"
-					},
-					"asatdt": {
-						"type": "string",
-						"defaultValue": "9999"
-					}
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@concat(dataset().file_name,'.parquet')",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@concat(dataset().file_name,'/',dataset().asatdt)",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().path",
-							"type": "Expression"
-						}
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MongoDb_CustGeo')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "MongoDbV2",
-				"typeProperties": {
-					"connectionString": "[parameters('MongoDb_CustGeo_connectionString')]",
-					"database": "[parameters('MongoDb_CustGeo_properties_typeProperties_database')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MongoDb_ML_Detector')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "MongoDbV2",
-				"typeProperties": {
-					"connectionString": "[parameters('MongoDb_ML_Detector_connectionString')]",
-					"database": "[parameters('MongoDb_ML_Detector_properties_typeProperties_database')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Netezza')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Netezza",
-				"typeProperties": {
-					"connectionString": "[parameters('Netezza_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Oracle')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Oracle",
-				"typeProperties": {
-					"connectionString": "[parameters('Oracle_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleTest')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Oracle",
-				"typeProperties": {
-					"connectionString": "[parameters('OracleTest_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
-			]
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SALES_PRED_RPT')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -424,8 +89,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": true
 						}
@@ -481,8 +145,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -525,8 +188,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -553,8 +215,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -612,8 +273,7 @@
 							},
 							"dataset": {
 								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -656,8 +316,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -684,8 +343,7 @@
 										},
 										"dataset": {
 											"referenceName": "ControlTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									}
 								}
@@ -987,214 +645,178 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Databrickslinked')]",
-				"[concat(variables('factoryId'), '/datasets/ControlTable')]",
-				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]"
+				"[concat(variables('factoryId'), '/linkedServices/Databrickslinked')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/TEST EMAIL')]",
+			"name": "[concat(parameters('factoryName'), '/SCHEDULE_D')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "STREAM RESULT",
-						"type": "Lookup",
+						"name": "ORACLE_D",
+						"type": "ExecutePipeline",
 						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_STREAM_RESULT]",
-								"storedProcedureParameters": {
-									"P_STREAM_NM": {
-										"type": "String",
-										"value": {
-											"value": "@pipeline().parameters.STREAM_NM",
-											"type": "Expression"
-										}
-									},
-									"P_STREAM_SEQ_ID": {
-										"type": "String",
-										"value": {
-											"value": "@pipeline().parameters.STRAM_SEQ_ID",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
 							},
-							"dataset": {
-								"referenceName": "ControlTable",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": true
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "ORACLE_d",
+								"P_RUN_MODE": "N"
+							}
 						}
 					},
 					{
-						"name": "SEND EMAIL",
-						"type": "WebActivity",
+						"name": "EDW_D",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "EDW_D",
+								"P_RUN_MODE": "N"
+							}
+						}
+					}
+				],
+				"folder": {
+					"name": "SCHEDULE"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SCHEDULE_M')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "EDW_TXN_M",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "EDW_TXN_M",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "MONGO",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "MONGO",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "ORACLE_M",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "ORACLE_M",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "EDW_M",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "EDW_M",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "SALES_PRED_RPT",
+						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "STREAM RESULT",
+								"activity": "EDW_TXN_M",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "EDW_M",
 								"dependencyConditions": [
 									"Succeeded"
 								]
 							}
 						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
 						"userProperties": [],
 						"typeProperties": {
-							"url": "https://prod-08.southeastasia.logic.azure.com:443/workflows/4d3633648b8e4170a54134728e1215fb/triggers/request/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Frequest%2Frun&sv=1.0&sig=H2ABmTH98dea6_SDk6_X9hSJ6NwxIun4UfYXoFTTdPQ",
-							"method": "POST",
-							"headers": {
-								"Content-Type": "application/json"
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
 							},
-							"body": {
-								"value": "{\n\"EmailTo\":\"sbpdl_int_202006@outlook.com\",\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"Asat_dt\":\"Jan 02, 2020\",\n\"StreamName\":\"EDW\"}\n",
-								"type": "Expression"
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "SALES_PRED",
+								"P_RUN_MODE": "N"
 							}
 						}
 					}
 				],
-				"parameters": {
-					"STREAM_NM": {
-						"type": "string",
-						"defaultValue": "EDW"
-					},
-					"STRAM_SEQ_ID": {
-						"type": "string",
-						"defaultValue": "4"
-					}
-				},
 				"folder": {
-					"name": "TEST"
+					"name": "SCHEDULE"
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ControlTable')]"
-			]
+			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MongoDb_CustGeo')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "MongoDb_CustGeo",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Collection_name": {
-						"type": "string",
-						"defaultValue": "999"
-					}
-				},
-				"annotations": [],
-				"type": "MongoDbV2Collection",
-				"schema": [],
-				"typeProperties": {
-					"collection": {
-						"value": "@dataset().Collection_name",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MongoDb_CustGeo')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MongoDb_ML_Detector')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "MongoDb_ML_Detector",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Collection_name": {
-						"type": "string",
-						"defaultValue": "999"
-					}
-				},
-				"annotations": [],
-				"type": "MongoDbV2Collection",
-				"schema": [],
-				"typeProperties": {
-					"collection": {
-						"value": "@dataset().Collection_name",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MongoDb_ML_Detector')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/NetezzaTable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Netezza",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "NetezzaTable",
-				"schema": [],
-				"typeProperties": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Netezza')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleTable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Oracle",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "OracleTable",
-				"schema": [],
-				"typeProperties": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Oracle')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CHECK SOURCE')]",
+			"name": "[concat(parameters('factoryName'), '/TEST DATABRICKS')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Lookup1",
-						"type": "Lookup",
+						"name": "test",
+						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
@@ -1205,17 +827,11 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "NetezzaSource",
-								"query": "SELECT DISTINCT CAST(DATE AS DATE) AS BUS_DATE FROM ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2016TO2017 WHERE ASAT_DT  <= TO_DATE('2020-08-03','YYYY-MM-DD') ",
-								"partitionOption": "DataSlice"
-							},
-							"dataset": {
-								"referenceName": "NetezzaTable",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
+							"notebookPath": "/Users/sbpdl_int_202006@outlook.com/createmodel"
+						},
+						"linkedServiceName": {
+							"referenceName": "Databrickslinked",
+							"type": "LinkedServiceReference"
 						}
 					}
 				],
@@ -1225,8 +841,26 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/NetezzaTable')]"
+				"[concat(variables('factoryId'), '/linkedServices/Databrickslinked')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Databrickslinked')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-8889427580922704.4.azuredatabricks.net/",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "**********"
+					},
+					"existingClusterId": "0818-022253-knock288"
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }

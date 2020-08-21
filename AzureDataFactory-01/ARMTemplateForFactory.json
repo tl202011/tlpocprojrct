@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Oracle'"
 		},
+		"OracleTest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'OracleTest'"
+		},
 		"SqlServer1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
@@ -52,6 +56,41 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/TRIGGER_M')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "SCHEDULE_M",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Month",
+						"interval": 1,
+						"startTime": "2020-08-21T18:00:00.000Z",
+						"timeZone": "UTC",
+						"schedule": {
+							"monthDays": [
+								-1
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/SCHEDULE_M')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CHECK SOURCE')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -3686,121 +3725,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RUN_SCHEDULE')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ORACLE_D",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "STREAM_COMMON",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"P_STREAM_NM": "ORACLE_d",
-								"P_RUN_MODE": "N"
-							}
-						}
-					},
-					{
-						"name": "EDW_D",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "STREAM_COMMON",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"P_STREAM_NM": "EDW_D",
-								"P_RUN_MODE": "N"
-							}
-						}
-					},
-					{
-						"name": "EDW_TXN_M",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "STREAM_COMMON",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"P_STREAM_NM": "EDW_TXN_M",
-								"P_RUN_MODE": "N"
-							}
-						}
-					},
-					{
-						"name": "MONGO",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "STREAM_COMMON",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"P_STREAM_NM": "MONGO",
-								"P_RUN_MODE": "N"
-							}
-						}
-					},
-					{
-						"name": "ORACLE_M",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "STREAM_COMMON",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"P_STREAM_NM": "ORACLE_M",
-								"P_RUN_MODE": "N"
-							}
-						}
-					},
-					{
-						"name": "EDW_M",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "STREAM_COMMON",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"P_STREAM_NM": "EDW_M",
-								"P_RUN_MODE": "N"
-							}
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/STREAM_COMMON')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/SALES_PRED_RPT')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -4434,12 +4358,179 @@
 						"defaultValue": "19000101"
 					}
 				},
+				"folder": {
+					"name": "CUSTOM JOB"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Databrickslinked')]",
 				"[concat(variables('factoryId'), '/datasets/ControlTable')]",
 				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SCHEDULE_D')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ORACLE_D",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "ORACLE_d",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "EDW_D",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "EDW_D",
+								"P_RUN_MODE": "N"
+							}
+						}
+					}
+				],
+				"folder": {
+					"name": "SCHEDULE"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/STREAM_COMMON')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SCHEDULE_M')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "EDW_TXN_M",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "EDW_TXN_M",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "MONGO",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "MONGO",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "ORACLE_M",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "ORACLE_M",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "EDW_M",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "EDW_M",
+								"P_RUN_MODE": "N"
+							}
+						}
+					},
+					{
+						"name": "SALES_PRED_RPT",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EDW_TXN_M",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "EDW_M",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "SALES_PRED",
+								"P_RUN_MODE": "N"
+							}
+						}
+					}
+				],
+				"folder": {
+					"name": "SCHEDULE"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/STREAM_COMMON')]"
 			]
 		},
 		{
@@ -4985,6 +5076,42 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TEST DATABRICKS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "test",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/sbpdl_int_202006@outlook.com/createmodel"
+						},
+						"linkedServiceName": {
+							"referenceName": "Databrickslinked",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Databrickslinked')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/TEST EMAIL')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -5191,39 +5318,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/databricks')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "test",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Users/sbpdl_int_202006@outlook.com/createmodel"
-						},
-						"linkedServiceName": {
-							"referenceName": "Databrickslinked",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Databrickslinked')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ControlTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5409,17 +5503,12 @@
 				"annotations": [],
 				"type": "AzureDatabricks",
 				"typeProperties": {
-					"domain": "https://adb-542410929817436.16.azuredatabricks.net",
+					"domain": "https://adb-8889427580922704.4.azuredatabricks.net/",
 					"accessToken": {
 						"type": "SecureString",
 						"value": "[parameters('Databrickslinked_accessToken')]"
 					},
-					"newClusterNodeType": "Standard_DS3_v2",
-					"newClusterNumOfWorker": "2",
-					"newClusterSparkEnvVars": {
-						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
-					},
-					"newClusterVersion": "6.5.x-scala2.11"
+					"existingClusterId": "0818-022253-knock288"
 				}
 			},
 			"dependsOn": []
@@ -5503,6 +5592,25 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/OracleTest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Oracle",
+				"typeProperties": {
+					"connectionString": "[parameters('OracleTest_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeSBP",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SqlServer1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -5516,27 +5624,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2020-07-06T07:10:00.000Z",
-						"timeZone": "UTC"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"name": "[concat(parameters('factoryName'), '/TRIGGER_D')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -5545,7 +5633,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "RUN_SCHEDULE",
+							"referenceName": "SCHEDULE_D",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -5556,13 +5644,13 @@
 					"recurrence": {
 						"frequency": "Day",
 						"interval": 1,
-						"startTime": "2020-07-15T09:00:00.000Z",
+						"startTime": "2020-08-21T17:00:00.000Z",
 						"timeZone": "UTC"
 					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/RUN_SCHEDULE')]"
+				"[concat(variables('factoryId'), '/pipelines/SCHEDULE_D')]"
 			]
 		},
 		{

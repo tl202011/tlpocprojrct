@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Oracle'"
 		},
+		"OracleTest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'OracleTest'"
+		},
 		"SqlServer1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
@@ -94,6 +98,9 @@
 					},
 					"Oracle_connectionString": {
 						"value": "[parameters('Oracle_connectionString')]"
+					},
+					"OracleTest_connectionString": {
+						"value": "[parameters('OracleTest_connectionString')]"
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"

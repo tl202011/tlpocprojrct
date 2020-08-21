@@ -23,6 +23,9 @@
 		"Oracle_connectionString": {
 			"value": ""
 		},
+		"OracleTest_connectionString": {
+			"value": ""
+		},
 		"SqlServer1_connectionString": {
 			"value": ""
 		},
