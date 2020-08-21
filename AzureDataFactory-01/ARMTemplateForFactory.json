@@ -57,41 +57,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/TRIGGER_M')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "SCHEDULE_M",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Month",
-						"interval": 1,
-						"startTime": "2020-08-21T18:00:00.000Z",
-						"timeZone": "UTC",
-						"schedule": {
-							"monthDays": [
-								-1
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/SCHEDULE_M')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/CHECK SOURCE')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -112,7 +77,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "SELECT DISTINCT CAST(DATE AS DATE) AS BUS_DATE FROM ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2016TO2017 WHERE ASAT_DT  <= TO_DATE('2020-08-03','YYYY-MM-DD') ",
+								"query": "select * from ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2014TO2015",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
@@ -2121,10 +2086,7 @@
 												},
 												"waitOnCompletion": true,
 												"parameters": {
-													"P_SRC_TBL": {
-														"value": "@pipeline().parameters.P_SRC_TBL",
-														"type": "Expression"
-													},
+													"P_SRC_TBL": "T_SALES_ACTUAL_TG",
 													"P_PATH": {
 														"value": "@pipeline().parameters.P_PATH",
 														"type": "Expression"
@@ -5622,36 +5584,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TRIGGER_D')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "SCHEDULE_D",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2020-08-21T17:00:00.000Z",
-						"timeZone": "UTC"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/SCHEDULE_D')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/integrationRuntimeSBP')]",
