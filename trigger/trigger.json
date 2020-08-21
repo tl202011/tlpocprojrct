@@ -2,19 +2,8 @@
 	"name": "trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "RUN_STREAM",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"P_STREAM_NM": "EDW",
-					"P_RUN_MODE": "N"
-				}
-			}
-		],
+		"runtimeState": "Stopped",
+		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
