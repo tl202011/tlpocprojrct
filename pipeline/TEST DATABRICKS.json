@@ -1,5 +1,5 @@
 {
-	"name": "databricks",
+	"name": "TEST DATABRICKS",
 	"properties": {
 		"activities": [
 			{
@@ -23,6 +23,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "TEST"
+		},
 		"annotations": []
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"

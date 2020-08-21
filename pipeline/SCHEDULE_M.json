@@ -101,6 +101,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "SCHEDULE"
+		},
 		"annotations": []
 	}
 }

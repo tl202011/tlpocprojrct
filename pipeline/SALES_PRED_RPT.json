@@ -68,7 +68,8 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
@@ -123,7 +124,8 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
@@ -165,7 +167,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1/0",
-									"queryTimeout": "02:00:00"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"dataset": {
 									"referenceName": "ControlTable",
@@ -191,7 +194,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1",
-									"queryTimeout": "02:00:00"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"dataset": {
 									"referenceName": "ControlTable",
@@ -248,7 +252,8 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
@@ -290,7 +295,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1/0",
-									"queryTimeout": "02:00:00"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"dataset": {
 									"referenceName": "ControlTable",
@@ -316,7 +322,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1",
-									"queryTimeout": "02:00:00"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"dataset": {
 									"referenceName": "ControlTable",
@@ -615,6 +622,9 @@
 				"type": "String",
 				"defaultValue": "19000101"
 			}
+		},
+		"folder": {
+			"name": "CUSTOM JOB"
 		},
 		"annotations": []
 	}
