@@ -1,41 +1,7 @@
 {
-	"name": "RUN_SCHEDULE",
+	"name": "SCHEDULE_M",
 	"properties": {
 		"activities": [
-			{
-				"name": "ORACLE_D",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "STREAM_COMMON",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"P_STREAM_NM": "ORACLE_d",
-						"P_RUN_MODE": "N"
-					}
-				}
-			},
-			{
-				"name": "EDW_D",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "STREAM_COMMON",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"P_STREAM_NM": "EDW_D",
-						"P_RUN_MODE": "N"
-					}
-				}
-			},
 			{
 				"name": "EDW_TXN_M",
 				"type": "ExecutePipeline",
@@ -110,12 +76,6 @@
 				"dependsOn": [
 					{
 						"activity": "EDW_TXN_M",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "EDW_D",
 						"dependencyConditions": [
 							"Succeeded"
 						]
