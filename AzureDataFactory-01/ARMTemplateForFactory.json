@@ -77,7 +77,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "select * from ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2014TO2015",
+								"query": "SELECT * FROM ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2016TO2017",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
@@ -2086,7 +2086,10 @@
 												},
 												"waitOnCompletion": true,
 												"parameters": {
-													"P_SRC_TBL": "T_SALES_ACTUAL_TG",
+													"P_SRC_TBL": {
+														"value": "@pipeline().parameters.P_SRC_TBL",
+														"type": "Expression"
+													},
 													"P_PATH": {
 														"value": "@pipeline().parameters.P_PATH",
 														"type": "Expression"
