@@ -235,7 +235,7 @@
 													},
 													"sink": {
 														"name": "detectResult",
-														"type": "Byte"
+														"type": "String"
 													}
 												},
 												{
@@ -249,7 +249,7 @@
 												}
 											],
 											"collectionReference": "",
-											"mapComplexValuesToString": false
+											"mapComplexValuesToString": true
 										}
 									},
 									"inputs": [
