@@ -41,16 +41,6 @@
 										},
 										"enableStaging": false,
 										"enableSkipIncompatibleRow": true,
-										"logStorageSettings": {
-											"linkedServiceName": {
-												"referenceName": "AzureDataLakeStorage1",
-												"type": "LinkedServiceReference"
-											},
-											"path": {
-												"value": "@concat('getlocationfacerecognition/',pipeline().parameters.P_SRC_TBL,'/faultlogs')",
-												"type": "Expression"
-											}
-										},
 										"translator": {
 											"type": "TabularTranslator",
 											"mappings": [
