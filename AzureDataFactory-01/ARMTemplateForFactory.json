@@ -2792,6 +2792,7 @@
 													}
 												},
 												"enableStaging": false,
+												"enableSkipIncompatibleRow": true,
 												"translator": {
 													"type": "TabularTranslator",
 													"mappings": [
@@ -2949,6 +2950,7 @@
 													}
 												},
 												"enableStaging": false,
+												"enableSkipIncompatibleRow": true,
 												"translator": {
 													"type": "TabularTranslator",
 													"mappings": [
@@ -3715,7 +3717,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Users/sbpdl_int_202006@outlook.com/Test1"
+							"notebookPath": "/Users/perath.c@outlook.com/Notebook-01"
 						},
 						"linkedServiceName": {
 							"referenceName": "Databrickslinked",
@@ -5059,7 +5061,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Users/sbpdl_int_202006@outlook.com/createmodel"
+							"notebookPath": "/Users/perath.c@outlook.com/Notebook-01"
 						},
 						"linkedServiceName": {
 							"referenceName": "Databrickslinked",
@@ -5468,12 +5470,17 @@
 				"annotations": [],
 				"type": "AzureDatabricks",
 				"typeProperties": {
-					"domain": "https://adb-8889427580922704.4.azuredatabricks.net/",
+					"domain": "https://adb-8889427580922704.4.azuredatabricks.net",
 					"accessToken": {
 						"type": "SecureString",
 						"value": "[parameters('Databrickslinked_accessToken')]"
 					},
-					"existingClusterId": "0818-022253-knock288"
+					"newClusterNodeType": "Standard_DS3_v2",
+					"newClusterNumOfWorker": "2:5",
+					"newClusterSparkEnvVars": {
+						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+					},
+					"newClusterVersion": "7.0.x-scala2.12"
 				}
 			},
 			"dependsOn": []
