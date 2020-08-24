@@ -22,7 +22,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/sbpdl_int_202006@outlook.com/Test1"
+					"notebookPath": "/Users/perath.c@outlook.com/Notebook-01"
 				},
 				"linkedServiceName": {
 					"referenceName": "Databrickslinked",
