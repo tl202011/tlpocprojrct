@@ -2950,7 +2950,7 @@
 													}
 												},
 												"enableStaging": false,
-												"enableSkipIncompatibleRow": true,
+												"enableSkipIncompatibleRow": false,
 												"translator": {
 													"type": "TabularTranslator",
 													"mappings": [
@@ -2987,7 +2987,7 @@
 															},
 															"sink": {
 																"name": "detectResult",
-																"type": "Byte"
+																"type": "String"
 															}
 														},
 														{
@@ -3001,7 +3001,7 @@
 														}
 													],
 													"collectionReference": "",
-													"mapComplexValuesToString": false
+													"mapComplexValuesToString": true
 												}
 											},
 											"inputs": [
@@ -5176,6 +5176,125 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ControlTable')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TEST MONGO')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "COPY FaceExtension",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MongoDbV2Source",
+								"batchSize": 100
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['_id']['$oid']"
+										},
+										"sink": {
+											"name": "_id",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Timestamp']"
+										},
+										"sink": {
+											"name": "Timestamp",
+											"type": "Int64"
+										}
+									},
+									{
+										"source": {
+											"path": "$['base64']"
+										},
+										"sink": {
+											"name": "base64",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['__v']"
+										},
+										"sink": {
+											"name": "__v",
+											"type": "Int64"
+										}
+									},
+									{
+										"source": {
+											"path": "$['detectResult']"
+										},
+										"sink": {
+											"name": "detectResult1",
+											"type": "String"
+										}
+									}
+								],
+								"collectionReference": "",
+								"mapComplexValuesToString": true
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MongoDb_ML_Detector",
+								"type": "DatasetReference",
+								"parameters": {
+									"Collection_name": "FaceExtension"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ParquetFile",
+								"type": "DatasetReference",
+								"parameters": {
+									"file_name": "FaceExtension",
+									"path": "getlocationfacerecognition",
+									"asatdt": {
+										"value": "19000101",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MongoDb_ML_Detector')]",
+				"[concat(variables('factoryId'), '/datasets/ParquetFile')]"
 			]
 		},
 		{
