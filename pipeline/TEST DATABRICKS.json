@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/sbpdl_int_202006@outlook.com/createmodel"
+					"notebookPath": "/Users/ramphaen@inteltion.com/testADF"
 				},
 				"linkedServiceName": {
 					"referenceName": "Databrickslinked",
