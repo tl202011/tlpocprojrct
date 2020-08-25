@@ -1179,7 +1179,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "SELECT * FROM ODS.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2016TO2017",
+								"query": "SELECT * from ods.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2014TO2015",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
