@@ -474,7 +474,10 @@
 										},
 										"waitOnCompletion": true,
 										"parameters": {
-											"P_SRC_TBL": "T_SALES_ACTUAL_TG",
+											"P_SRC_TBL": {
+												"value": "@pipeline().parameters.P_SRC_TBL",
+												"type": "Expression"
+											},
 											"P_PATH": {
 												"value": "@pipeline().parameters.P_PATH",
 												"type": "Expression"
