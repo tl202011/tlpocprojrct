@@ -3363,6 +3363,10 @@
 														"P_STREAM_SEQ_ID": {
 															"value": "@variables('V_STREAM_SEQ_ID')",
 															"type": "Expression"
+														},
+														"P_AS_AT_DT": {
+															"value": "@variables('V_AS_AT_DT')",
+															"type": "Expression"
 														}
 													}
 												}

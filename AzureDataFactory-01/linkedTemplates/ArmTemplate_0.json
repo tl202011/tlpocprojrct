@@ -560,7 +560,7 @@
 									"P_AS_AT_DT": {
 										"type": "String",
 										"value": {
-											"value": "@variables('V_AS_AT_DT')",
+											"value": "@pipeline().parameters.P_AS_AT_DT",
 											"type": "Expression"
 										}
 									},
@@ -933,6 +933,10 @@
 					"P_STREAM_SEQ_ID": {
 						"type": "string",
 						"defaultValue": "-999"
+					},
+					"P_AS_AT_DT": {
+						"type": "string",
+						"defaultValue": "19000101"
 					}
 				},
 				"variables": {
@@ -947,10 +951,6 @@
 					"V_STREAM_RESULT": {
 						"type": "String",
 						"defaultValue": "-999"
-					},
-					"V_AS_AT_DT": {
-						"type": "String",
-						"defaultValue": "19000101"
 					}
 				},
 				"folder": {
