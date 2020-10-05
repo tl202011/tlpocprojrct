@@ -1,0 +1,28 @@
+{
+	"name": "SCHEDULE_RPT",
+	"properties": {
+		"activities": [
+			{
+				"name": "SALES_PRED_RPT",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "SALES_PRED",
+						"P_RUN_MODE": "N"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "SCHEDULE"
+		},
+		"annotations": []
+	}
+}

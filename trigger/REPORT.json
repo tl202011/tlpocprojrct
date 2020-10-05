@@ -1,0 +1,30 @@
+{
+	"name": "REPORT",
+	"properties": {
+		"description": "Report 13:00(UTC+7) T+4",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "SCHEDULE_RPT",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2020-10-05T06:00:00.000Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"monthDays": [
+						4
+					]
+				}
+			}
+		}
+	}
+}
