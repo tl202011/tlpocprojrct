@@ -1,0 +1,25 @@
+{
+	"name": "MONTHLY",
+	"properties": {
+		"description": "Monthly 8:00(UTC+7) T+3",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "SCHEDULE_M",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2020-10-05T01:00:00.000Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
