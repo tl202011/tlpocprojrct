@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "NetezzaSource",
-						"query": "SELECT * from ods.T_SALES_ACTUAL_TG_HISTORY_DATA_YYYY2014TO2015",
+						"query": "SELECT * from ods.SALES_DW_SD_CUST_GEN",
 						"partitionOption": "DataSlice"
 					},
 					"dataset": {
