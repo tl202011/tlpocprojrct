@@ -1,0 +1,17 @@
+{
+	"name": "Mongo_CustGeo",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "CosmosDbMongoDbApi",
+		"typeProperties": {
+			"connectionString": "mongodb://readAnyData:@10.7.10.40/ML_Detector",
+			"database": "CustGeo",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3Mzc4Yzc4ZC05YzMzLTRlMDgtYWYzNi01YTcxMDQyMTYyYTAiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntimeSBP",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
