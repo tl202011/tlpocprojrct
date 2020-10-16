@@ -16,13 +16,16 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MongoDbV2Source",
+						"type": "CosmosDbMongoDbApiSource",
 						"batchSize": 100
 					},
 					"sink": {
 						"type": "ParquetSink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
 						}
 					},
 					"enableStaging": false,
@@ -82,10 +85,10 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "MongoDb_ML_Detector",
+						"referenceName": "Mongo_ML_Detector",
 						"type": "DatasetReference",
 						"parameters": {
-							"Collection_name": "FaceExtension"
+							"P_TBL_NM": "FaceExtension"
 						}
 					}
 				],
