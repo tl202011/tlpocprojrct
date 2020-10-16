@@ -1,0 +1,23 @@
+{
+	"name": "Mongo_ML_Detector",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Mongo_ML_Detector",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_TBL_NM": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "CosmosDbMongoDbApiCollection",
+		"schema": [],
+		"typeProperties": {
+			"collection": {
+				"value": "@dataset().P_TBL_NM",
+				"type": "Expression"
+			}
+		}
+	}
+}

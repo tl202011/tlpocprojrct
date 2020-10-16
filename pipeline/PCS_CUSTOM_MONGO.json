@@ -30,13 +30,16 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "MongoDbV2Source",
+											"type": "CosmosDbMongoDbApiSource",
 											"batchSize": 100
 										},
 										"sink": {
 											"type": "ParquetSink",
 											"storeSettings": {
 												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
 											}
 										},
 										"enableStaging": false,
@@ -76,10 +79,10 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "MongoDb_ML_Detector",
+											"referenceName": "Mongo_ML_Detector",
 											"type": "DatasetReference",
 											"parameters": {
-												"Collection_name": "MapFaceRegFaceExtention"
+												"P_TBL_NM": "MapFaceRegFaceExtention"
 											}
 										}
 									],
@@ -188,13 +191,16 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "MongoDbV2Source",
+											"type": "CosmosDbMongoDbApiSource",
 											"batchSize": 100
 										},
 										"sink": {
 											"type": "ParquetSink",
 											"storeSettings": {
 												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
 											}
 										},
 										"enableStaging": false,
@@ -254,10 +260,10 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "MongoDb_ML_Detector",
+											"referenceName": "Mongo_ML_Detector",
 											"type": "DatasetReference",
 											"parameters": {
-												"Collection_name": "FaceExtension"
+												"P_TBL_NM": "FaceExtension"
 											}
 										}
 									],
@@ -431,14 +437,16 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "MongoDbV2Source",
-											"batchSize": 100,
-											"filter": ""
+											"type": "CosmosDbMongoDbApiSource",
+											"batchSize": 100
 										},
 										"sink": {
 											"type": "ParquetSink",
 											"storeSettings": {
 												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
 											}
 										},
 										"enableStaging": false,
@@ -623,10 +631,10 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "MongoDb_ML_Detector",
+											"referenceName": "Mongo_ML_Detector",
 											"type": "DatasetReference",
 											"parameters": {
-												"Collection_name": "FaceRecognition"
+												"P_TBL_NM": "FaceRecognition"
 											}
 										}
 									],
@@ -670,14 +678,16 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "MongoDbV2Source",
-											"batchSize": 100,
-											"filter": ""
+											"type": "CosmosDbMongoDbApiSource",
+											"batchSize": 100
 										},
 										"sink": {
 											"type": "ParquetSink",
 											"storeSettings": {
 												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
 											}
 										},
 										"enableStaging": false,
@@ -808,10 +818,10 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "MongoDb_CustGeo",
+											"referenceName": "Mongo_CustGeo",
 											"type": "DatasetReference",
 											"parameters": {
-												"Collection_name": "CustGeo"
+												"P_TBL_NM": "CustGeo"
 											}
 										}
 									],
