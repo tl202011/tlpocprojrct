@@ -1,10 +1,6 @@
 {
 	"name": "MongoDb_CustGeo",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "MongoDb_CustGeo",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"Collection_name": {
 				"type": "string",

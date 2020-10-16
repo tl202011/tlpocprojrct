@@ -1,10 +1,6 @@
 {
 	"name": "MongoDb_ML_Detector",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "MongoDb_ML_Detector",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"Collection_name": {
 				"type": "string",
