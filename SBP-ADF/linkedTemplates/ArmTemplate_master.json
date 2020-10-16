@@ -1,0 +1,139 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "SBP-ADF"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"Databrickslinked_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'Databrickslinked'"
+		},
+		"Mongo_CustGeo_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Mongo_CustGeo'"
+		},
+		"Mongo_ML_Detector_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Mongo_ML_Detector'"
+		},
+		"Netezza_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Netezza'"
+		},
+		"Oracle_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Oracle'"
+		},
+		"OracleTest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'OracleTest'"
+		},
+		"SqlServer1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sbpdisbigdata.dfs.core.windows.net"
+		},
+		"Mongo_CustGeo_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "CustGeo"
+		},
+		"Mongo_ML_Detector_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "ML_Detector"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "SBP-ADF_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"Databrickslinked_accessToken": {
+						"value": "[parameters('Databrickslinked_accessToken')]"
+					},
+					"SqlServer1_connectionString": {
+						"value": "[parameters('SqlServer1_connectionString')]"
+					},
+					"Mongo_CustGeo_connectionString": {
+						"value": "[parameters('Mongo_CustGeo_connectionString')]"
+					},
+					"Mongo_ML_Detector_connectionString": {
+						"value": "[parameters('Mongo_ML_Detector_connectionString')]"
+					},
+					"Netezza_connectionString": {
+						"value": "[parameters('Netezza_connectionString')]"
+					},
+					"Oracle_connectionString": {
+						"value": "[parameters('Oracle_connectionString')]"
+					},
+					"OracleTest_connectionString": {
+						"value": "[parameters('OracleTest_connectionString')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"Mongo_CustGeo_properties_typeProperties_database": {
+						"value": "[parameters('Mongo_CustGeo_properties_typeProperties_database')]"
+					},
+					"Mongo_ML_Detector_properties_typeProperties_database": {
+						"value": "[parameters('Mongo_ML_Detector_properties_typeProperties_database')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "SBP-ADF_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'SBP-ADF_ArmTemplate_0')]"
+			]
+		}
+	]
+}

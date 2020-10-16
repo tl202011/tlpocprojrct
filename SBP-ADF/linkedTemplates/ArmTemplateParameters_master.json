@@ -1,0 +1,48 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "SBP-ADF"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"Databrickslinked_accessToken": {
+			"value": ""
+		},
+		"Mongo_CustGeo_connectionString": {
+			"value": ""
+		},
+		"Mongo_ML_Detector_connectionString": {
+			"value": ""
+		},
+		"Netezza_connectionString": {
+			"value": ""
+		},
+		"Oracle_connectionString": {
+			"value": ""
+		},
+		"OracleTest_connectionString": {
+			"value": ""
+		},
+		"SqlServer1_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://sbpdisbigdata.dfs.core.windows.net"
+		},
+		"Mongo_CustGeo_properties_typeProperties_database": {
+			"value": "CustGeo"
+		},
+		"Mongo_ML_Detector_properties_typeProperties_database": {
+			"value": "ML_Detector"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
