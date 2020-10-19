@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Daily 8:00(UTC+7) T+1",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
