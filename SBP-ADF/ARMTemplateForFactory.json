@@ -5739,7 +5739,7 @@
 			"properties": {
 				"description": "Daily 8:00(UTC+7) T+1",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -5755,7 +5755,8 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2020-10-05T01:00:00.000Z",
-						"timeZone": "UTC"
+						"timeZone": "UTC",
+						"schedule": {}
 					}
 				}
 			},
