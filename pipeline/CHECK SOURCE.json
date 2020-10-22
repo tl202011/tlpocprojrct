@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "NetezzaSource",
-						"query": "SELECT * from ods.SALES_DW_SD_CUST_GEN",
+						"query": "SELECT distinct asat_dt from ods.T_SALES_ACTUAL_TG ",
 						"partitionOption": "DataSlice"
 					},
 					"dataset": {
