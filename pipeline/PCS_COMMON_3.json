@@ -475,7 +475,7 @@
 										"waitOnCompletion": true,
 										"parameters": {
 											"P_SRC_TBL": {
-												"value": "@pipeline().parameters.P_SRC_TBL",
+												"value": "T_SALES_ACTUAL_TG",
 												"type": "Expression"
 											},
 											"P_PATH": {
