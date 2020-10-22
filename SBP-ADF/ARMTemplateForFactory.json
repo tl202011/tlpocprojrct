@@ -2087,7 +2087,7 @@
 												"waitOnCompletion": true,
 												"parameters": {
 													"P_SRC_TBL": {
-														"value": "@pipeline().parameters.P_SRC_TBL",
+														"value": "T_SALES_ACTUAL_TG",
 														"type": "Expression"
 													},
 													"P_PATH": {
@@ -5755,8 +5755,7 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2020-10-05T01:00:00.000Z",
-						"timeZone": "UTC",
-						"schedule": {}
+						"timeZone": "UTC"
 					}
 				}
 			},
