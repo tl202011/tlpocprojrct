@@ -77,7 +77,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "NetezzaSource",
-								"query": "SELECT * from ods.SALES_DW_SD_CUST_GEN",
+								"query": "SELECT distinct asat_dt from ods.T_SALES_ACTUAL_TG ",
 								"partitionOption": "DataSlice"
 							},
 							"dataset": {
@@ -1656,6 +1656,9 @@
 													"type": "ParquetSink",
 													"storeSettings": {
 														"type": "AzureBlobFSWriteSettings"
+													},
+													"formatSettings": {
+														"type": "ParquetWriteSettings"
 													}
 												},
 												"enableStaging": false
@@ -1673,7 +1676,7 @@
 													"type": "DatasetReference",
 													"parameters": {
 														"file_name": {
-															"value": "@pipeline().parameters.P_SRC_TBL",
+															"value": "T_SALES_ACTUAL_TG",
 															"type": "Expression"
 														},
 														"path": {
