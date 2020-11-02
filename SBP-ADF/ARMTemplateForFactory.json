@@ -4434,7 +4434,7 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"P_STREAM_NM": "MONGO",
+								"P_STREAM_NM": "MONGO_M",
 								"P_RUN_MODE": "N"
 							}
 						}
@@ -5757,7 +5757,7 @@
 					"recurrence": {
 						"frequency": "Day",
 						"interval": 1,
-						"startTime": "2020-10-05T01:00:00.000Z",
+						"startTime": "2020-10-05T01:00:00Z",
 						"timeZone": "UTC"
 					}
 				}
@@ -5788,7 +5788,7 @@
 					"recurrence": {
 						"frequency": "Day",
 						"interval": 1,
-						"startTime": "2020-10-05T01:00:00.000Z",
+						"startTime": "2020-10-05T01:00:00Z",
 						"timeZone": "UTC"
 					}
 				}
@@ -5819,7 +5819,7 @@
 					"recurrence": {
 						"frequency": "Month",
 						"interval": 1,
-						"startTime": "2020-10-05T06:00:00.000Z",
+						"startTime": "2020-10-05T06:00:00Z",
 						"timeZone": "UTC",
 						"schedule": {
 							"monthDays": [
