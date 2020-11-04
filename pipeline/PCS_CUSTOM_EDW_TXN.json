@@ -76,7 +76,8 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
@@ -135,7 +136,7 @@
 							],
 							"policy": {
 								"timeout": "7.00:00:00",
-								"retry": 0,
+								"retry": 1,
 								"retryIntervalInSeconds": 30,
 								"secureOutput": false,
 								"secureInput": false
@@ -154,6 +155,9 @@
 									"type": "ParquetSink",
 									"storeSettings": {
 										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
 									}
 								},
 								"enableStaging": false,
@@ -225,7 +229,8 @@
 											}
 										}
 									},
-									"queryTimeout": "02:00:00"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"dataset": {
 									"referenceName": "ControlTable",
@@ -282,7 +287,8 @@
 							"value": "@concat('select SUM(cast(value as int))\nas CNT_TGT from STRING_SPLIT\n(SUBSTRING(''',\nvariables('V_COUNT_EACH_TARGET'),'''\n, 2, LEN(''',\nvariables('V_COUNT_EACH_TARGET'),'''\n)-2) , '','' )  ')",
 							"type": "Expression"
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "ControlTable",
