@@ -2432,7 +2432,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
-													"value": "T_SALES_ACTUAL_TG",
+													"value": "@pipeline().parameters.P_SRC_TBL",
 													"type": "Expression"
 												},
 												"path": {
