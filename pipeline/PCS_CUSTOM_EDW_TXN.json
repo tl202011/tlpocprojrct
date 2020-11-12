@@ -182,7 +182,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"file_name": {
-											"value": "@pipeline().parameters.P_SRC_TBL",
+											"value": "T_SALES_ACTUAL_TG",
 											"type": "Expression"
 										},
 										"path": {
