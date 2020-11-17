@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Monthly 8:00(UTC+7) T+3",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
