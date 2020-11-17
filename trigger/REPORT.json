@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Report 13:00(UTC+7) T+4",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
