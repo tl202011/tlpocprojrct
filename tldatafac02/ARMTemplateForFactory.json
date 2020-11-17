@@ -837,8 +837,8 @@
 						}
 					},
 					{
-						"name": "GET RECONCILE",
-						"type": "Lookup",
+						"name": "CHECK RECONCILE",
+						"type": "IfCondition",
 						"dependsOn": [
 							{
 								"activity": "Copy data1",
@@ -847,59 +847,10 @@
 								]
 							}
 						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_CHK_RECONCILE]",
-								"storedProcedureParameters": {
-									"P_LOAD_ID": {
-										"type": "String",
-										"value": {
-											"value": "@pipeline().parameters.P_LOAD_ID",
-											"type": "Expression"
-										}
-									},
-									"P_PCS_NM": {
-										"type": "String",
-										"value": {
-											"value": "@pipeline().parameters.P_PCS_NM",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "SqlServerTable1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "CHECK RECONCILE",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "GET RECONCILE",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@equals(activity('GET RECONCILE').output.FIRSTROW.RECONCILE_F,'1')",
+								"value": "@equals(activity('Copy data1').output.dataRead,activity('Copy data1').output.dataWritten)",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
@@ -956,14 +907,14 @@
 							"storedProcedureParameters": {
 								"P_CNT_SRC": {
 									"value": {
-										"value": "@activity('GET RECONCILE').output.firstrow.CNT_SRC",
+										"value": "@activity('Copy data1').output.dataRead",
 										"type": "Expression"
 									},
 									"type": "String"
 								},
 								"P_CNT_TGT": {
 									"value": {
-										"value": "@activity('GET RECONCILE').output.firstrow.CNT_TGT",
+										"value": "@activity('Copy data1').output.dataWritten",
 										"type": "Expression"
 									},
 									"type": "String"
@@ -1021,14 +972,14 @@
 							"storedProcedureParameters": {
 								"P_CNT_SRC": {
 									"value": {
-										"value": "@activity('GET RECONCILE').output.firstrow.CNT_SRC",
+										"value": "@activity('Copy data1').output.dataRead",
 										"type": "Expression"
 									},
 									"type": "String"
 								},
 								"P_CNT_TGT": {
 									"value": {
-										"value": "@activity('GET RECONCILE').output.firstrow.CNT_TGT",
+										"value": "@activity('Copy data1').output.dataWritten",
 										"type": "Expression"
 									},
 									"type": "String"
