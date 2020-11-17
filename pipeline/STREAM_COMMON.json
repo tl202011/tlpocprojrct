@@ -69,10 +69,6 @@
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
-					"dataset": {
-						"referenceName": "ControlTable",
-						"type": "DatasetReference"
-					},
 					"firstRowOnly": false
 				}
 			},
@@ -216,7 +212,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": true
@@ -272,7 +268,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				}
@@ -357,7 +353,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": true
@@ -439,7 +435,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				}

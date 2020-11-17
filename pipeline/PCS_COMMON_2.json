@@ -36,11 +36,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1/0",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								}
 							}
 						}
@@ -62,11 +59,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								}
 							}
 						}
@@ -172,11 +166,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1/0",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								}
 							}
 						}
@@ -198,11 +189,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								}
 							}
 						}
@@ -243,11 +231,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1/0",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								}
 							}
 						}
@@ -269,11 +254,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								}
 							}
 						}
@@ -305,10 +287,11 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				}
@@ -357,10 +340,11 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				}
@@ -419,11 +403,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1/0",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								}
 							}
 						}
@@ -445,11 +426,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								}
 							}
 						}
@@ -502,10 +480,11 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				}
@@ -556,10 +535,11 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				}
@@ -780,10 +760,11 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				}
@@ -822,11 +803,8 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": "SELECT 1/0",
-									"queryTimeout": "02:00:00"
-								},
-								"dataset": {
-									"referenceName": "ControlTable",
-									"type": "DatasetReference"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								}
 							}
 						}
@@ -1061,10 +1039,11 @@
 								}
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				}
