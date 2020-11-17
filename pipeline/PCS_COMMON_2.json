@@ -38,6 +38,10 @@
 									"sqlReaderQuery": "SELECT 1/0",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -61,6 +65,10 @@
 									"sqlReaderQuery": "SELECT 1",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -168,6 +176,10 @@
 									"sqlReaderQuery": "SELECT 1/0",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -191,6 +203,10 @@
 									"sqlReaderQuery": "SELECT 1",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -233,6 +249,10 @@
 									"sqlReaderQuery": "SELECT 1/0",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -256,6 +276,10 @@
 									"sqlReaderQuery": "SELECT 1",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -405,6 +429,10 @@
 									"sqlReaderQuery": "SELECT 1/0",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -428,6 +456,10 @@
 									"sqlReaderQuery": "SELECT 1",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -726,7 +758,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "COPY",
+						"activity": "Copy data1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -805,6 +837,10 @@
 									"sqlReaderQuery": "SELECT 1/0",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -946,7 +982,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "COPY",
+						"activity": "Copy data1",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -998,112 +1034,6 @@
 				"linkedServiceName": {
 					"referenceName": "SqlServer1",
 					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "GET SELECT STATEMEMT",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "CHECK DNDP",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[CNTL].[PROC_GET_SELECT_STMT]",
-						"storedProcedureParameters": {
-							"P_AS_AT_DT": {
-								"type": "String",
-								"value": {
-									"value": "@variables('V_AS_AT_DT')",
-									"type": "Expression"
-								}
-							},
-							"P_PCS_NM": {
-								"type": "String",
-								"value": {
-									"value": "@pipeline().parameters.P_PCS_NM",
-									"type": "Expression"
-								}
-							}
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "SqlServerTable1",
-						"type": "DatasetReference"
-					}
-				}
-			},
-			{
-				"name": "COPY",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "GET SELECT STATEMEMT",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "PCS_COMMON_3",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"P_STREAM_NM": {
-							"value": "@variables('V_STREAM_NM')",
-							"type": "Expression"
-						},
-						"P_SOURCE_CNT_STMT": {
-							"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SRC_COUNT",
-							"type": "Expression"
-						},
-						"P_LOAD_ID": {
-							"value": "@pipeline().parameters.P_LOAD_ID",
-							"type": "Expression"
-						},
-						"P_PCS_NM": {
-							"value": "@pipeline().parameters.P_PCS_NM",
-							"type": "Expression"
-						},
-						"P_SOURCE_TABLE_STMT": {
-							"value": "@activity('GET SELECT STATEMEMT').output.firstrow.SELECT_STMT",
-							"type": "Expression"
-						},
-						"P_SRC_TBL": {
-							"value": "@variables('V_FILE_NAME')",
-							"type": "Expression"
-						},
-						"P_PATH": {
-							"value": "@variables('V_FILE_PATH')",
-							"type": "Expression"
-						},
-						"P_AS_AT_DT": {
-							"value": "@variables('V_AS_AT_DT')",
-							"type": "Expression"
-						},
-						"P_CONNECTION_NM": {
-							"value": "@variables('V_CONNECTION_NM')",
-							"type": "Expression"
-						}
-					}
 				}
 			},
 			{
@@ -1185,6 +1115,86 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "CHECK DNDP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": {
+								"value": "@variables('V_FILE_NAME')",
+								"type": "Expression"
+							},
+							"path": {
+								"value": "@variables('V_CONNECTION_NM')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DelimitedText2",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_container": {
+								"value": "@variables('V_FILE_PATH')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {

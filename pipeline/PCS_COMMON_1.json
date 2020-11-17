@@ -113,6 +113,10 @@
 									"sqlReaderQuery": "SELECT 1",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
 								}
 							}
 						}
