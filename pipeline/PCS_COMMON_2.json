@@ -3,138 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "CHECK PROCESS INFORMATION",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "GET PROCESS INFORMATION",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@equals(activity('GET PROCESS INFORMATION').output.FIRSTROW.CHECK_DATA_FLAG,'1')",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "ABORT CHECK PROCESS INFORMATION",
-							"type": "Lookup",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "SqlServerSource",
-									"sqlReaderQuery": "SELECT 1/0",
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
-								},
-								"dataset": {
-									"referenceName": "SqlServerTable1",
-									"type": "DatasetReference"
-								}
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "PASS CHECK PROCESS INFORMATION",
-							"type": "Lookup",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "SqlServerSource",
-									"sqlReaderQuery": "SELECT 1",
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
-								},
-								"dataset": {
-									"referenceName": "SqlServerTable1",
-									"type": "DatasetReference"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "UPDATE FAILED ON PROCESS",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "CHECK PROCESS INFORMATION",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[CNTL].[PROC_UDT_PCS]",
-					"storedProcedureParameters": {
-						"P_CNT_SRC": {
-							"value": null,
-							"type": "String"
-						},
-						"P_CNT_TGT": {
-							"value": null,
-							"type": "String"
-						},
-						"P_LOAD_ID": {
-							"value": {
-								"value": "@pipeline().parameters.P_LOAD_ID",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"P_PCS_NM": {
-							"value": {
-								"value": "@pipeline().parameters.P_PCS_NM",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"P_RMRK": {
-							"value": "PROCESS NOT AVAILABLE",
-							"type": "String"
-						},
-						"P_ST": {
-							"value": "FAILED",
-							"type": "String"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "SqlServer1",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
 				"name": "CHECK LATEST LOG",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -909,7 +777,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "CHECK PROCESS INFORMATION",
+						"activity": "GET PROCESS INFORMATION",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -929,7 +797,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "CHECK PROCESS INFORMATION",
+						"activity": "GET PROCESS INFORMATION",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -949,7 +817,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "CHECK PROCESS INFORMATION",
+						"activity": "GET PROCESS INFORMATION",
 						"dependencyConditions": [
 							"Succeeded"
 						]
