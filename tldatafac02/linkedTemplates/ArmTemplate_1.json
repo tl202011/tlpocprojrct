@@ -1455,43 +1455,6 @@
 						}
 					},
 					{
-						"name": "SEND EMAIL",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "GET EMAIL",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "STREAM RESULT",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "https://prod-20.southeastasia.logic.azure.com:443/workflows/61267f0ada454da3aa9658217d07979e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=LxoGk_XUYPdvS3st13Ax-XA6WLP6jtiZgJJS_xoFOfw",
-							"method": "POST",
-							"headers": {
-								"Content-Type": "application/json"
-							},
-							"body": {
-								"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\",\n\"Asat_dt\":\"@{activity('FINAL STREAM').output.firstrow.AS_AT_DT_FORMAT}\",\n\"StreamName\":\"@{pipeline().parameters.P_STREAM_NM}\"\n}",
-								"type": "Expression"
-							}
-						}
-					},
-					{
 						"name": "GET EMAIL",
 						"type": "Lookup",
 						"dependsOn": [
