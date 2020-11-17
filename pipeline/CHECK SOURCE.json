@@ -16,13 +16,22 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "NetezzaSource",
-						"query": "SELECT distinct asat_dt from ods.T_SALES_ACTUAL_TG ",
-						"partitionOption": "DataSlice"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"dataset": {
-						"referenceName": "NetezzaTable",
-						"type": "DatasetReference"
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": "card_info.csv",
+							"path": "TL-Sent_chun"
+						}
 					},
 					"firstRowOnly": false
 				}
