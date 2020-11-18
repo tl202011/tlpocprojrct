@@ -17,21 +17,6 @@
 		"FileServer1_password": {
 			"value": ""
 		},
-		"Mongo_CustGeo_connectionString": {
-			"value": ""
-		},
-		"Mongo_ML_Detector_connectionString": {
-			"value": ""
-		},
-		"Netezza_connectionString": {
-			"value": ""
-		},
-		"Oracle_connectionString": {
-			"value": ""
-		},
-		"OracleTest_connectionString": {
-			"value": ""
-		},
 		"SqlServer1_connectionString": {
 			"value": ""
 		},
@@ -43,12 +28,6 @@
 		},
 		"FileServer1_properties_typeProperties_userId": {
 			"value": "admin"
-		},
-		"Mongo_CustGeo_properties_typeProperties_database": {
-			"value": "CustGeo"
-		},
-		"Mongo_ML_Detector_properties_typeProperties_database": {
-			"value": "ML_Detector"
 		}
 	}
 }

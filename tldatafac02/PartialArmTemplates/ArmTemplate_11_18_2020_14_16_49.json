@@ -68,6 +68,31 @@
 				},
 				"annotations": []
 			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Databrickslinked')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Databrickslinked')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-6632200347325520.0.azuredatabricks.net/",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "**********"
+					},
+					"newClusterNodeType": "Standard_DS3_v2",
+					"newClusterNumOfWorker": "2:5",
+					"newClusterSparkEnvVars": {
+						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+					},
+					"newClusterVersion": "7.1.x-scala2.12"
+				}
+			},
 			"dependsOn": []
 		}
 	]

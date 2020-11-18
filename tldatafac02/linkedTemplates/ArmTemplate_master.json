@@ -23,26 +23,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'FileServer1'"
 		},
-		"Mongo_CustGeo_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Mongo_CustGeo'"
-		},
-		"Mongo_ML_Detector_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Mongo_ML_Detector'"
-		},
-		"Netezza_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Netezza'"
-		},
-		"Oracle_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Oracle'"
-		},
-		"OracleTest_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'OracleTest'"
-		},
 		"SqlServer1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
@@ -58,14 +38,6 @@
 		"FileServer1_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "admin"
-		},
-		"Mongo_CustGeo_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "CustGeo"
-		},
-		"Mongo_ML_Detector_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "ML_Detector"
 		},
 		"containerUri": {
 			"type": "string",
@@ -109,21 +81,6 @@
 					"FileServer1_password": {
 						"value": "[parameters('FileServer1_password')]"
 					},
-					"Mongo_CustGeo_connectionString": {
-						"value": "[parameters('Mongo_CustGeo_connectionString')]"
-					},
-					"Mongo_ML_Detector_connectionString": {
-						"value": "[parameters('Mongo_ML_Detector_connectionString')]"
-					},
-					"Netezza_connectionString": {
-						"value": "[parameters('Netezza_connectionString')]"
-					},
-					"Oracle_connectionString": {
-						"value": "[parameters('Oracle_connectionString')]"
-					},
-					"OracleTest_connectionString": {
-						"value": "[parameters('OracleTest_connectionString')]"
-					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
@@ -132,12 +89,6 @@
 					},
 					"FileServer1_properties_typeProperties_userId": {
 						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
-					},
-					"Mongo_CustGeo_properties_typeProperties_database": {
-						"value": "[parameters('Mongo_CustGeo_properties_typeProperties_database')]"
-					},
-					"Mongo_ML_Detector_properties_typeProperties_database": {
-						"value": "[parameters('Mongo_ML_Detector_properties_typeProperties_database')]"
 					}
 				}
 			},

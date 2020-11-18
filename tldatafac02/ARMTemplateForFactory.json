@@ -23,26 +23,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'FileServer1'"
 		},
-		"Mongo_CustGeo_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Mongo_CustGeo'"
-		},
-		"Mongo_ML_Detector_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Mongo_ML_Detector'"
-		},
-		"Netezza_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Netezza'"
-		},
-		"Oracle_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Oracle'"
-		},
-		"OracleTest_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'OracleTest'"
-		},
 		"SqlServer1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
@@ -58,14 +38,6 @@
 		"FileServer1_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "admin"
-		},
-		"Mongo_CustGeo_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "CustGeo"
-		},
-		"Mongo_ML_Detector_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "ML_Detector"
 		}
 	},
 	"variables": {
@@ -120,6 +92,67 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MAIN_BATCH')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "STREAM_COMMON",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "SENT_RISK",
+								"P_RUN_MODE": "R"
+							}
+						}
+					},
+					{
+						"name": "Life Insurance Assessment from unknown business",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "STREAM_COMMON",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Life Insurance Assessment from unknown business"
+						},
+						"linkedServiceName": {
+							"referenceName": "Databrickslinked",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"folder": {
+					"name": "COMMON JOB"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/STREAM_COMMON')]",
+				"[concat(variables('factoryId'), '/linkedServices/Databrickslinked')]"
 			]
 		},
 		{
@@ -2124,7 +2157,7 @@
 				"annotations": [],
 				"type": "AzureDatabricks",
 				"typeProperties": {
-					"domain": "https://adb-876318075841227.7.azuredatabricks.net",
+					"domain": "https://adb-6632200347325520.0.azuredatabricks.net/",
 					"accessToken": {
 						"type": "SecureString",
 						"value": "[parameters('Databrickslinked_accessToken')]"
@@ -2134,7 +2167,7 @@
 					"newClusterSparkEnvVars": {
 						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
 					},
-					"newClusterVersion": "7.0.x-scala2.12"
+					"newClusterVersion": "7.1.x-scala2.12"
 				}
 			},
 			"dependsOn": []
@@ -2161,103 +2194,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Mongo_CustGeo')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "CosmosDbMongoDbApi",
-				"typeProperties": {
-					"connectionString": "[parameters('Mongo_CustGeo_connectionString')]",
-					"database": "[parameters('Mongo_CustGeo_properties_typeProperties_database')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Mongo_ML_Detector')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "CosmosDbMongoDbApi",
-				"typeProperties": {
-					"connectionString": "[parameters('Mongo_ML_Detector_connectionString')]",
-					"database": "[parameters('Mongo_ML_Detector_properties_typeProperties_database')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Netezza')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Netezza",
-				"typeProperties": {
-					"connectionString": "[parameters('Netezza_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Oracle')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Oracle",
-				"typeProperties": {
-					"connectionString": "[parameters('Oracle_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OracleTest')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Oracle",
-				"typeProperties": {
-					"connectionString": "[parameters('OracleTest_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeSBP",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeSBP')]"
 			]
 		},
 		{
