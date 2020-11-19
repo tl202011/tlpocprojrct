@@ -921,7 +921,7 @@
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
-								"activity": "CHECK RECONCILE",
+								"activity": "CHECK RECONCILE_copy2",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1264,6 +1264,187 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "Copy data2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "CHECK RECONCILE",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText3",
+								"type": "DatasetReference",
+								"parameters": {
+									"filename": "@variables('V_FILE_NAME')",
+									"path": "@variables('V_CONNECTION_NM')"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Parquet1",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_container": "@variables('V_FILE_PATH')"
+								}
+							}
+						]
+					},
+					{
+						"name": "CHECK RECONCILE_copy2",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Copy data2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Copy data2').output.dataRead,activity('Copy data2').output.dataWritten)",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "ABORT CHECK RECONCILE_copy1",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": "SELECT 1/0",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "SqlServerTable1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "UPDATE FAILED ON RECONCILE_copy1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "CHECK RECONCILE_copy2",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+							"storedProcedureParameters": {
+								"P_CNT_SRC": {
+									"value": {
+										"value": "@activity('Copy data1').output.dataRead",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_CNT_TGT": {
+									"value": {
+										"value": "@activity('Copy data1').output.dataWritten",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_LOAD_ID": {
+									"value": {
+										"value": "@pipeline().parameters.P_LOAD_ID",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_PCS_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_RMRK": {
+									"value": "RECONCILE FAILED",
+									"type": "String"
+								},
+								"P_ST": {
+									"value": "FAILED",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"parameters": {
@@ -1315,7 +1496,9 @@
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable1')]",
 				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
 				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
-				"[concat(variables('factoryId'), '/datasets/DelimitedText2')]"
+				"[concat(variables('factoryId'), '/datasets/DelimitedText2')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText3')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet1')]"
 			]
 		},
 		{
@@ -2094,6 +2277,593 @@
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string",
+						"defaultValue": "card_info.csv"
+					},
+					"path": {
+						"type": "string",
+						"defaultValue": "tlsentchun"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().path",
+							"type": "Expression"
+						},
+						"container": "tlstroage"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Id",
+						"type": "String"
+					},
+					{
+						"name": "Product_Info_1",
+						"type": "String"
+					},
+					{
+						"name": "Product_Info_2",
+						"type": "String"
+					},
+					{
+						"name": "Product_Info_3",
+						"type": "String"
+					},
+					{
+						"name": "Product_Info_4",
+						"type": "String"
+					},
+					{
+						"name": "Product_Info_5",
+						"type": "String"
+					},
+					{
+						"name": "Product_Info_6",
+						"type": "String"
+					},
+					{
+						"name": "Product_Info_7",
+						"type": "String"
+					},
+					{
+						"name": "Ins_Age",
+						"type": "String"
+					},
+					{
+						"name": "Ht",
+						"type": "String"
+					},
+					{
+						"name": "Wt",
+						"type": "String"
+					},
+					{
+						"name": "BMI",
+						"type": "String"
+					},
+					{
+						"name": "Employment_Info_1",
+						"type": "String"
+					},
+					{
+						"name": "Employment_Info_2",
+						"type": "String"
+					},
+					{
+						"name": "Employment_Info_3",
+						"type": "String"
+					},
+					{
+						"name": "Employment_Info_4",
+						"type": "String"
+					},
+					{
+						"name": "Employment_Info_5",
+						"type": "String"
+					},
+					{
+						"name": "Employment_Info_6",
+						"type": "String"
+					},
+					{
+						"name": "InsuredInfo_1",
+						"type": "String"
+					},
+					{
+						"name": "InsuredInfo_2",
+						"type": "String"
+					},
+					{
+						"name": "InsuredInfo_3",
+						"type": "String"
+					},
+					{
+						"name": "InsuredInfo_4",
+						"type": "String"
+					},
+					{
+						"name": "InsuredInfo_5",
+						"type": "String"
+					},
+					{
+						"name": "InsuredInfo_6",
+						"type": "String"
+					},
+					{
+						"name": "InsuredInfo_7",
+						"type": "String"
+					},
+					{
+						"name": "Insurance_History_1",
+						"type": "String"
+					},
+					{
+						"name": "Insurance_History_2",
+						"type": "String"
+					},
+					{
+						"name": "Insurance_History_3",
+						"type": "String"
+					},
+					{
+						"name": "Insurance_History_4",
+						"type": "String"
+					},
+					{
+						"name": "Insurance_History_5",
+						"type": "String"
+					},
+					{
+						"name": "Insurance_History_7",
+						"type": "String"
+					},
+					{
+						"name": "Insurance_History_8",
+						"type": "String"
+					},
+					{
+						"name": "Insurance_History_9",
+						"type": "String"
+					},
+					{
+						"name": "Family_Hist_1",
+						"type": "String"
+					},
+					{
+						"name": "Family_Hist_2",
+						"type": "String"
+					},
+					{
+						"name": "Family_Hist_3",
+						"type": "String"
+					},
+					{
+						"name": "Family_Hist_4",
+						"type": "String"
+					},
+					{
+						"name": "Family_Hist_5",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_1",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_2",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_3",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_4",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_5",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_6",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_7",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_8",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_9",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_10",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_11",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_12",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_13",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_14",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_15",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_16",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_17",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_18",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_19",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_20",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_21",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_22",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_23",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_24",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_25",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_26",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_27",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_28",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_29",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_30",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_31",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_32",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_33",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_34",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_35",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_36",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_37",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_38",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_39",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_40",
+						"type": "String"
+					},
+					{
+						"name": "Medical_History_41",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_1",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_2",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_3",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_4",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_5",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_6",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_7",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_8",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_9",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_10",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_11",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_12",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_13",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_14",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_15",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_16",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_17",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_18",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_19",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_20",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_21",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_22",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_23",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_24",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_25",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_26",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_27",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_28",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_29",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_30",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_31",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_32",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_33",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_34",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_35",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_36",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_37",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_38",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_39",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_40",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_41",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_42",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_43",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_44",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_45",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_46",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_47",
+						"type": "String"
+					},
+					{
+						"name": "Medical_Keyword_48",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_container": {
+						"type": "string",
+						"defaultValue": "sentrisk"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": {
+							"value": "@dataset().p_container",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
