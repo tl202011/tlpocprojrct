@@ -559,14 +559,14 @@
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": {
-								"value": "@activity('Copy data1').output.rowsRead",
+								"value": "@activity('Copy data2').output.rowsRead",
 								"type": "Expression"
 							},
 							"type": "String"
 						},
 						"P_CNT_TGT": {
 							"value": {
-								"value": "@activity('Copy data1').output.rowsCopied",
+								"value": "@activity('Copy data2').output.rowsCopied",
 								"type": "Expression"
 							},
 							"type": "String"
