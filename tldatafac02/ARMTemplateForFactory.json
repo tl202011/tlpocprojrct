@@ -1319,8 +1319,8 @@
 								"referenceName": "DelimitedText4",
 								"type": "DatasetReference",
 								"parameters": {
-									"p_container": "@variables('V_FILE_NAME')",
-									"p_filename": "@variables('V_CONNECTION_NM')"
+									"p_container": "@variables('V_CONNECTION_NM')",
+									"p_filename": "@variables('V_FILE_NAME')"
 								}
 							}
 						],
