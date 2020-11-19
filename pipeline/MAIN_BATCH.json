@@ -41,46 +41,6 @@
 						"P_DATABRICKS": "Life Insurance Assessment from unknown business"
 					}
 				}
-			},
-			{
-				"name": "STREAM_COMMON_copy1",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "STREAM_COMMON",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"P_STREAM_NM": "TL-SENT_CHUN",
-						"P_RUN_MODE": "R"
-					}
-				}
-			},
-			{
-				"name": "PCS_COMMON_DATABRICKS_Churn",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "STREAM_COMMON_copy1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "PCS_COMMON_DATABRICKS",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"P_DATABRICKS": "ChurnPrediction"
-					}
-				}
 			}
 		],
 		"folder": {
