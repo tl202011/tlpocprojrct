@@ -938,7 +938,10 @@
 						"referenceName": "DelimitedText4",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_container": "@variables('V_CONNECTION_NM')",
+							"p_container": {
+								"value": "@variables('V_FILE_PATH')",
+								"type": "Expression"
+							},
 							"p_filename": "@variables('V_FILE_NAME')"
 						}
 					}
