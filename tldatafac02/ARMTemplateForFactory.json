@@ -1567,7 +1567,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "/Shared/@pipeline().parameters.P_DATABRICKS",
+								"value": "@concat('/Shared/',pipeline().parameters.P_DATABRICKS)",
 								"type": "Expression"
 							}
 						},
@@ -2295,30 +2295,60 @@
 							"batchCount": 20,
 							"activities": [
 								{
-									"name": "RUN_PCS_1",
-									"type": "ExecutePipeline",
+									"name": "If Condition1",
+									"type": "IfCondition",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
-										"pipeline": {
-											"referenceName": "PCS_COMMON_1",
-											"type": "PipelineReference"
+										"expression": {
+											"value": "@startswith(pipeline().parameters.P_STREAM_NM,'DB')",
+											"type": "Expression"
 										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"P_PROCESS_NM": {
-												"value": "@item().PCS_NM",
-												"type": "Expression"
-											},
-											"P_RUN_MODE": {
-												"value": "@pipeline().parameters.P_RUN_MODE",
-												"type": "Expression"
-											},
-											"P_STREAM_SEQ_ID": {
-												"value": "@variables('V_STREAM_SEQ_ID')",
-												"type": "Expression"
+										"ifFalseActivities": [
+											{
+												"name": "RUN_PCS_1",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "PCS_COMMON_1",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"P_PROCESS_NM": {
+															"value": "@item().PCS_NM",
+															"type": "Expression"
+														},
+														"P_RUN_MODE": {
+															"value": "@pipeline().parameters.P_RUN_MODE",
+															"type": "Expression"
+														},
+														"P_STREAM_SEQ_ID": {
+															"value": "@variables('V_STREAM_SEQ_ID')",
+															"type": "Expression"
+														}
+													}
+												}
 											}
-										}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "PCS_COMMON_DATABRICKS",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "PCS_COMMON_DATABRICKS",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {}
+												}
+											}
+										]
 									}
 								}
 							]
@@ -2651,7 +2681,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable1')]",
 				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]",
-				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_1')]"
+				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_1')]",
+				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_DATABRICKS')]"
 			]
 		},
 		{

@@ -420,7 +420,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "/Shared/@pipeline().parameters.P_DATABRICKS",
+								"value": "@concat('/Shared/',pipeline().parameters.P_DATABRICKS)",
 								"type": "Expression"
 							}
 						},
