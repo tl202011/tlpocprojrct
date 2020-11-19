@@ -503,7 +503,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('Copy data1').output.rowsRead,activity('Copy data1').output.rowsCopied)",
+						"value": "@equals(activity('Copy data1').output.dataRead,activity('Copy data1').output.dataWritten)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -624,14 +624,14 @@
 					"storedProcedureParameters": {
 						"P_CNT_SRC": {
 							"value": {
-								"value": "@activity('Copy data1').output.rowsRead",
+								"value": "@activity('Copy data1').output.dataRead",
 								"type": "Expression"
 							},
 							"type": "String"
 						},
 						"P_CNT_TGT": {
 							"value": {
-								"value": "@activity('Copy data1').output.rowsCopied",
+								"value": "@activity('Copy data1').output.datawritten",
 								"type": "Expression"
 							},
 							"type": "String"
