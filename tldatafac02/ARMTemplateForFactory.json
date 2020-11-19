@@ -118,7 +118,7 @@
 						}
 					},
 					{
-						"name": "PCS_COMMON_DATABRICKS",
+						"name": "STREAM_COMMON1",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
@@ -131,12 +131,13 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "PCS_COMMON_DATABRICKS",
+								"referenceName": "STREAM_COMMON",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"P_DATABRICKS": "Life Insurance Assessment from unknown business"
+								"P_STREAM_NM": "DB_SENT_RISK",
+								"P_RUN_MODE": "R"
 							}
 						}
 					}
@@ -147,8 +148,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/STREAM_COMMON')]",
-				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_DATABRICKS')]"
+				"[concat(variables('factoryId'), '/pipelines/STREAM_COMMON')]"
 			]
 		},
 		{
