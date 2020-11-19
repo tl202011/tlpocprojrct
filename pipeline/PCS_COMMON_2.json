@@ -907,7 +907,7 @@
 					"source": {
 						"type": "DelimitedTextSource",
 						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
+							"type": "AzureBlobFSReadSettings",
 							"recursive": true
 						},
 						"formatSettings": {
@@ -935,11 +935,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DelimitedText3",
+						"referenceName": "DelimitedText4",
 						"type": "DatasetReference",
 						"parameters": {
-							"filename": "@variables('V_FILE_NAME')",
-							"path": "@variables('V_CONNECTION_NM')"
+							"p_container": "@variables('V_FILE_NAME')",
+							"p_filename": "@variables('V_CONNECTION_NM')"
 						}
 					}
 				],
