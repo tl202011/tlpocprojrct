@@ -20,8 +20,8 @@
 				}
 			},
 			{
-				"name": "Life Insurance Assessment from unknown business",
-				"type": "DatabricksNotebook",
+				"name": "PCS_COMMON_DATABRICKS",
+				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
 						"activity": "STREAM_COMMON",
@@ -30,20 +30,56 @@
 						]
 					}
 				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Life Insurance Assessment from unknown business"
-				},
-				"linkedServiceName": {
-					"referenceName": "Databrickslinked",
-					"type": "LinkedServiceReference"
+					"pipeline": {
+						"referenceName": "PCS_COMMON_DATABRICKS",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_DATABRICKS": "Life Insurance Assessment from unknown business"
+					}
+				}
+			},
+			{
+				"name": "STREAM_COMMON_copy1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "TL-SENT_CHUN",
+						"P_RUN_MODE": "R"
+					}
+				}
+			},
+			{
+				"name": "PCS_COMMON_DATABRICKS_Churn",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "STREAM_COMMON_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PCS_COMMON_DATABRICKS",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_DATABRICKS": "ChurnPrediction"
+					}
 				}
 			}
 		],
