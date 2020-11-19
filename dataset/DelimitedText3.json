@@ -27,7 +27,8 @@
 				"folderPath": {
 					"value": "@dataset().path",
 					"type": "Expression"
-				}
+				},
+				"container": "tlstroage"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
