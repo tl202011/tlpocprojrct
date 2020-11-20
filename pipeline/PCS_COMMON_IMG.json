@@ -614,10 +614,6 @@
 			"P_AS_AT_DT": {
 				"type": "string",
 				"defaultValue": "19000101"
-			},
-			"P_DATABRICKS": {
-				"type": "string",
-				"defaultValue": "999"
 			}
 		},
 		"variables": {

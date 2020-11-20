@@ -97,18 +97,89 @@
 					"batchCount": 20,
 					"activities": [
 						{
-							"name": "If Condition1",
-							"type": "IfCondition",
+							"name": "Switch1",
+							"type": "Switch",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"expression": {
-									"value": "@startswith(pipeline().parameters.P_STREAM_NM,'DB')",
+								"on": {
+									"value": "@substring(pipeline().parameters.P_STREAM_NM,1,2)",
 									"type": "Expression"
 								},
-								"ifFalseActivities": [
+								"cases": [
 									{
-										"name": "RUN_PCS_1",
+										"value": "DB",
+										"activities": [
+											{
+												"name": "PCS_COMMON_DATABRICKS_copy1",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "PCS_COMMON_DATABRICKS",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"P_RUN_MODE": {
+															"value": "@pipeline().parameters.P_RUN_MODE",
+															"type": "Expression"
+														},
+														"P_PCS_NM": {
+															"value": "@item().PCS_NM",
+															"type": "Expression"
+														},
+														"P_STREAM_SEQ_ID": {
+															"value": "@variables('V_STREAM_SEQ_ID')",
+															"type": "Expression"
+														},
+														"P_DATABRICKS": {
+															"value": "@item().PCS_NM",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "IM",
+										"activities": [
+											{
+												"name": "PCS_COMMON_IMG",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "PCS_COMMON_IMG",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"P_RUN_MODE": {
+															"value": "@pipeline().parameters.P_RUN_MODE",
+															"type": "Expression"
+														},
+														"P_PCS_NM": "@item().PCS_NM",
+														"P_STREAM_SEQ_ID": {
+															"value": "@variables('V_STREAM_SEQ_ID')",
+															"type": "Expression"
+														},
+														"P_AS_AT_DT": {
+															"value": "@variables('V_AS_AT_DT')",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									}
+								],
+								"defaultActivities": [
+									{
+										"name": "RUN_PCS_1_copy1",
 										"type": "ExecutePipeline",
 										"dependsOn": [],
 										"userProperties": [],
@@ -129,39 +200,6 @@
 												},
 												"P_STREAM_SEQ_ID": {
 													"value": "@variables('V_STREAM_SEQ_ID')",
-													"type": "Expression"
-												}
-											}
-										}
-									}
-								],
-								"ifTrueActivities": [
-									{
-										"name": "PCS_COMMON_DATABRICKS",
-										"type": "ExecutePipeline",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"pipeline": {
-												"referenceName": "PCS_COMMON_DATABRICKS",
-												"type": "PipelineReference"
-											},
-											"waitOnCompletion": true,
-											"parameters": {
-												"P_RUN_MODE": {
-													"value": "@pipeline().parameters.P_RUN_MODE",
-													"type": "Expression"
-												},
-												"P_PCS_NM": {
-													"value": "@item().PCS_NM",
-													"type": "Expression"
-												},
-												"P_STREAM_SEQ_ID": {
-													"value": "@variables('V_STREAM_SEQ_ID')",
-													"type": "Expression"
-												},
-												"P_DATABRICKS": {
-													"value": "@item().PCS_NM",
 													"type": "Expression"
 												}
 											}
