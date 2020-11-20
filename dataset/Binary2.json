@@ -13,6 +13,9 @@
 				"type": "string"
 			}
 		},
+		"folder": {
+			"name": "IMG"
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
