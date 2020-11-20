@@ -96,10 +96,17 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "DelimitedText2",
+						"referenceName": "DelimitedText2_copy1",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_container": "img"
+							"p_container": {
+								"value": "img",
+								"type": "Expression"
+							},
+							"p_filename": {
+								"value": "wnid.txt",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": false
