@@ -29,7 +29,7 @@
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://tlstroage.dfs.core.windows.net"
+			"defaultValue": "https://tlpocimage.dfs.core.windows.net"
 		},
 		"FileServer1_properties_typeProperties_host": {
 			"type": "string",

@@ -21,7 +21,7 @@
 			"value": ""
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"value": "https://tlstroage.dfs.core.windows.net"
+			"value": "https://tlpocimage.dfs.core.windows.net"
 		},
 		"FileServer1_properties_typeProperties_host": {
 			"value": "C:\\Users\\admin\\Desktop\\TL\\"

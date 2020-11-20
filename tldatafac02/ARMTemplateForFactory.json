@@ -29,7 +29,7 @@
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://tlstroage.dfs.core.windows.net"
+			"defaultValue": "https://tlpocimage.dfs.core.windows.net"
 		},
 		"FileServer1_properties_typeProperties_host": {
 			"type": "string",
@@ -3467,7 +3467,7 @@
 				"parameters": {
 					"P_STREAM_NM": {
 						"type": "string",
-						"defaultValue": "ORACLE"
+						"defaultValue": "IM_IMAGENET"
 					},
 					"P_RUN_MODE": {
 						"type": "string",
