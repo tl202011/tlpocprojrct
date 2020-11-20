@@ -38,7 +38,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "SqlServerTable1",
+						"referenceName": "img_SqlServerTable1",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
@@ -92,7 +92,32 @@
 									}
 								},
 								"enableStaging": false
-							}
+							},
+							"inputs": [
+								{
+									"referenceName": "Binary1",
+									"type": "DatasetReference",
+									"parameters": {
+										"weblink": {
+											"value": "@item().FILE_NM",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Binary2",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_path": {
+											"value": "@pipeline().parameters.P_WNID",
+											"type": "Expression"
+										},
+										"p_filename": "@concat(item().FILE_ID, '.jpg')"
+									}
+								}
+							]
 						},
 						{
 							"name": "insert success log",
@@ -209,7 +234,10 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[CNTL].[PROC_CNTL_INS_FILE_LOG]",
+								"storedProcedureName": {
+									"value": "[CNTL].[PROC_CNTL_INS_FILE_LOG]",
+									"type": "Expression"
+								},
 								"storedProcedureParameters": {
 									"P_CNT_SRC": {
 										"value": null,
@@ -337,7 +365,7 @@
 				},
 				"outputs": [
 					{
-						"referenceName": "SqlServerTable1",
+						"referenceName": "img_SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				]
