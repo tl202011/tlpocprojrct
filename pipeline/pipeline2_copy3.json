@@ -234,10 +234,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": {
-									"value": "[CNTL].[PROC_CNTL_INS_FILE_LOG]",
-									"type": "Expression"
-								},
+								"storedProcedureName": "[CNTL].[PROC_CNTL_INS_FILE_LOG]",
 								"storedProcedureParameters": {
 									"P_CNT_SRC": {
 										"value": null,
@@ -361,8 +358,28 @@
 						"sqlWriterTableType": "CNTL.UrlTableType",
 						"storedProcedureTableTypeParameterName": "UrlType"
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
+				"inputs": [
+					{
+						"referenceName": "DelimitedText3",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_weblink": {
+								"value": "@concat('http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=', pipeline().parameters.P_WNID)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
 				"outputs": [
 					{
 						"referenceName": "img_SqlServerTable1",

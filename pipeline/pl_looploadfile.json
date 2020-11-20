@@ -38,7 +38,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "SqlServerTable1",
+						"referenceName": "img_SqlServerTable1",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
@@ -92,7 +92,32 @@
 									}
 								},
 								"enableStaging": false
-							}
+							},
+							"inputs": [
+								{
+									"referenceName": "Binary1",
+									"type": "DatasetReference",
+									"parameters": {
+										"weblink": {
+											"value": "@item().FILE_NM",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Binary2",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_path": {
+											"value": "@pipeline().parameters.P_WNID",
+											"type": "Expression"
+										},
+										"p_filename": "@concat(item().FILE_ID, '.jpg')"
+									}
+								}
+							]
 						},
 						{
 							"name": "insert success log",
@@ -333,11 +358,31 @@
 						"sqlWriterTableType": "CNTL.UrlTableType",
 						"storedProcedureTableTypeParameterName": "UrlType"
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
+				"inputs": [
+					{
+						"referenceName": "DelimitedText3",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_weblink": {
+								"value": "@concat('http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=', pipeline().parameters.P_WNID)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
 				"outputs": [
 					{
-						"referenceName": "SqlServerTable1",
+						"referenceName": "img_SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				]
