@@ -4134,7 +4134,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"on": {
-											"value": "@substring(pipeline().parameters.P_STREAM_NM,1,2)",
+											"value": "@substring(pipeline().parameters.P_STREAM_NM,0,2)",
 											"type": "Expression"
 										},
 										"cases": [
@@ -4213,7 +4213,7 @@
 										],
 										"defaultActivities": [
 											{
-												"name": "RUN_PCS_1_copy1",
+												"name": "RUN_PCS_1",
 												"type": "ExecutePipeline",
 												"dependsOn": [],
 												"userProperties": [],
