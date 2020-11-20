@@ -398,6 +398,9 @@
 				"defaultValue": "IMAGENET"
 			}
 		},
+		"folder": {
+			"name": "TEST"
+		},
 		"annotations": [],
 		"lastPublishTime": "2020-11-20T04:35:54Z"
 	},
