@@ -150,12 +150,15 @@
 										"type": "Int32"
 									},
 									"P_LOAD_ID": {
-										"value": null,
+										"value": {
+											"value": "@pipeline().parameters.P_LOAD_ID",
+											"type": "Expression"
+										},
 										"type": "Int64"
 									},
 									"P_PCS_NM": {
 										"value": {
-											"value": "@pipeline().parameters.P_PSC_NM",
+											"value": "@pipeline().parameters.P_PCS_NM",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -193,7 +196,10 @@
 										"type": "String"
 									},
 									"P_STREAM_SEQ_ID": {
-										"value": null,
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+											"type": "Expression"
+										},
 										"type": "Int64"
 									},
 									"P_TGT_FILE_NM": {
@@ -245,12 +251,15 @@
 										"type": "Int32"
 									},
 									"P_LOAD_ID": {
-										"value": null,
+										"value": {
+											"value": "@pipeline().parameters.P_LOAD_ID",
+											"type": "Expression"
+										},
 										"type": "Int64"
 									},
 									"P_PCS_NM": {
 										"value": {
-											"value": "@pipeline().parameters.P_PSC_NM",
+											"value": "@pipeline().parameters.P_PCS_NM",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -288,7 +297,10 @@
 										"type": "String"
 									},
 									"P_STREAM_SEQ_ID": {
-										"value": null,
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+											"type": "Expression"
+										},
 										"type": "Int64"
 									},
 									"P_TGT_FILE_NM": {
@@ -393,9 +405,15 @@
 				"type": "string",
 				"defaultValue": "n09266604"
 			},
-			"P_PSC_NM": {
+			"P_PCS_NM": {
 				"type": "string",
 				"defaultValue": "IMAGENET"
+			},
+			"P_STREAM_SEQ_ID": {
+				"type": "string"
+			},
+			"P_LOAD_ID": {
+				"type": "string"
 			}
 		},
 		"annotations": [],

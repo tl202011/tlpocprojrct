@@ -57,10 +57,11 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DelimitedText2",
+						"referenceName": "DelimitedText5",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_container": "img"
+							"p_container": "img",
+							"p_filename": "wnid.txt"
 						}
 					}
 				]
@@ -96,7 +97,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "DelimitedText2_copy1",
+						"referenceName": "DelimitedText5",
 						"type": "DatasetReference",
 						"parameters": {
 							"p_container": {
@@ -146,8 +147,16 @@
 										"value": "@item().Prop_0",
 										"type": "Expression"
 									},
-									"P_PSC_NM": {
-										"value": "@pipeline().parameters.P_PSC_NM",
+									"P_PCS_NM": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"P_STREAM_SEQ_ID": {
+										"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+										"type": "Expression"
+									},
+									"P_LOAD_ID": {
+										"value": "@pipeline().parameters.P_LOAD_ID",
 										"type": "Expression"
 									}
 								}
@@ -158,9 +167,15 @@
 			}
 		],
 		"parameters": {
-			"P_PSC_NM": {
+			"P_PCS_NM": {
 				"type": "string",
 				"defaultValue": "IMAGENET"
+			},
+			"P_STREAM_SEQ_ID": {
+				"type": "string"
+			},
+			"P_LOAD_ID": {
+				"type": "string"
 			}
 		},
 		"annotations": [],

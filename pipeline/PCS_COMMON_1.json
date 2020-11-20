@@ -145,6 +145,10 @@
 									"P_LOAD_ID": {
 										"value": "@variables('V_LOAD_ID')",
 										"type": "Expression"
+									},
+									"P_STREAM_SEQ_ID": {
+										"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+										"type": "Expression"
 									}
 								}
 							}
