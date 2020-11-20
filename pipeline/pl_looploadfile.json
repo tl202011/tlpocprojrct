@@ -416,6 +416,9 @@
 				"type": "string"
 			}
 		},
+		"folder": {
+			"name": "TEST"
+		},
 		"annotations": [],
 		"lastPublishTime": "2020-11-20T07:58:59Z"
 	},
