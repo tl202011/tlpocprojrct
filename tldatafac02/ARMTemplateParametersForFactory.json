@@ -28,6 +28,9 @@
 		},
 		"FileServer1_properties_typeProperties_userId": {
 			"value": "admin"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"value": "@{linkedService().weblink}"
 		}
 	}
 }
