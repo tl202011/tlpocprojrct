@@ -536,7 +536,7 @@
 		"parameters": {
 			"P_STREAM_NM": {
 				"type": "string",
-				"defaultValue": "ORACLE"
+				"defaultValue": "IM_IMAGENET"
 			},
 			"P_RUN_MODE": {
 				"type": "string",
