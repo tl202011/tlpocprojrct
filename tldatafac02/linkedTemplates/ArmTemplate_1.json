@@ -1627,6 +1627,9 @@
 						"type": "string"
 					}
 				},
+				"folder": {
+					"name": "TEST"
+				},
 				"annotations": [],
 				"lastPublishTime": "2020-11-20T07:58:59Z"
 			},
@@ -3073,7 +3076,7 @@
 										"type": "Expression"
 									},
 									"p_filename": {
-										"value": "wnid.txt",
+										"value": "wnid_n00443917.txt",
 										"type": "Expression"
 									}
 								}
@@ -3145,6 +3148,9 @@
 					"P_LOAD_ID": {
 						"type": "string"
 					}
+				},
+				"folder": {
+					"name": "TEST"
 				},
 				"annotations": [],
 				"lastPublishTime": "2020-11-20T07:59:00Z"
