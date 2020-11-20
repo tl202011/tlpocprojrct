@@ -1197,6 +1197,9 @@
 						"defaultValue": "IMAGENET"
 					}
 				},
+				"folder": {
+					"name": "TEST"
+				},
 				"annotations": [],
 				"lastPublishTime": "2020-11-20T04:35:54Z"
 			},
@@ -1357,12 +1360,15 @@
 												"type": "Int32"
 											},
 											"P_LOAD_ID": {
-												"value": null,
+												"value": {
+													"value": "@pipeline().parameters.P_LOAD_ID",
+													"type": "Expression"
+												},
 												"type": "Int64"
 											},
 											"P_PCS_NM": {
 												"value": {
-													"value": "@pipeline().parameters.P_PSC_NM",
+													"value": "@pipeline().parameters.P_PCS_NM",
 													"type": "Expression"
 												},
 												"type": "String"
@@ -1400,7 +1406,10 @@
 												"type": "String"
 											},
 											"P_STREAM_SEQ_ID": {
-												"value": null,
+												"value": {
+													"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+													"type": "Expression"
+												},
 												"type": "Int64"
 											},
 											"P_TGT_FILE_NM": {
@@ -1452,12 +1461,15 @@
 												"type": "Int32"
 											},
 											"P_LOAD_ID": {
-												"value": null,
+												"value": {
+													"value": "@pipeline().parameters.P_LOAD_ID",
+													"type": "Expression"
+												},
 												"type": "Int64"
 											},
 											"P_PCS_NM": {
 												"value": {
-													"value": "@pipeline().parameters.P_PSC_NM",
+													"value": "@pipeline().parameters.P_PCS_NM",
 													"type": "Expression"
 												},
 												"type": "String"
@@ -1495,7 +1507,10 @@
 												"type": "String"
 											},
 											"P_STREAM_SEQ_ID": {
-												"value": null,
+												"value": {
+													"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+													"type": "Expression"
+												},
 												"type": "Int64"
 											},
 											"P_TGT_FILE_NM": {
@@ -1601,9 +1616,15 @@
 						"type": "string",
 						"defaultValue": "n09266604"
 					},
-					"P_PSC_NM": {
+					"P_PCS_NM": {
 						"type": "string",
 						"defaultValue": "IMAGENET"
+					},
+					"P_STREAM_SEQ_ID": {
+						"type": "string"
+					},
+					"P_LOAD_ID": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -2785,6 +2806,110 @@
 							"referenceName": "SqlServer1",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "insert success log",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "CHECK RECONCILE_copy2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_CNTL_INS_FILE_LOG]",
+							"storedProcedureParameters": {
+								"P_CNT_SRC": {
+									"value": {
+										"value": "@activity('Copy data2').output.rowsRead",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"P_CNT_TGT": {
+									"value": {
+										"value": "@activity('Copy data2').output.rowsCopied",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"P_LOAD_ID": {
+									"value": {
+										"value": "@pipeline().parameters.P_LOAD_ID",
+										"type": "Expression"
+									},
+									"type": "Int64"
+								},
+								"P_PCS_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_RMRK": {
+									"value": null,
+									"type": "String"
+								},
+								"P_SIZE_SRC": {
+									"value": {
+										"value": "@activity('Copy data1').output.dataRead",
+										"type": "Expression"
+									},
+									"type": "Decimal"
+								},
+								"P_SIZE_TGT": {
+									"value": {
+										"value": "@activity('Copy data2').output.dataWritten",
+										"type": "Expression"
+									},
+									"type": "Decimal"
+								},
+								"P_SRC_FILE_NM": {
+									"value": {
+										"value": "@concat(variables('V_CONNECTION_NM'),variables('V_FILE_NAME'))",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_ST": {
+									"value": "FINISHED",
+									"type": "String"
+								},
+								"P_STREAM_SEQ_ID": {
+									"value": {
+										"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+										"type": "Expression"
+									},
+									"type": "Int64"
+								},
+								"P_TGT_FILE_NM": {
+									"value": {
+										"value": "@concat(variables('V_FILE_PATH'), variables('V_FILE_NAME'))",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_UDT_BY": {
+									"value": "INTELTION",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"parameters": {
@@ -2799,6 +2924,9 @@
 					"P_LOAD_ID": {
 						"type": "string",
 						"defaultValue": "999"
+					},
+					"P_STREAM_SEQ_ID": {
+						"type": "string"
 					}
 				},
 				"variables": {
@@ -2897,10 +3025,11 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "DelimitedText2",
+								"referenceName": "DelimitedText5",
 								"type": "DatasetReference",
 								"parameters": {
-									"p_container": "img"
+									"p_container": "img",
+									"p_filename": "wnid.txt"
 								}
 							}
 						]
@@ -2936,7 +3065,7 @@
 								}
 							},
 							"dataset": {
-								"referenceName": "DelimitedText2_copy1",
+								"referenceName": "DelimitedText5",
 								"type": "DatasetReference",
 								"parameters": {
 									"p_container": {
@@ -2986,8 +3115,16 @@
 												"value": "@item().Prop_0",
 												"type": "Expression"
 											},
-											"P_PSC_NM": {
-												"value": "@pipeline().parameters.P_PSC_NM",
+											"P_PCS_NM": {
+												"value": "@pipeline().parameters.P_PCS_NM",
+												"type": "Expression"
+											},
+											"P_STREAM_SEQ_ID": {
+												"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+												"type": "Expression"
+											},
+											"P_LOAD_ID": {
+												"value": "@pipeline().parameters.P_LOAD_ID",
 												"type": "Expression"
 											}
 										}
@@ -2998,9 +3135,15 @@
 					}
 				],
 				"parameters": {
-					"P_PSC_NM": {
+					"P_PCS_NM": {
 						"type": "string",
 						"defaultValue": "IMAGENET"
+					},
+					"P_STREAM_SEQ_ID": {
+						"type": "string"
+					},
+					"P_LOAD_ID": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -3161,6 +3304,10 @@
 											"P_LOAD_ID": {
 												"value": "@variables('V_LOAD_ID')",
 												"type": "Expression"
+											},
+											"P_STREAM_SEQ_ID": {
+												"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+												"type": "Expression"
 											}
 										}
 									}
@@ -3220,6 +3367,661 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PCS_COMMON_IMG')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "INSERT PROCESS LOG",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_CNTL_START_PCS]",
+								"storedProcedureParameters": {
+									"P_PCS_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_PCS_NM",
+											"type": "Expression"
+										}
+									},
+									"P_RUN_MODE": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_RUN_MODE",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_SEQ_ID": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "GET LATEST LOG",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "SET LOAD_ID",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_CHK_LTST_PCS]",
+								"storedProcedureParameters": {
+									"P_LOAD_ID": {
+										"type": "String",
+										"value": {
+											"value": "@variables('V_LOAD_ID')",
+											"type": "Expression"
+										}
+									},
+									"P_PCS_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_PCS_NM",
+											"type": "Expression"
+										}
+									},
+									"P_RUN_MODE": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_RUN_MODE",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "CHECK LATEST LOG",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "GET LATEST LOG",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('GET LATEST LOG').output.FIRSTROW.LTST_LOG_F,'1')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "ABORT CHECK LATEST LOG",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": "SELECT 1/0",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "SqlServerTable1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "PASS CHECK LATEST LOG",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": "SELECT 1",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "SqlServerTable1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "GET DNDP",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "CHECK LATEST LOG",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_CHK_DPND_PCS]",
+								"storedProcedureParameters": {
+									"P_AS_AT_DT": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_AS_AT_DT",
+											"type": "Expression"
+										}
+									},
+									"P_LOAD_ID": {
+										"type": "String",
+										"value": {
+											"value": "@variables('V_LOAD_ID')",
+											"type": "Expression"
+										}
+									},
+									"P_PCS_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_PCS_NM",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "CHECK DNDP",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "GET DNDP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('GET DNDP').output.FIRSTROW.DPND_F,'1')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "ABORT CHECK DNDP",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": "SELECT 1/0",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "SqlServerTable1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "PASS CHECK DNDP",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": "SELECT 1",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "SqlServerTable1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "SET LOAD_ID",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "INSERT PROCESS LOG",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "V_LOAD_ID",
+							"value": {
+								"value": "@activity('INSERT PROCESS LOG').output.FIRSTROW.LOAD_ID",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "UPDATE FAILED ON LATEST LOG",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "CHECK LATEST LOG",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+							"storedProcedureParameters": {
+								"P_CNT_SRC": {
+									"value": null,
+									"type": "String"
+								},
+								"P_CNT_TGT": {
+									"value": null,
+									"type": "String"
+								},
+								"P_LOAD_ID": {
+									"value": {
+										"value": "@variables('V_LOAD_ID')",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_PCS_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_RMRK": {
+									"value": "PREVIOUS CYCLE PROCESS DID NOT COMPLETE",
+									"type": "String"
+								},
+								"P_ST": {
+									"value": "FAILED",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "UPDATE FAILED ON DEPENDENCIES",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "CHECK DNDP",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+							"storedProcedureParameters": {
+								"P_CNT_SRC": {
+									"value": null,
+									"type": "String"
+								},
+								"P_CNT_TGT": {
+									"value": null,
+									"type": "String"
+								},
+								"P_LOAD_ID": {
+									"value": {
+										"value": "@variables('V_LOAD_ID')",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_PCS_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_RMRK": {
+									"value": "CHECKING DEPENDENCY FAILED",
+									"type": "String"
+								},
+								"P_ST": {
+									"value": "FAILED",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "UPDATE FAILED ON RUN DATABRICK MODEL",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "pl_mainloadfile",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+							"storedProcedureParameters": {
+								"P_CNT_SRC": {
+									"value": null,
+									"type": "String"
+								},
+								"P_CNT_TGT": {
+									"value": null,
+									"type": "String"
+								},
+								"P_LOAD_ID": {
+									"value": {
+										"value": "@variables('V_LOAD_ID')",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_PCS_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_RMRK": {
+									"value": "FAILED ON RUN DATABRICK MODEL",
+									"type": "String"
+								},
+								"P_ST": {
+									"value": "FAILED",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "UPDATE SUCCESS",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "pl_mainloadfile",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_PCS]",
+							"storedProcedureParameters": {
+								"P_CNT_SRC": {
+									"value": null,
+									"type": "String"
+								},
+								"P_CNT_TGT": {
+									"value": null,
+									"type": "String"
+								},
+								"P_LOAD_ID": {
+									"value": {
+										"value": "@variables('V_LOAD_ID')",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_PCS_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_RMRK": {
+									"value": null,
+									"type": "String"
+								},
+								"P_ST": {
+									"value": "SUCCESS",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "pl_mainloadfile",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "CHECK DNDP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_mainloadfile",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_PCS_NM": {
+									"value": "@pipeline().parameters.P_PCS_NM",
+									"type": "Expression"
+								},
+								"P_STREAM_SEQ_ID": {
+									"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+									"type": "Expression"
+								},
+								"P_LOAD_ID": {
+									"value": "@variables('V_LOAD_ID')",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"parameters": {
+					"P_RUN_MODE": {
+						"type": "string",
+						"defaultValue": "R"
+					},
+					"P_PCS_NM": {
+						"type": "string",
+						"defaultValue": "999"
+					},
+					"P_STREAM_SEQ_ID": {
+						"type": "string",
+						"defaultValue": "-999"
+					},
+					"P_AS_AT_DT": {
+						"type": "string",
+						"defaultValue": "19000101"
+					},
+					"P_DATABRICKS": {
+						"type": "string",
+						"defaultValue": "999"
+					}
+				},
+				"variables": {
+					"V_STREAM_NM": {
+						"type": "String",
+						"defaultValue": "SALES_PRED"
+					},
+					"V_LOAD_ID": {
+						"type": "String",
+						"defaultValue": "-999"
+					},
+					"V_STREAM_RESULT": {
+						"type": "String",
+						"defaultValue": "-999"
+					}
+				},
+				"folder": {
+					"name": "COMMON JOB"
+				},
+				"annotations": [],
+				"lastPublishTime": "2020-10-16T09:42:29Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_mainloadfile')]"
 			]
 		},
 		{
