@@ -4737,7 +4737,7 @@
 								"value": "@activity('Lookup1').output.value\n",
 								"type": "Expression"
 							},
-							"isSequential": false,
+							"isSequential": true,
 							"activities": [
 								{
 									"name": "Lookup1",
@@ -4775,7 +4775,7 @@
 													"type": "Expression"
 												},
 												"p_filename": {
-													"value": "wnid_n00443917.txt",
+													"value": "wnid.txt",
 													"type": "Expression"
 												}
 											}
