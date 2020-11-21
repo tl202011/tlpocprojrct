@@ -4674,7 +4674,7 @@
 						]
 					},
 					{
-						"name": "Lookup1_copy1",
+						"name": "Lookup2",
 						"type": "Lookup",
 						"dependsOn": [
 							{
@@ -4725,7 +4725,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Lookup1_copy1",
+								"activity": "Lookup2",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -4734,7 +4734,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Lookup1').output.value\n",
+								"value": "@activity('Lookup2').output.value\n",
 								"type": "Expression"
 							},
 							"isSequential": true,
