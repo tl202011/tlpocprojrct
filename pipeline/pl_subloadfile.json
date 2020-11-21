@@ -1,82 +1,11 @@
 {
-	"name": "pl_mainloadfile",
+	"name": "pl_subloadfile",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data2",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "HttpReadSettings",
-							"requestMethod": "GET"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "DelimitedText3",
-						"type": "DatasetReference",
-						"parameters": {
-							"p_weblink": "http://image-net.org/archive/words.txt"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DelimitedText5",
-						"type": "DatasetReference",
-						"parameters": {
-							"p_container": "img",
-							"p_filename": "wnid.txt"
-						}
-					}
-				]
-			},
-			{
-				"name": "Lookup2",
+				"name": "Lookup3",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Copy data2",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -93,7 +22,11 @@
 							"recursive": true
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": {
+								"value": "@pipeline().parameters.P_CNT",
+								"type": "Expression"
+							}
 						}
 					},
 					"dataset": {
@@ -105,7 +38,7 @@
 								"type": "Expression"
 							},
 							"p_filename": {
-								"value": "cnt.txt",
+								"value": "wnid.txt",
 								"type": "Expression"
 							}
 						}
@@ -114,11 +47,11 @@
 				}
 			},
 			{
-				"name": "ForEach1_copy1",
+				"name": "ForEach1",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup2",
+						"activity": "Lookup3",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -127,23 +60,27 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup2').output.value\n",
+						"value": "@activity('Lookup3').output.value\n",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
 					"activities": [
 						{
-							"name": "pl_subloadfile",
+							"name": "pl_looploadfile",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pl_subloadfile",
+									"referenceName": "pl_looploadfile",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
 								"parameters": {
+									"P_WNID": {
+										"value": "@item().Prop_0",
+										"type": "Expression"
+									},
 									"P_PCS_NM": {
 										"value": "@pipeline().parameters.P_PCS_NM",
 										"type": "Expression"
@@ -154,10 +91,6 @@
 									},
 									"P_LOAD_ID": {
 										"value": "@pipeline().parameters.P_LOAD_ID",
-										"type": "Expression"
-									},
-									"P_CNT": {
-										"value": "@item().CNT",
 										"type": "Expression"
 									}
 								}
@@ -176,6 +109,9 @@
 				"type": "string"
 			},
 			"P_LOAD_ID": {
+				"type": "string"
+			},
+			"P_CNT": {
 				"type": "string"
 			}
 		},
