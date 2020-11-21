@@ -3038,6 +3038,265 @@
 						]
 					},
 					{
+						"name": "Lookup1_copy1",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Copy data2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "DelimitedText5",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_container": {
+										"value": "img",
+										"type": "Expression"
+									},
+									"p_filename": {
+										"value": "cnt.txt",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1_copy1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup1_copy1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup1').output.value\n",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Lookup1",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings",
+												"skipLineCount": {
+													"value": "@item().CNT",
+													"type": "Expression"
+												}
+											}
+										},
+										"dataset": {
+											"referenceName": "DelimitedText5",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_container": {
+													"value": "img",
+													"type": "Expression"
+												},
+												"p_filename": {
+													"value": "wnid_n00443917.txt",
+													"type": "Expression"
+												}
+											}
+										},
+										"firstRowOnly": false
+									}
+								},
+								{
+									"name": "ForEach1",
+									"type": "ForEach",
+									"dependsOn": [
+										{
+											"activity": "Lookup1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@activity('Lookup1').output.value\n",
+											"type": "Expression"
+										},
+										"isSequential": false,
+										"activities": [
+											{
+												"name": "pl_looploadfile",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "pl_looploadfile",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"P_WNID": {
+															"value": "@item().Prop_0",
+															"type": "Expression"
+														},
+														"P_PCS_NM": {
+															"value": "@pipeline().parameters.P_PCS_NM",
+															"type": "Expression"
+														},
+														"P_STREAM_SEQ_ID": {
+															"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+															"type": "Expression"
+														},
+														"P_LOAD_ID": {
+															"value": "@pipeline().parameters.P_LOAD_ID",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"P_PCS_NM": {
+						"type": "string",
+						"defaultValue": "IMAGENET"
+					},
+					"P_STREAM_SEQ_ID": {
+						"type": "string"
+					},
+					"P_LOAD_ID": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": [],
+				"lastPublishTime": "2020-11-20T07:59:00Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_looploadfile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_mainloadfile_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data2",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText3",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_weblink": "http://image-net.org/archive/words.txt"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText5",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_container": "img",
+									"p_filename": "wnid.txt"
+								}
+							}
+						]
+					},
+					{
 						"name": "Lookup1",
 						"type": "Lookup",
 						"dependsOn": [
@@ -3101,6 +3360,7 @@
 								"value": "@activity('Lookup1').output.value\n",
 								"type": "Expression"
 							},
+							"isSequential": false,
 							"activities": [
 								{
 									"name": "pl_looploadfile",
