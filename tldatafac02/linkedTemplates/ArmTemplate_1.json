@@ -2968,265 +2968,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_mainloadfile')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data2",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DelimitedText3",
-								"type": "DatasetReference",
-								"parameters": {
-									"p_weblink": "http://image-net.org/archive/words.txt"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedText5",
-								"type": "DatasetReference",
-								"parameters": {
-									"p_container": "img",
-									"p_filename": "wnid.txt"
-								}
-							}
-						]
-					},
-					{
-						"name": "Lookup2",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "Copy data2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "DelimitedText5",
-								"type": "DatasetReference",
-								"parameters": {
-									"p_container": {
-										"value": "img",
-										"type": "Expression"
-									},
-									"p_filename": {
-										"value": "cnt.txt",
-										"type": "Expression"
-									}
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEach1_copy1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Lookup2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Lookup2').output.value\n",
-								"type": "Expression"
-							},
-							"isSequential": true,
-							"activities": [
-								{
-									"name": "Lookup3",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "DelimitedTextSource",
-											"storeSettings": {
-												"type": "AzureBlobFSReadSettings",
-												"recursive": true
-											},
-											"formatSettings": {
-												"type": "DelimitedTextReadSettings",
-												"skipLineCount": {
-													"value": "@item().CNT",
-													"type": "Expression"
-												}
-											}
-										},
-										"dataset": {
-											"referenceName": "DelimitedText5",
-											"type": "DatasetReference",
-											"parameters": {
-												"p_container": {
-													"value": "img",
-													"type": "Expression"
-												},
-												"p_filename": {
-													"value": "wnid.txt",
-													"type": "Expression"
-												}
-											}
-										},
-										"firstRowOnly": false
-									}
-								},
-								{
-									"name": "ForEach1",
-									"type": "ForEach",
-									"dependsOn": [
-										{
-											"activity": "Lookup3",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"items": {
-											"value": "@activity('Lookup3').output.value\n",
-											"type": "Expression"
-										},
-										"isSequential": false,
-										"activities": [
-											{
-												"name": "pl_looploadfile",
-												"type": "ExecutePipeline",
-												"dependsOn": [],
-												"userProperties": [],
-												"typeProperties": {
-													"pipeline": {
-														"referenceName": "pl_looploadfile",
-														"type": "PipelineReference"
-													},
-													"waitOnCompletion": true,
-													"parameters": {
-														"P_WNID": {
-															"value": "@item().Prop_0",
-															"type": "Expression"
-														},
-														"P_PCS_NM": {
-															"value": "@pipeline().parameters.P_PCS_NM",
-															"type": "Expression"
-														},
-														"P_STREAM_SEQ_ID": {
-															"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
-															"type": "Expression"
-														},
-														"P_LOAD_ID": {
-															"value": "@pipeline().parameters.P_LOAD_ID",
-															"type": "Expression"
-														}
-													}
-												}
-											}
-										]
-									}
-								}
-							]
-						}
-					}
-				],
-				"parameters": {
-					"P_PCS_NM": {
-						"type": "string",
-						"defaultValue": "IMAGENET"
-					},
-					"P_STREAM_SEQ_ID": {
-						"type": "string"
-					},
-					"P_LOAD_ID": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "TEST"
-				},
-				"annotations": [],
-				"lastPublishTime": "2020-11-20T07:59:00Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_looploadfile')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/pl_mainloadfile_copy1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -3406,6 +3147,135 @@
 						"type": "string"
 					},
 					"P_LOAD_ID": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": [],
+				"lastPublishTime": "2020-11-20T07:59:00Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_looploadfile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_subloadfile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup3",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": {
+										"value": "@pipeline().parameters.P_CNT",
+										"type": "Expression"
+									}
+								}
+							},
+							"dataset": {
+								"referenceName": "DelimitedText5",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_container": {
+										"value": "img",
+										"type": "Expression"
+									},
+									"p_filename": {
+										"value": "wnid.txt",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup3",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup3').output.value\n",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "pl_looploadfile",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_looploadfile",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"P_WNID": {
+												"value": "@item().Prop_0",
+												"type": "Expression"
+											},
+											"P_PCS_NM": {
+												"value": "@pipeline().parameters.P_PCS_NM",
+												"type": "Expression"
+											},
+											"P_STREAM_SEQ_ID": {
+												"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+												"type": "Expression"
+											},
+											"P_LOAD_ID": {
+												"value": "@pipeline().parameters.P_LOAD_ID",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"P_PCS_NM": {
+						"type": "string",
+						"defaultValue": "IMAGENET"
+					},
+					"P_STREAM_SEQ_ID": {
+						"type": "string"
+					},
+					"P_LOAD_ID": {
+						"type": "string"
+					},
+					"P_CNT": {
 						"type": "string"
 					}
 				},
@@ -3633,6 +3503,199 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_mainloadfile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data2",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText3",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_weblink": "http://image-net.org/archive/words.txt"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText5",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_container": "img",
+									"p_filename": "wnid.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "Lookup2",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Copy data2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "DelimitedText5",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_container": {
+										"value": "img",
+										"type": "Expression"
+									},
+									"p_filename": {
+										"value": "cnt.txt",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1_copy1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup2').output.value\n",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "pl_subloadfile",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_subloadfile",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"P_PCS_NM": {
+												"value": "@pipeline().parameters.P_PCS_NM",
+												"type": "Expression"
+											},
+											"P_STREAM_SEQ_ID": {
+												"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+												"type": "Expression"
+											},
+											"P_LOAD_ID": {
+												"value": "@pipeline().parameters.P_LOAD_ID",
+												"type": "Expression"
+											},
+											"P_CNT": {
+												"value": "@item().CNT",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"P_PCS_NM": {
+						"type": "string",
+						"defaultValue": "IMAGENET"
+					},
+					"P_STREAM_SEQ_ID": {
+						"type": "string"
+					},
+					"P_LOAD_ID": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": [],
+				"lastPublishTime": "2020-11-20T07:59:00Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_subloadfile')]"
 			]
 		},
 		{
@@ -4287,6 +4350,111 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TEST PROCESS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.P_AS_AT_DT",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "RUN_PCS_1",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "ACTIVATE STREAM",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "PCS_COMMON_1",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"P_PROCESS_NM": {
+												"value": "@pipeline().parameters.P_PCS_NM",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "ACTIVATE STREAM",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[CNTL].[PROC_CNTL_ACTV_INDV_PCS]",
+										"storedProcedureParameters": {
+											"P_AS_AT_DT": {
+												"value": {
+													"value": "@item()",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"P_PCS_NM": {
+												"value": {
+													"value": "@pipeline().parameters.P_PCS_NM",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SqlServer1",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"P_AS_AT_DT": {
+						"type": "array",
+						"defaultValue": [
+							999
+						]
+					},
+					"P_PCS_NM": {
+						"type": "string",
+						"defaultValue": "999"
+					}
+				},
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/STREAM_COMMON')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -4868,111 +5036,6 @@
 				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_1')]",
 				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_DATABRICKS')]",
 				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_IMG')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TEST PROCESS')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@pipeline().parameters.P_AS_AT_DT",
-								"type": "Expression"
-							},
-							"isSequential": true,
-							"activities": [
-								{
-									"name": "RUN_PCS_1",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "ACTIVATE STREAM",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "PCS_COMMON_1",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"P_PROCESS_NM": {
-												"value": "@pipeline().parameters.P_PCS_NM",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "ACTIVATE STREAM",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[CNTL].[PROC_CNTL_ACTV_INDV_PCS]",
-										"storedProcedureParameters": {
-											"P_AS_AT_DT": {
-												"value": {
-													"value": "@item()",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"P_PCS_NM": {
-												"value": {
-													"value": "@pipeline().parameters.P_PCS_NM",
-													"type": "Expression"
-												},
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "SqlServer1",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					}
-				],
-				"parameters": {
-					"P_AS_AT_DT": {
-						"type": "array",
-						"defaultValue": [
-							999
-						]
-					},
-					"P_PCS_NM": {
-						"type": "string",
-						"defaultValue": "999"
-					}
-				},
-				"folder": {
-					"name": "TEST"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PCS_COMMON_1')]"
 			]
 		},
 		{
