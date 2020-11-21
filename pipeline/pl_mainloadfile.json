@@ -130,7 +130,7 @@
 						"value": "@activity('Lookup1').output.value\n",
 						"type": "Expression"
 					},
-					"isSequential": false,
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "Lookup1",
