@@ -1,0 +1,138 @@
+{
+	"name": "MAIN_BATCH_backup",
+	"properties": {
+		"description": " ",
+		"activities": [
+			{
+				"name": "STREAM_COMMON",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "SENT_RISK",
+						"P_RUN_MODE": "R"
+					}
+				}
+			},
+			{
+				"name": "STREAM_COMMON1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "STREAM_COMMON",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "DB_SENT_RISK",
+						"P_RUN_MODE": "R"
+					}
+				}
+			},
+			{
+				"name": "STREAM_COMMON_copy1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": {
+							"value": "TL-SENT_CHUN",
+							"type": "Expression"
+						},
+						"P_RUN_MODE": "R"
+					}
+				}
+			},
+			{
+				"name": "STREAM_COMMON1_copy1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "STREAM_COMMON_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "DB_SENT_CHUN",
+						"P_RUN_MODE": "R"
+					}
+				}
+			},
+			{
+				"name": "STREAM_COMMON_copy2",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "SENT_MATURITY",
+						"P_RUN_MODE": "R"
+					}
+				}
+			},
+			{
+				"name": "STREAM_COMMON1_copy2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "STREAM_COMMON_copy2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "DB_SENT_MATURITY",
+						"P_RUN_MODE": "R"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "COMMON JOB"
+		},
+		"annotations": []
+	}
+}
