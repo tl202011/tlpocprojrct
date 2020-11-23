@@ -1,0 +1,1132 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "tldatafac2"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/STREAM_COMMON')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": " ",
+				"activities": [
+					{
+						"name": "SET PROCESS LIST",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "GET PROCESS LIST",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SET AS_AT_DT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SET STREAM_SEQ_ID",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "V_PCS_NM_LIST",
+							"value": {
+								"value": "@activity('GET PROCESS LIST').output.value",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "GET PROCESS LIST",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "START STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_GET_PCS_STREAM]",
+								"storedProcedureParameters": {
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "FOR EACH PROCESS",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "SET PROCESS LIST",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('V_PCS_NM_LIST')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 20,
+							"activities": [
+								{
+									"name": "Switch1",
+									"type": "Switch",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"on": {
+											"value": "@substring(pipeline().parameters.P_STREAM_NM,0,2)",
+											"type": "Expression"
+										},
+										"cases": [
+											{
+												"value": "DB",
+												"activities": [
+													{
+														"name": "PCS_COMMON_DATABRICKS_copy1",
+														"type": "ExecutePipeline",
+														"dependsOn": [],
+														"userProperties": [],
+														"typeProperties": {
+															"pipeline": {
+																"referenceName": "PCS_COMMON_DATABRICKS",
+																"type": "PipelineReference"
+															},
+															"waitOnCompletion": true,
+															"parameters": {
+																"P_RUN_MODE": {
+																	"value": "@pipeline().parameters.P_RUN_MODE",
+																	"type": "Expression"
+																},
+																"P_PCS_NM": {
+																	"value": "@item().PCS_NM",
+																	"type": "Expression"
+																},
+																"P_STREAM_SEQ_ID": {
+																	"value": "@variables('V_STREAM_SEQ_ID')",
+																	"type": "Expression"
+																},
+																"P_DATABRICKS": {
+																	"value": "@item().PCS_NM",
+																	"type": "Expression"
+																}
+															}
+														}
+													}
+												]
+											},
+											{
+												"value": "IM",
+												"activities": [
+													{
+														"name": "PCS_COMMON_IMG",
+														"type": "ExecutePipeline",
+														"dependsOn": [],
+														"userProperties": [],
+														"typeProperties": {
+															"pipeline": {
+																"referenceName": "PCS_COMMON_IMG",
+																"type": "PipelineReference"
+															},
+															"waitOnCompletion": true,
+															"parameters": {
+																"P_RUN_MODE": {
+																	"value": "@pipeline().parameters.P_RUN_MODE",
+																	"type": "Expression"
+																},
+																"P_PCS_NM": {
+																	"value": "@item().PCS_NM",
+																	"type": "Expression"
+																},
+																"P_STREAM_SEQ_ID": {
+																	"value": "@variables('V_STREAM_SEQ_ID')",
+																	"type": "Expression"
+																},
+																"P_AS_AT_DT": {
+																	"value": "@variables('V_AS_AT_DT')",
+																	"type": "Expression"
+																}
+															}
+														}
+													}
+												]
+											}
+										],
+										"defaultActivities": [
+											{
+												"name": "RUN_PCS_1",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "PCS_COMMON_1",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"P_PROCESS_NM": {
+															"value": "@item().PCS_NM",
+															"type": "Expression"
+														},
+														"P_RUN_MODE": {
+															"value": "@pipeline().parameters.P_RUN_MODE",
+															"type": "Expression"
+														},
+														"P_STREAM_SEQ_ID": {
+															"value": "@variables('V_STREAM_SEQ_ID')",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "STREAM RESULT",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "UPDATE STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_STREAM_RESULT]",
+								"storedProcedureParameters": {
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_SEQ_ID": {
+										"type": "String",
+										"value": {
+											"value": "@variables('V_STREAM_SEQ_ID')",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "FINAL STREAM",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "FOR EACH PROCESS",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_FINAL_STREAM]",
+								"storedProcedureParameters": {
+									"P_AS_AT_DT": {
+										"type": "String",
+										"value": {
+											"value": "@variables('V_AS_AT_DT')",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_SEQ_ID": {
+										"type": "String",
+										"value": {
+											"value": "@variables('V_STREAM_SEQ_ID')",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							}
+						}
+					},
+					{
+						"name": "GET EMAIL",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "FINAL STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_GET_EMAIL]",
+								"storedProcedureParameters": {
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_RESULT": {
+										"type": "String",
+										"value": {
+											"value": "@activity('FINAL STREAM').output.FIRSTROW.STREAM_RESULT",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "SET AS_AT_DT",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "START STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "V_AS_AT_DT",
+							"value": {
+								"value": "@activity('START STREAM').output.FIRSTROW.AS_AT_DT",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SET STREAM_SEQ_ID",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "START STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "V_STREAM_SEQ_ID",
+							"value": {
+								"value": "@activity('START STREAM').output.FIRSTROW.STREAM_SEQ_ID",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "START STREAM",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_CNTL_ACTV_STREAM]",
+								"storedProcedureParameters": {
+									"P_RUN_MODE": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_RUN_MODE",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							}
+						}
+					},
+					{
+						"name": "UPDATE STREAM",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "FINAL STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_STREAM]",
+							"storedProcedureParameters": {
+								"P_STREAM_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_STREAM_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_STREAM_RESULT": {
+									"value": {
+										"value": "@activity('FINAL STREAM').output.firstrow.STREAM_RESULT",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_STREAM_SEQ_ID": {
+									"value": {
+										"value": "@variables('V_STREAM_SEQ_ID')",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"parameters": {
+					"P_STREAM_NM": {
+						"type": "string",
+						"defaultValue": "IM_IMAGENET"
+					},
+					"P_RUN_MODE": {
+						"type": "string",
+						"defaultValue": "R"
+					}
+				},
+				"variables": {
+					"V_STREAM_RESULT": {
+						"type": "String",
+						"defaultValue": "-999"
+					},
+					"V_PCS_NM_LIST": {
+						"type": "Array",
+						"defaultValue": [
+							999
+						]
+					},
+					"V_AS_AT_DT": {
+						"type": "String",
+						"defaultValue": "19000101"
+					},
+					"V_STREAM_SEQ_ID": {
+						"type": "String",
+						"defaultValue": "-999"
+					}
+				},
+				"folder": {
+					"name": "COMMON JOB"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/STREAM_COM_Backup')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": " ",
+				"activities": [
+					{
+						"name": "SET PROCESS LIST",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "GET PROCESS LIST",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SET AS_AT_DT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SET STREAM_SEQ_ID",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "V_PCS_NM_LIST",
+							"value": {
+								"value": "@activity('GET PROCESS LIST').output.value",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "GET PROCESS LIST",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "START STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_GET_PCS_STREAM]",
+								"storedProcedureParameters": {
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "FOR EACH PROCESS",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "SET PROCESS LIST",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('V_PCS_NM_LIST')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 20,
+							"activities": [
+								{
+									"name": "Switch1",
+									"type": "Switch",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"on": {
+											"value": "@substring(pipeline().parameters.P_STREAM_NM,0,2)",
+											"type": "Expression"
+										},
+										"cases": [
+											{
+												"value": "DB",
+												"activities": [
+													{
+														"name": "PCS_COMMON_DATABRICKS_copy1",
+														"type": "ExecutePipeline",
+														"dependsOn": [],
+														"userProperties": [],
+														"typeProperties": {
+															"pipeline": {
+																"referenceName": "PCS_COMMON_DATABRICKS",
+																"type": "PipelineReference"
+															},
+															"waitOnCompletion": true,
+															"parameters": {
+																"P_RUN_MODE": {
+																	"value": "@pipeline().parameters.P_RUN_MODE",
+																	"type": "Expression"
+																},
+																"P_PCS_NM": {
+																	"value": "@item().PCS_NM",
+																	"type": "Expression"
+																},
+																"P_STREAM_SEQ_ID": {
+																	"value": "@variables('V_STREAM_SEQ_ID')",
+																	"type": "Expression"
+																},
+																"P_DATABRICKS": {
+																	"value": "@item().PCS_NM",
+																	"type": "Expression"
+																}
+															}
+														}
+													}
+												]
+											},
+											{
+												"value": "IM",
+												"activities": [
+													{
+														"name": "PCS_COMMON_IMG",
+														"type": "ExecutePipeline",
+														"dependsOn": [],
+														"userProperties": [],
+														"typeProperties": {
+															"pipeline": {
+																"referenceName": "PCS_COMMON_IMG",
+																"type": "PipelineReference"
+															},
+															"waitOnCompletion": true,
+															"parameters": {
+																"P_RUN_MODE": {
+																	"value": "@pipeline().parameters.P_RUN_MODE",
+																	"type": "Expression"
+																},
+																"P_PCS_NM": {
+																	"value": "@item().PCS_NM",
+																	"type": "Expression"
+																},
+																"P_STREAM_SEQ_ID": {
+																	"value": "@variables('V_STREAM_SEQ_ID')",
+																	"type": "Expression"
+																},
+																"P_AS_AT_DT": {
+																	"value": "@variables('V_AS_AT_DT')",
+																	"type": "Expression"
+																}
+															}
+														}
+													}
+												]
+											}
+										],
+										"defaultActivities": [
+											{
+												"name": "RUN_PCS_1",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "PCS_COMMON_1",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"P_PROCESS_NM": {
+															"value": "@item().PCS_NM",
+															"type": "Expression"
+														},
+														"P_RUN_MODE": {
+															"value": "@pipeline().parameters.P_RUN_MODE",
+															"type": "Expression"
+														},
+														"P_STREAM_SEQ_ID": {
+															"value": "@variables('V_STREAM_SEQ_ID')",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "STREAM RESULT",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "UPDATE STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_STREAM_RESULT]",
+								"storedProcedureParameters": {
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_SEQ_ID": {
+										"type": "String",
+										"value": {
+											"value": "@variables('V_STREAM_SEQ_ID')",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "FINAL STREAM",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "FOR EACH PROCESS",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_FINAL_STREAM]",
+								"storedProcedureParameters": {
+									"P_AS_AT_DT": {
+										"type": "String",
+										"value": {
+											"value": "@variables('V_AS_AT_DT')",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_SEQ_ID": {
+										"type": "String",
+										"value": {
+											"value": "@variables('V_STREAM_SEQ_ID')",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							}
+						}
+					},
+					{
+						"name": "GET EMAIL",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "FINAL STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_GET_EMAIL]",
+								"storedProcedureParameters": {
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_RESULT": {
+										"type": "String",
+										"value": {
+											"value": "@activity('FINAL STREAM').output.FIRSTROW.STREAM_RESULT",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "SET AS_AT_DT",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "START STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "V_AS_AT_DT",
+							"value": {
+								"value": "@activity('START STREAM').output.FIRSTROW.AS_AT_DT",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SET STREAM_SEQ_ID",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "START STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "V_STREAM_SEQ_ID",
+							"value": {
+								"value": "@activity('START STREAM').output.FIRSTROW.STREAM_SEQ_ID",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "START STREAM",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderStoredProcedureName": "[[CNTL].[PROC_CNTL_ACTV_STREAM]",
+								"storedProcedureParameters": {
+									"P_RUN_MODE": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_RUN_MODE",
+											"type": "Expression"
+										}
+									},
+									"P_STREAM_NM": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().parameters.P_STREAM_NM",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable1",
+								"type": "DatasetReference"
+							}
+						}
+					},
+					{
+						"name": "UPDATE STREAM",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "FINAL STREAM",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[CNTL].[PROC_UDT_STREAM]",
+							"storedProcedureParameters": {
+								"P_STREAM_NM": {
+									"value": {
+										"value": "@pipeline().parameters.P_STREAM_NM",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_STREAM_RESULT": {
+									"value": {
+										"value": "@activity('FINAL STREAM').output.firstrow.STREAM_RESULT",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"P_STREAM_SEQ_ID": {
+									"value": {
+										"value": "@variables('V_STREAM_SEQ_ID')",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SqlServer1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "GET EMAIL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "STREAM RESULT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-16.southeastasia.logic.azure.com:443/workflows/22f6e5f3cf8446e4a41e4d17b6f8e207/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=e6R2mrK-caGAuGiJNDxUSOP81aOVlA0ualQWyq2YBqc",
+							"method": "POST",
+							"body": {
+								"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\",\n\"Asat_dt\":\"@{activity('FINAL STREAM').output.firstrow.AS_AT_DT_FORMAT}\",\n\"StreamName\":\"@{pipeline().parameters.P_STREAM_NM}\"\n}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"P_STREAM_NM": {
+						"type": "string",
+						"defaultValue": "IM_IMAGENET"
+					},
+					"P_RUN_MODE": {
+						"type": "string",
+						"defaultValue": "R"
+					}
+				},
+				"variables": {
+					"V_STREAM_RESULT": {
+						"type": "String",
+						"defaultValue": "-999"
+					},
+					"V_PCS_NM_LIST": {
+						"type": "Array",
+						"defaultValue": [
+							999
+						]
+					},
+					"V_AS_AT_DT": {
+						"type": "String",
+						"defaultValue": "19000101"
+					},
+					"V_STREAM_SEQ_ID": {
+						"type": "String",
+						"defaultValue": "-999"
+					}
+				},
+				"folder": {
+					"name": "COMMON JOB"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}
