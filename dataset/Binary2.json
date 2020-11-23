@@ -10,7 +10,8 @@
 				"type": "string"
 			},
 			"p_filename": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "wnid_test.txt"
 			}
 		},
 		"folder": {
