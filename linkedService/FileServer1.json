@@ -5,12 +5,12 @@
 		"annotations": [],
 		"type": "FileServer",
 		"typeProperties": {
-			"host": "C:\\Users\\admin\\Desktop\\TL\\",
-			"userId": "admin",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJmOWIxOWVkZC0wYzc4LTRiZGUtODBlMC01ODEzYzA1NjU5NzIiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"host": "C:\\POC\\",
+			"userId": "poc",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0MmMwZWUyMi02MzZmLTRjMmYtYjU5Ni0zOTJkNDViMGI4ZDAiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
-			"referenceName": "integrationRuntime2",
+			"referenceName": "integrationRuntime1",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
