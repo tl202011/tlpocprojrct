@@ -13,7 +13,8 @@
 		},
 		"parameters": {
 			"weblink": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "http://farm4.static.flickr.com/3577/3324699593_7391c69fc7.jpg"
 			}
 		},
 		"folder": {
