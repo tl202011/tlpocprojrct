@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data2",
+				"name": "Copy data1",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -17,23 +17,6 @@
 				"typeProperties": {
 					"source": {
 						"type": "DelimitedTextSource",
-						"additionalColumns": [
-							{
-								"name": "RMRK",
-								"value": {
-									"value": "@pipeline().parameters.P_WNID",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "STM_NM",
-								"value": "IMAGENET"
-							},
-							{
-								"name": "UDT_BY",
-								"value": "INTELTION"
-							}
-						],
 						"storeSettings": {
 							"type": "HttpReadSettings",
 							"requestMethod": "GET"
@@ -43,10 +26,15 @@
 						}
 					},
 					"sink": {
-						"type": "SqlServerSink",
-						"sqlWriterStoredProcedureName": "[CNTL].[spInsertFile]",
-						"sqlWriterTableType": "CNTL.UrlTableType",
-						"storedProcedureTableTypeParameterName": "UrlType"
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
 					},
 					"enableStaging": false,
 					"translator": {
@@ -63,17 +51,17 @@
 						"referenceName": "DelimitedText3",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_weblink": {
-								"value": "@concat('http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=', pipeline().parameters.P_WNID)",
-								"type": "Expression"
-							}
+							"p_weblink": "x"
 						}
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "img_SqlServerTable1",
-						"type": "DatasetReference"
+						"referenceName": "DelimitedText2",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_container": "sentrisk"
+						}
 					}
 				]
 			}
