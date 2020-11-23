@@ -1,6 +1,7 @@
 {
 	"name": "pl_mainloadfile",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "Copy data2",

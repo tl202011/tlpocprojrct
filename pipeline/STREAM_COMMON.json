@@ -1,6 +1,7 @@
 {
 	"name": "STREAM_COMMON",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "SET PROCESS LIST",

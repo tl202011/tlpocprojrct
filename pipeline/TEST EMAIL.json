@@ -1,6 +1,7 @@
 {
 	"name": "TEST EMAIL",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "STREAM RESULT",

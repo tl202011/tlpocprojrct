@@ -1,6 +1,7 @@
 {
 	"name": "PCS_COMMON_2",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "CHECK LATEST LOG",

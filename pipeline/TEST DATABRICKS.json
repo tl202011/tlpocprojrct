@@ -1,6 +1,7 @@
 {
 	"name": "TEST DATABRICKS",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "test",

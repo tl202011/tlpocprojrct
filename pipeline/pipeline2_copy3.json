@@ -1,6 +1,7 @@
 {
 	"name": "pipeline2_copy3",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "Lookup1",

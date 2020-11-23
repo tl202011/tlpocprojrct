@@ -1,6 +1,7 @@
 {
 	"name": "TEST PROCESS",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "ForEach1",

@@ -1,6 +1,7 @@
 {
 	"name": "MAIN_BATCH",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "STREAM_COMMON",

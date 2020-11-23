@@ -1,6 +1,7 @@
 {
 	"name": "PCS_COMMON_IMG",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "INSERT PROCESS LOG",

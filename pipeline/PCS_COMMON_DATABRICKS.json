@@ -1,6 +1,7 @@
 {
 	"name": "PCS_COMMON_DATABRICKS",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "SALES PREDICTION MODEL",

@@ -1,6 +1,7 @@
 {
 	"name": "pl_looploadfile",
 	"properties": {
+		"description": " ",
 		"activities": [
 			{
 				"name": "Lookup1",
