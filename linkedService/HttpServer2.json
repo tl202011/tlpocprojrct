@@ -1,10 +1,16 @@
 {
 	"name": "HttpServer2",
 	"properties": {
+		"parameters": {
+			"weblink": {
+				"type": "string",
+				"defaultValue": "http://farm4.static.flickr.com/3577/3324699593_7391c69fc7.jpg"
+			}
+		},
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "http://farm4.static.flickr.com/3577/3324699593_7391c69fc7.jpg",
+			"url": "@{linkedService().weblink}",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
