@@ -1,5 +1,5 @@
 {
-	"name": "pl_mainloadfile_copy1",
+	"name": "pl_mainloadfile",
 	"properties": {
 		"activities": [
 			{
@@ -131,6 +131,7 @@
 						"type": "Expression"
 					},
 					"isSequential": false,
+					"batchCount": 10,
 					"activities": [
 						{
 							"name": "pl_looploadfile",

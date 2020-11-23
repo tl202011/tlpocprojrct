@@ -577,7 +577,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_mainloadfile",
+						"referenceName": "pl_mainloadfile_bk",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
