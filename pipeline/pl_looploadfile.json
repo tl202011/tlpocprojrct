@@ -18,8 +18,8 @@
 					"source": {
 						"type": "DelimitedTextSource",
 						"storeSettings": {
-							"type": "HttpReadSettings",
-							"requestMethod": "GET"
+							"type": "FileServerReadSettings",
+							"recursive": true
 						},
 						"formatSettings": {
 							"type": "DelimitedTextReadSettings"
@@ -48,10 +48,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DelimitedText3",
+						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_weblink": "x"
+							"filename": "card_info.csv",
+							"path": "TL-Sent_chun"
 						}
 					}
 				],
