@@ -11,7 +11,8 @@
 				"defaultValue": "sentrisk"
 			},
 			"p_filename": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "Data_test.csv"
 			}
 		},
 		"annotations": [],
