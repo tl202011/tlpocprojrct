@@ -4951,6 +4951,67 @@
 				"description": " ",
 				"activities": [
 					{
+						"name": "STREAM_COMMON_copy1",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": {
+									"value": "TL-SENT_CHUN",
+									"type": "Expression"
+								},
+								"P_RUN_MODE": "R"
+							}
+						}
+					},
+					{
+						"name": "STREAM_COMMON1_copy1",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "STREAM_COMMON_copy1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "DB_SENT_CHUN",
+								"P_RUN_MODE": "R"
+							}
+						}
+					}
+				],
+				"folder": {
+					"name": "COMMON JOB"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/STREAM_COMMON')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MAIN_BATCH_backup')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": " ",
+				"activities": [
+					{
 						"name": "STREAM_COMMON",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
