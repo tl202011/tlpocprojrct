@@ -39,7 +39,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "img_SqlServerTable1",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
