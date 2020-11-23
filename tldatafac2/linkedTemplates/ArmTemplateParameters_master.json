@@ -11,6 +11,9 @@
 		"AzureDataLakeStorage1_accountKey": {
 			"value": ""
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
 		"Databrickslinked_accessToken": {
 			"value": ""
 		},
@@ -33,6 +36,9 @@
 			"value": "poc"
 		},
 		"HttpServer1_properties_typeProperties_url": {
+			"value": "@{linkedService().weblink}"
+		},
+		"HttpServer2_properties_typeProperties_url": {
 			"value": "@{linkedService().weblink}"
 		},
 		"linkedService1_properties_typeProperties_url": {

@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
 		"Databrickslinked_accessToken": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'Databrickslinked'"
@@ -32,6 +36,10 @@
 			"defaultValue": "https://tlstorage3.dfs.core.windows.net"
 		},
 		"HttpServer1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{linkedService().weblink}"
+		},
+		"HttpServer2_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().weblink}"
 		},
@@ -75,6 +83,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Databrickslinked')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -82,17 +103,17 @@
 				"annotations": [],
 				"type": "AzureDatabricks",
 				"typeProperties": {
-					"domain": "https://adb-6632200347325520.0.azuredatabricks.net/",
+					"domain": "https://adb-6712120590857918.18.azuredatabricks.net/",
 					"accessToken": {
 						"type": "SecureString",
 						"value": "[parameters('Databrickslinked_accessToken')]"
 					},
 					"newClusterNodeType": "Standard_DS3_v2",
-					"newClusterNumOfWorker": "2:5",
+					"newClusterNumOfWorker": "1",
 					"newClusterSparkEnvVars": {
 						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
 					},
-					"newClusterVersion": "7.1.x-scala2.12"
+					"newClusterVersion": "7.3.x-scala2.12"
 				}
 			},
 			"dependsOn": []
@@ -112,6 +133,27 @@
 				"type": "HttpServer",
 				"typeProperties": {
 					"url": "[parameters('HttpServer1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HttpServer2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"weblink": {
+						"type": "string",
+						"defaultValue": "http://farm4.static.flickr.com/3577/3324699593_7391c69fc7.jpg"
+					}
+				},
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('HttpServer2_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous"
 				}
@@ -236,6 +278,7 @@
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": " ",
 				"activities": [
 					{
 						"name": "test",
@@ -273,7 +316,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "HttpServer1",
+					"referenceName": "HttpServer2",
 					"type": "LinkedServiceReference",
 					"parameters": {
 						"weblink": {
@@ -284,7 +327,8 @@
 				},
 				"parameters": {
 					"weblink": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "http://farm4.static.flickr.com/3577/3324699593_7391c69fc7.jpg"
 					}
 				},
 				"folder": {
@@ -299,7 +343,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/HttpServer1')]"
+				"[concat(variables('factoryId'), '/linkedServices/HttpServer2')]"
 			]
 		},
 		{
@@ -316,7 +360,8 @@
 						"type": "string"
 					},
 					"p_filename": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "wnid_test.txt"
 					}
 				},
 				"folder": {
@@ -385,7 +430,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "HttpServer1",
+					"referenceName": "HttpServer2",
 					"type": "LinkedServiceReference",
 					"parameters": {
 						"weblink": {
@@ -415,7 +460,7 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/HttpServer1')]"
+				"[concat(variables('factoryId'), '/linkedServices/HttpServer2')]"
 			]
 		},
 		{
@@ -433,7 +478,8 @@
 						"defaultValue": "sentrisk"
 					},
 					"p_filename": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "Data_test.csv"
 					}
 				},
 				"annotations": [],
@@ -476,7 +522,8 @@
 						"defaultValue": "sentrisk"
 					},
 					"p_filename": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "aaa"
 					}
 				},
 				"folder": {
@@ -538,51 +585,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServerTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SqlServer1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "CNTL",
-					"table": "CNTL_FILE"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/img_SqlServerTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SqlServer1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "IMG"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "CNTL",
-					"table": "CNTL_FILE"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SqlServer1')]"
 			]
 		}
 	]

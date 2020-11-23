@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
 		"Databrickslinked_accessToken": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'Databrickslinked'"
@@ -44,6 +48,10 @@
 			"defaultValue": "poc"
 		},
 		"HttpServer1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{linkedService().weblink}"
+		},
+		"HttpServer2_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().weblink}"
 		},
@@ -84,6 +92,9 @@
 					"AzureDataLakeStorage1_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
 					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
 					"Databrickslinked_accessToken": {
 						"value": "[parameters('Databrickslinked_accessToken')]"
 					},
@@ -98,6 +109,9 @@
 					},
 					"HttpServer1_properties_typeProperties_url": {
 						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
+					},
+					"HttpServer2_properties_typeProperties_url": {
+						"value": "[parameters('HttpServer2_properties_typeProperties_url')]"
 					},
 					"linkedService1_properties_typeProperties_url": {
 						"value": "[parameters('linkedService1_properties_typeProperties_url')]"
