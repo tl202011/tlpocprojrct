@@ -8,11 +8,11 @@
 		"parameters": {
 			"filename": {
 				"type": "string",
-				"defaultValue": "card_info.csv"
+				"defaultValue": "Data_test.csv"
 			},
 			"path": {
 				"type": "string",
-				"defaultValue": "TL-Sent_chun"
+				"defaultValue": "Sent_risk"
 			}
 		},
 		"annotations": [],

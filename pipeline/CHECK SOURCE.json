@@ -30,8 +30,11 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"filename": "card_info.csv",
-							"path": "TL-Sent_chun"
+							"filename": "Data_test.csv",
+							"path": {
+								"value": "Sent_risk",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": false
