@@ -140,14 +140,25 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "TEST EMAIL",
+									"referenceName": "pl_looploadfile",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
 								"parameters": {
-									"STREAM_NM": "edw",
-									"STRAM_SEQ_ID": {
-										"value": "4",
+									"P_WNID": {
+										"value": "@item().Prop_0",
+										"type": "Expression"
+									},
+									"P_PCS_NM": {
+										"value": "@pipeline().parameters.P_PCS_NM",
+										"type": "Expression"
+									},
+									"P_STREAM_SEQ_ID": {
+										"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+										"type": "Expression"
+									},
+									"P_LOAD_ID": {
+										"value": "@pipeline().parameters.P_LOAD_ID",
 										"type": "Expression"
 									}
 								}
