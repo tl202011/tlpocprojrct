@@ -1,5 +1,5 @@
 {
-	"name": "pl_mainloadfile",
+	"name": "pl_mainloadfile_copy1",
 	"properties": {
 		"activities": [
 			{
@@ -67,7 +67,7 @@
 				]
 			},
 			{
-				"name": "Lookup2",
+				"name": "Lookup1",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -105,7 +105,7 @@
 								"type": "Expression"
 							},
 							"p_filename": {
-								"value": "cnt.txt",
+								"value": "wnid_n00443917.txt",
 								"type": "Expression"
 							}
 						}
@@ -114,11 +114,11 @@
 				}
 			},
 			{
-				"name": "ForEach1_copy1",
+				"name": "ForEach1",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup2",
+						"activity": "Lookup1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -127,23 +127,27 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup2').output.value\n",
+						"value": "@activity('Lookup1').output.value\n",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
 					"activities": [
 						{
-							"name": "pl_subloadfile",
+							"name": "pl_looploadfile",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pl_subloadfile",
+									"referenceName": "pl_looploadfile",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
 								"parameters": {
+									"P_WNID": {
+										"value": "@item().Prop_0",
+										"type": "Expression"
+									},
 									"P_PCS_NM": {
 										"value": "@pipeline().parameters.P_PCS_NM",
 										"type": "Expression"
@@ -154,10 +158,6 @@
 									},
 									"P_LOAD_ID": {
 										"value": "@pipeline().parameters.P_LOAD_ID",
-										"type": "Expression"
-									},
-									"P_CNT": {
-										"value": "@item().CNT",
 										"type": "Expression"
 									}
 								}
