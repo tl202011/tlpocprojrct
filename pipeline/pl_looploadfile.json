@@ -22,14 +22,14 @@
 							"P_STREAM_NM": {
 								"type": "String",
 								"value": {
-									"value": "@pipeline().parameters.STREAM_NM",
+									"value": "z",
 									"type": "Expression"
 								}
 							},
 							"P_STREAM_SEQ_ID": {
 								"type": "String",
 								"value": {
-									"value": "@pipeline().parameters.STRAM_SEQ_ID",
+									"value": "z",
 									"type": "Expression"
 								}
 							}
