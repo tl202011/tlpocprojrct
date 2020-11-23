@@ -396,7 +396,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "img_SqlServerTable1",
+						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
 				]
