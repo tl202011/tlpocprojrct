@@ -72,7 +72,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pl_looploadfile",
+									"referenceName": "pl_looploadfile2",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
