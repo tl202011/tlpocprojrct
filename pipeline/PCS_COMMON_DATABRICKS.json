@@ -4,7 +4,7 @@
 		"description": " ",
 		"activities": [
 			{
-				"name": "RUN MODEL",
+				"name": "Run MODEL",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
@@ -481,7 +481,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "RUN MODEL",
+						"activity": "Run MODEL",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -540,7 +540,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "RUN MODEL",
+						"activity": "Run MODEL",
 						"dependencyConditions": [
 							"Succeeded"
 						]

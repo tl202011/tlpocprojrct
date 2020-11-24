@@ -4,13 +4,20 @@
 		"description": "Daily 8:00(UTC+7) T+1",
 		"annotations": [],
 		"runtimeState": "Stopped",
-		"pipelines": [],
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MAIN_BATCH",
+					"type": "PipelineReference"
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2020-10-05T01:00:00Z",
+				"startTime": "2020-11-30T01:00:00Z",
 				"timeZone": "UTC"
 			}
 		}
