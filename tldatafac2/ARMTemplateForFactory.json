@@ -1966,7 +1966,7 @@
 				"description": " ",
 				"activities": [
 					{
-						"name": "SALES PREDICTION MODEL",
+						"name": "RUN MODEL",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
@@ -2450,7 +2450,7 @@
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
-								"activity": "SALES PREDICTION MODEL",
+								"activity": "RUN MODEL",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -2509,7 +2509,7 @@
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
-								"activity": "SALES PREDICTION MODEL",
+								"activity": "RUN MODEL",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -3404,6 +3404,10 @@
 																},
 																"P_STREAM_SEQ_ID": {
 																	"value": "@variables('V_STREAM_SEQ_ID')",
+																	"type": "Expression"
+																},
+																"P_AS_AT_DT": {
+																	"value": "@variables('V_AS_AT_DT')",
 																	"type": "Expression"
 																},
 																"P_DATABRICKS": {
