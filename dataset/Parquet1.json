@@ -16,8 +16,12 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileSystem": {
+				"folderPath": {
 					"value": "@dataset().p_container",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "parquet",
 					"type": "Expression"
 				}
 			},
