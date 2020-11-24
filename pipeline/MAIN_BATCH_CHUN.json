@@ -1,10 +1,10 @@
 {
-	"name": "MAIN_BATCH",
+	"name": "MAIN_BATCH_CHUN",
 	"properties": {
 		"description": " ",
 		"activities": [
 			{
-				"name": "STREAM_COMMON",
+				"name": "STREAM_COMMON_copy1",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -15,17 +15,20 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"P_STREAM_NM": "SENT_RISK",
+						"P_STREAM_NM": {
+							"value": "TL-SENT_CHUN",
+							"type": "Expression"
+						},
 						"P_RUN_MODE": "R"
 					}
 				}
 			},
 			{
-				"name": "STREAM_COMMON1",
+				"name": "STREAM_COMMON1_copy1",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "STREAM_COMMON",
+						"activity": "STREAM_COMMON_copy1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -39,7 +42,7 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"P_STREAM_NM": "DB_SENT_RISK",
+						"P_STREAM_NM": "DB_SENT_CHUN",
 						"P_RUN_MODE": "R"
 					}
 				}

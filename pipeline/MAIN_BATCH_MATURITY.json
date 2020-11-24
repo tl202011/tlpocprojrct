@@ -1,10 +1,10 @@
 {
-	"name": "MAIN_BATCH",
+	"name": "MAIN_BATCH_MATURITY",
 	"properties": {
 		"description": " ",
 		"activities": [
 			{
-				"name": "STREAM_COMMON",
+				"name": "STREAM_COMMON_copy2",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
@@ -15,17 +15,17 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"P_STREAM_NM": "SENT_RISK",
+						"P_STREAM_NM": "SENT_MATURITY",
 						"P_RUN_MODE": "R"
 					}
 				}
 			},
 			{
-				"name": "STREAM_COMMON1",
+				"name": "STREAM_COMMON1_copy2",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "STREAM_COMMON",
+						"activity": "STREAM_COMMON_copy2",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -39,7 +39,7 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"P_STREAM_NM": "DB_SENT_RISK",
+						"P_STREAM_NM": "DB_SENT_MATURITY",
 						"P_RUN_MODE": "R"
 					}
 				}
