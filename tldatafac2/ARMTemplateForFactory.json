@@ -3076,7 +3076,7 @@
 							{
 								"activity": "pl_mainloadfile",
 								"dependencyConditions": [
-									"Succeeded"
+									"Failed"
 								]
 							}
 						],
@@ -3114,7 +3114,7 @@
 									"type": "String"
 								},
 								"P_RMRK": {
-									"value": "FAILED ON RUN DATABRICK MODEL",
+									"value": "FAILED ON LOAD IMAGE",
 									"type": "String"
 								},
 								"P_ST": {
