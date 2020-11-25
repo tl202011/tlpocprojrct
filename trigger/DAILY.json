@@ -10,6 +10,12 @@
 					"referenceName": "MAIN_BATCH",
 					"type": "PipelineReference"
 				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "MAIN_BATCH_CHUN",
+					"type": "PipelineReference"
+				}
 			}
 		],
 		"type": "ScheduleTrigger",
