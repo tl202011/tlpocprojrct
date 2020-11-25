@@ -1,0 +1,29 @@
+{
+	"name": "MAIN_BATCH_IMAGE",
+	"properties": {
+		"description": " ",
+		"activities": [
+			{
+				"name": "STREAM_COMMON",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "IM_IMAGENET",
+						"P_RUN_MODE": "R"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "COMMON JOB"
+		},
+		"annotations": []
+	}
+}
