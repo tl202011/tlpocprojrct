@@ -29,6 +29,9 @@
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://tlstorage3.dfs.core.windows.net"
 		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://mssqlpwd.vault.azure.net/"
+		},
 		"FileServer1_properties_typeProperties_host": {
 			"value": "C:\\POC\\"
 		},
@@ -43,9 +46,6 @@
 		},
 		"linkedService1_properties_typeProperties_url": {
 			"value": "https://tlstorage3.dfs.core.windows.net"
-		},
-		"AzureKeyVault1_properties_typeProperties_baseUrl": {
-			"value": "https://mssqlpwd.vault.azure.net/"
 		},
 		"containerUri": {
 			"value": ""

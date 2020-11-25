@@ -39,6 +39,10 @@
 			"type": "string",
 			"defaultValue": "https://tlstorage3.dfs.core.windows.net"
 		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://mssqlpwd.vault.azure.net/"
+		},
 		"FileServer1_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "C:\\POC\\"
@@ -58,10 +62,6 @@
 		"linkedService1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://tlstorage3.dfs.core.windows.net"
-		},
-		"AzureKeyVault1_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://mssqlpwd.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -227,6 +227,40 @@
 							"waitOnCompletion": true,
 							"parameters": {
 								"P_STREAM_NM": "DB_SENT_CHUN",
+								"P_RUN_MODE": "R"
+							}
+						}
+					}
+				],
+				"folder": {
+					"name": "COMMON JOB"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/STREAM_COMMON')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MAIN_BATCH_IMAGE')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": " ",
+				"activities": [
+					{
+						"name": "STREAM_COMMON",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "STREAM_COMMON",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_STREAM_NM": "IM_IMAGENET",
 								"P_RUN_MODE": "R"
 							}
 						}
@@ -5753,6 +5787,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -5862,10 +5909,20 @@
 				"annotations": [],
 				"type": "SqlServer",
 				"typeProperties": {
-					"connectionString": "[parameters('SqlServer1_connectionString')]"
+					"connectionString": "[parameters('SqlServer1_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "mssqlpwd1"
+					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/linkedService1')]",
@@ -5974,19 +6031,6 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
-				}
 			},
 			"dependsOn": []
 		}

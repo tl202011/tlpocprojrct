@@ -39,6 +39,10 @@
 			"type": "string",
 			"defaultValue": "https://tlstorage3.dfs.core.windows.net"
 		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://mssqlpwd.vault.azure.net/"
+		},
 		"FileServer1_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "C:\\POC\\"
@@ -58,10 +62,6 @@
 		"linkedService1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://tlstorage3.dfs.core.windows.net"
-		},
-		"AzureKeyVault1_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://mssqlpwd.vault.azure.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -102,14 +102,17 @@
 					"Databrickslinked_accessToken": {
 						"value": "[parameters('Databrickslinked_accessToken')]"
 					},
-					"SqlServer1_connectionString": {
-						"value": "[parameters('SqlServer1_connectionString')]"
-					},
 					"linkedService1_accountKey": {
 						"value": "[parameters('linkedService1_accountKey')]"
 					},
+					"FileServer1_password": {
+						"value": "[parameters('FileServer1_password')]"
+					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"AzureKeyVault1_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
 					},
 					"HttpServer1_properties_typeProperties_url": {
 						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
@@ -120,8 +123,11 @@
 					"linkedService1_properties_typeProperties_url": {
 						"value": "[parameters('linkedService1_properties_typeProperties_url')]"
 					},
-					"AzureKeyVault1_properties_typeProperties_baseUrl": {
-						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+					"FileServer1_properties_typeProperties_host": {
+						"value": "[parameters('FileServer1_properties_typeProperties_host')]"
+					},
+					"FileServer1_properties_typeProperties_userId": {
+						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -141,14 +147,8 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"FileServer1_password": {
-						"value": "[parameters('FileServer1_password')]"
-					},
-					"FileServer1_properties_typeProperties_host": {
-						"value": "[parameters('FileServer1_properties_typeProperties_host')]"
-					},
-					"FileServer1_properties_typeProperties_userId": {
-						"value": "[parameters('FileServer1_properties_typeProperties_userId')]"
+					"SqlServer1_connectionString": {
+						"value": "[parameters('SqlServer1_connectionString')]"
 					}
 				}
 			},
