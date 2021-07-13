@@ -97,77 +97,30 @@
 					"batchCount": 20,
 					"activities": [
 						{
-							"name": "IF STREAM IS SALES_PRED",
-							"type": "IfCondition",
+							"name": "RUN_PCS_1_copy1",
+							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"expression": {
-									"value": "@equals(pipeline().parameters.P_STREAM_NM,'SALES_PRED')",
-									"type": "Expression"
+								"pipeline": {
+									"referenceName": "PCS_COMMON_1",
+									"type": "PipelineReference"
 								},
-								"ifFalseActivities": [
-									{
-										"name": "RUN_PCS_1",
-										"type": "ExecutePipeline",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"pipeline": {
-												"referenceName": "PCS_COMMON_1",
-												"type": "PipelineReference"
-											},
-											"waitOnCompletion": true,
-											"parameters": {
-												"P_PROCESS_NM": {
-													"value": "@item().PCS_NM",
-													"type": "Expression"
-												},
-												"P_RUN_MODE": {
-													"value": "@pipeline().parameters.P_RUN_MODE",
-													"type": "Expression"
-												},
-												"P_STREAM_SEQ_ID": {
-													"value": "@variables('V_STREAM_SEQ_ID')",
-													"type": "Expression"
-												}
-											}
-										}
+								"waitOnCompletion": true,
+								"parameters": {
+									"P_PROCESS_NM": {
+										"value": "@item().PCS_NM",
+										"type": "Expression"
+									},
+									"P_RUN_MODE": {
+										"value": "@pipeline().parameters.P_RUN_MODE",
+										"type": "Expression"
+									},
+									"P_STREAM_SEQ_ID": {
+										"value": "@variables('V_STREAM_SEQ_ID')",
+										"type": "Expression"
 									}
-								],
-								"ifTrueActivities": [
-									{
-										"name": "SALES_PRED_RPT",
-										"type": "ExecutePipeline",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"pipeline": {
-												"referenceName": "SALES_PRED_RPT",
-												"type": "PipelineReference"
-											},
-											"waitOnCompletion": true,
-											"parameters": {
-												"P_RUN_MODE": {
-													"value": "@pipeline().parameters.P_RUN_MODE",
-													"type": "Expression"
-												},
-												"P_PCS_NM": {
-													"value": "@item().PCS_NM",
-													"type": "Expression"
-												},
-												"P_STREAM_SEQ_ID": {
-													"value": "@variables('V_STREAM_SEQ_ID')",
-													"type": "Expression"
-												},
-												"P_AS_AT_DT": {
-													"value": "@variables('V_AS_AT_DT')",
-													"type": "Expression"
-												}
-											}
-										}
-									}
-								]
+								}
 							}
 						}
 					]

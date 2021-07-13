@@ -48,6 +48,9 @@
 											"type": "ParquetSink",
 											"storeSettings": {
 												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
 											}
 										},
 										"enableStaging": false
@@ -361,6 +364,9 @@
 											"type": "ParquetSink",
 											"storeSettings": {
 												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
 											}
 										},
 										"enableStaging": false
@@ -542,6 +548,9 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "CSV"
 						}
 					],
 					"defaultActivities": [
