@@ -1,0 +1,30 @@
+{
+	"name": "connecy_dbk",
+	"properties": {
+		"activities": [
+			{
+				"name": "connect_dbk",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/wrk_spc/test"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-07-13T06:50:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
