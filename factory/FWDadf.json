@@ -1,0 +1,9 @@
+{
+	"name": "FWDadf",
+	"location": "southeastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "ab1fa0c6-97ce-48fb-9107-ae0db90e70bd",
+		"tenantId": "a5c20665-f3d8-4f07-b211-5051a9b92f26"
+	}
+}
