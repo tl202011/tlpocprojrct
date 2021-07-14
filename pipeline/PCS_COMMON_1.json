@@ -16,35 +16,27 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
+						"type": "AzureSqlSource",
 						"sqlReaderStoredProcedureName": "[CNTL].[PROC_CNTL_START_PCS]",
 						"storedProcedureParameters": {
 							"P_PCS_NM": {
 								"type": "String",
-								"value": {
-									"value": "@pipeline().parameters.P_PROCESS_NM",
-									"type": "Expression"
-								}
+								"value": "@pipeline().parameters.P_PROCESS_NM"
 							},
 							"P_RUN_MODE": {
 								"type": "String",
-								"value": {
-									"value": "@pipeline().parameters.P_RUN_MODE",
-									"type": "Expression"
-								}
+								"value": "@pipeline().parameters.P_RUN_MODE"
 							},
 							"P_STREAM_SEQ_ID": {
 								"type": "String",
-								"value": {
-									"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
-									"type": "Expression"
-								}
+								"value": "@pipeline().parameters.P_STREAM_SEQ_ID"
 							}
 						},
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ControlTable",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": true
@@ -108,12 +100,13 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "SqlServerSource",
+									"type": "AzureSqlSource",
 									"sqlReaderQuery": "SELECT 1",
-									"queryTimeout": "02:00:00"
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"dataset": {
-									"referenceName": "ControlTable",
+									"referenceName": "AzureSqlTable1",
 									"type": "DatasetReference"
 								}
 							}
