@@ -60,7 +60,10 @@
 						"storedProcedureParameters": {
 							"P_STREAM_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_STREAM_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_STREAM_NM",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
@@ -149,11 +152,17 @@
 						"storedProcedureParameters": {
 							"P_STREAM_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_STREAM_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_STREAM_NM",
+									"type": "Expression"
+								}
 							},
 							"P_STREAM_SEQ_ID": {
 								"type": "String",
-								"value": "@variables('V_STREAM_SEQ_ID')"
+								"value": {
+									"value": "@variables('V_STREAM_SEQ_ID')",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
@@ -192,15 +201,24 @@
 						"storedProcedureParameters": {
 							"P_AS_AT_DT": {
 								"type": "String",
-								"value": "@variables('V_AS_AT_DT')"
+								"value": {
+									"value": "@variables('V_AS_AT_DT')",
+									"type": "Expression"
+								}
 							},
 							"P_STREAM_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_STREAM_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_STREAM_NM",
+									"type": "Expression"
+								}
 							},
 							"P_STREAM_SEQ_ID": {
 								"type": "String",
-								"value": "@variables('V_STREAM_SEQ_ID')"
+								"value": {
+									"value": "@variables('V_STREAM_SEQ_ID')",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
@@ -275,11 +293,17 @@
 						"storedProcedureParameters": {
 							"P_STREAM_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_STREAM_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_STREAM_NM",
+									"type": "Expression"
+								}
 							},
 							"P_STREAM_RESULT": {
 								"type": "String",
-								"value": "@activity('FINAL STREAM').output.FIRSTROW.STREAM_RESULT"
+								"value": {
+									"value": "@activity('FINAL STREAM').output.FIRSTROW.STREAM_RESULT",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
@@ -351,11 +375,17 @@
 						"storedProcedureParameters": {
 							"P_RUN_MODE": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_RUN_MODE"
+								"value": {
+									"value": "@pipeline().parameters.P_RUN_MODE",
+									"type": "Expression"
+								}
 							},
 							"P_STREAM_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_STREAM_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_STREAM_NM",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
