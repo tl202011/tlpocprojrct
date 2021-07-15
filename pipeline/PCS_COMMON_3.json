@@ -564,8 +564,11 @@
 										"secureInput": false
 									},
 									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Shared/Tranform/test"
+									},
 									"linkedServiceName": {
-										"referenceName": "Databrickslinked",
+										"referenceName": "Databricklined_syn",
 										"type": "LinkedServiceReference"
 									}
 								}
