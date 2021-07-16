@@ -632,7 +632,7 @@
 					}
 				},
 				"linkedServiceName": {
-					"referenceName": "SqlServer1",
+					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
 				}
 			},
