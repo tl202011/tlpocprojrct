@@ -1,0 +1,28 @@
+{
+	"name": "POC",
+	"properties": {
+		"activities": [
+			{
+				"name": "CSV",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "STREAM_COMMON",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_STREAM_NM": "CSV",
+						"P_RUN_MODE": "N"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "SCHEDULE"
+		},
+		"annotations": []
+	}
+}
