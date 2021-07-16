@@ -1257,11 +1257,11 @@
 			},
 			"P_RUN_MODE": {
 				"type": "string",
-				"defaultValue": "R"
+				"defaultValue": "R "
 			},
 			"P_LOAD_ID": {
 				"type": "string",
-				"defaultValue": "999"
+				"defaultValue": "99"
 			}
 		},
 		"variables": {

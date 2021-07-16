@@ -18,6 +18,19 @@
 						"P_RUN_MODE": "N"
 					}
 				}
+			},
+			{
+				"name": "PCS_COMMON_3",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PCS_COMMON_3",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"folder": {
