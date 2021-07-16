@@ -305,7 +305,10 @@
 						"storedProcedureParameters": {
 							"P_PCS_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_PCS_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_PCS_NM",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
@@ -355,7 +358,10 @@
 						"storedProcedureParameters": {
 							"P_PCS_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_PCS_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_PCS_NM",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
@@ -484,17 +490,26 @@
 						"type": "AzureSqlSource",
 						"sqlReaderStoredProcedureName": "[CNTL].[PROC_CHK_LTST_PCS]",
 						"storedProcedureParameters": {
-							"[CNTL].[PROC_CHK_LTST_PCS]": {
+							"P_LOAD_ID": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_LOAD_ID"
+								"value": {
+									"value": "@pipeline().parameters.P_LOAD_ID",
+									"type": "Expression"
+								}
 							},
 							"P_PCS_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_PCS_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_PCS_NM",
+									"type": "Expression"
+								}
 							},
 							"P_RUN_MODE": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_RUN_MODE"
+								"value": {
+									"value": "@pipeline().parameters.P_RUN_MODE",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
@@ -532,15 +547,24 @@
 						"storedProcedureParameters": {
 							"P_AS_AT_DT": {
 								"type": "String",
-								"value": "@variables('V_AS_AT_DT')"
+								"value": {
+									"value": "@variables('V_AS_AT_DT')",
+									"type": "Expression"
+								}
 							},
 							"P_LOAD_ID": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_LOAD_ID"
+								"value": {
+									"value": "@pipeline().parameters.P_LOAD_ID",
+									"type": "Expression"
+								}
 							},
 							"P_PCS_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_PCS_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_PCS_NM",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
@@ -755,11 +779,17 @@
 						"storedProcedureParameters": {
 							"P_LOAD_ID": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_LOAD_ID"
+								"value": {
+									"value": "@pipeline().parameters.P_LOAD_ID",
+									"type": "Expression"
+								}
 							},
 							"P_PCS_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_PCS_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_PCS_NM",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
@@ -1059,11 +1089,17 @@
 						"storedProcedureParameters": {
 							"P_AS_AT_DT": {
 								"type": "String",
-								"value": "@variables('V_AS_AT_DT')"
+								"value": {
+									"value": "@variables('V_AS_AT_DT')",
+									"type": "Expression"
+								}
 							},
 							"P_PCS_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_PCS_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_PCS_NM",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
