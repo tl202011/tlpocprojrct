@@ -91,7 +91,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(variables('V_SKIP_PROCESS'),0)",
+						"value": "@equals(variables('V_SKIP_PROCESS'),'0')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
