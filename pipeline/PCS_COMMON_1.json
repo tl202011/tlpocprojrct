@@ -21,15 +21,24 @@
 						"storedProcedureParameters": {
 							"P_PCS_NM": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_PROCESS_NM"
+								"value": {
+									"value": "@pipeline().parameters.P_PROCESS_NM",
+									"type": "Expression"
+								}
 							},
 							"P_RUN_MODE": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_RUN_MODE"
+								"value": {
+									"value": "@pipeline().parameters.P_RUN_MODE",
+									"type": "Expression"
+								}
 							},
 							"P_STREAM_SEQ_ID": {
 								"type": "String",
-								"value": "@pipeline().parameters.P_STREAM_SEQ_ID"
+								"value": {
+									"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00",
