@@ -1,0 +1,9 @@
+{
+	"name": "adffwdpoc202110",
+	"location": "southeastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "f9536953-4f12-4dd8-8de5-6d39a8c83633",
+		"tenantId": "513294a0-3e20-41b2-a970-6d30bf1546fa"
+	}
+}
