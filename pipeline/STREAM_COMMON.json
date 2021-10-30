@@ -70,6 +70,10 @@
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					},
 					"firstRowOnly": false
 				}
 			},
@@ -113,6 +117,10 @@
 												"dependsOn": [],
 												"userProperties": [],
 												"typeProperties": {
+													"pipeline": {
+														"referenceName": "PCS_COMMON_DATABRICKS",
+														"type": "PipelineReference"
+													},
 													"waitOnCompletion": true,
 													"parameters": {
 														"P_RUN_MODE": {
@@ -245,6 +253,10 @@
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					},
 					"firstRowOnly": true
 				}
 			},
@@ -296,6 +308,10 @@
 						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
 					}
 				}
 			},
@@ -373,6 +389,10 @@
 						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
 					}
 				}
 			},
@@ -420,6 +440,10 @@
 							"type": "String"
 						}
 					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
 				}
 			},
 			{
@@ -463,6 +487,10 @@
 						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
 					},
 					"firstRowOnly": true
 				}
