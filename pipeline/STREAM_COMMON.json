@@ -109,7 +109,7 @@
 								},
 								"cases": [
 									{
-										"value": "DB",
+										"value": "CSV",
 										"activities": [
 											{
 												"name": "PCS_COMMON_DATABRICKS_copy1",
