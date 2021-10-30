@@ -153,6 +153,37 @@
 									}
 								}
 							}
+						},
+						{
+							"name": "RUN_PCS_2_copy1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PCS_COMMON_2",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"P_PCS_NM": {
+										"value": "@pipeline().parameters.P_PROCESS_NM",
+										"type": "Expression"
+									},
+									"P_RUN_MODE": {
+										"value": "@pipeline().parameters.P_RUN_MODE",
+										"type": "Expression"
+									},
+									"P_LOAD_ID": {
+										"value": "@variables('V_LOAD_ID')",
+										"type": "Expression"
+									},
+									"P_STREAM_SEQ_ID": {
+										"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+										"type": "Expression"
+									}
+								}
+							}
 						}
 					]
 				}

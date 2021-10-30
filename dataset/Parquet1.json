@@ -1,0 +1,1185 @@
+{
+	"name": "Parquet1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "CHDRNUM",
+				"type": "UTF8"
+			},
+			{
+				"name": "id_key",
+				"type": "INT32"
+			},
+			{
+				"name": "dtl__capxuser",
+				"type": "UTF8"
+			},
+			{
+				"name": "dtl__capxtimestamp",
+				"type": "DECIMAL",
+				"precision": 20,
+				"scale": 0
+			},
+			{
+				"name": "dtl__capxaction",
+				"type": "UTF8"
+			},
+			{
+				"name": "dtl__capxcasdelind",
+				"type": "UTF8"
+			},
+			{
+				"name": "dtl__capxrrn",
+				"type": "INT32"
+			},
+			{
+				"name": "chdrpfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "chdrcoy",
+				"type": "INT32"
+			},
+			{
+				"name": "recode",
+				"type": "UTF8"
+			},
+			{
+				"name": "servunit",
+				"type": "UTF8"
+			},
+			{
+				"name": "cnttype",
+				"type": "UTF8"
+			},
+			{
+				"name": "tranno",
+				"type": "INT32"
+			},
+			{
+				"name": "tranid",
+				"type": "UTF8"
+			},
+			{
+				"name": "validflag",
+				"type": "INT32"
+			},
+			{
+				"name": "currfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "currto",
+				"type": "UTF8"
+			},
+			{
+				"name": "proctrancd",
+				"type": "UTF8"
+			},
+			{
+				"name": "procflag",
+				"type": "UTF8"
+			},
+			{
+				"name": "procid",
+				"type": "UTF8"
+			},
+			{
+				"name": "statcode",
+				"type": "UTF8"
+			},
+			{
+				"name": "statreasn",
+				"type": "UTF8"
+			},
+			{
+				"name": "statdate",
+				"type": "UTF8"
+			},
+			{
+				"name": "stattran",
+				"type": "INT32"
+			},
+			{
+				"name": "tranlused",
+				"type": "INT32"
+			},
+			{
+				"name": "occdate",
+				"type": "UTF8"
+			},
+			{
+				"name": "ccdate",
+				"type": "UTF8"
+			},
+			{
+				"name": "crdate",
+				"type": "UTF8"
+			},
+			{
+				"name": "annamt01",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "annamt02",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "annamt03",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "annamt04",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "annamt05",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "annamt06",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "rnltype",
+				"type": "UTF8"
+			},
+			{
+				"name": "rnlnots",
+				"type": "UTF8"
+			},
+			{
+				"name": "rnlnotto",
+				"type": "UTF8"
+			},
+			{
+				"name": "rnlattn",
+				"type": "UTF8"
+			},
+			{
+				"name": "rnldurn",
+				"type": "INT32"
+			},
+			{
+				"name": "reptype",
+				"type": "UTF8"
+			},
+			{
+				"name": "REPNUM",
+				"type": "UTF8"
+			},
+			{
+				"name": "cownpfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "cowncoy",
+				"type": "INT32"
+			},
+			{
+				"name": "COWNNUM",
+				"type": "UTF8"
+			},
+			{
+				"name": "JOWNNUM",
+				"type": "UTF8"
+			},
+			{
+				"name": "payrpfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "payrcoy",
+				"type": "UTF8"
+			},
+			{
+				"name": "PAYRNUM",
+				"type": "UTF8"
+			},
+			{
+				"name": "desppfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "despcoy",
+				"type": "INT32"
+			},
+			{
+				"name": "DESPNUM",
+				"type": "UTF8"
+			},
+			{
+				"name": "asgnpfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "asgncoy",
+				"type": "UTF8"
+			},
+			{
+				"name": "asgnnum",
+				"type": "UTF8"
+			},
+			{
+				"name": "cntbranch",
+				"type": "INT32"
+			},
+			{
+				"name": "agntpfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "agntcoy",
+				"type": "INT32"
+			},
+			{
+				"name": "AGNTNUM",
+				"type": "UTF8"
+			},
+			{
+				"name": "cntcurr",
+				"type": "UTF8"
+			},
+			{
+				"name": "acctccy",
+				"type": "UTF8"
+			},
+			{
+				"name": "crate",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "payplan",
+				"type": "UTF8"
+			},
+			{
+				"name": "acctmeth",
+				"type": "UTF8"
+			},
+			{
+				"name": "BILLFREQ",
+				"type": "UTF8"
+			},
+			{
+				"name": "BILLCHNL",
+				"type": "UTF8"
+			},
+			{
+				"name": "collchnl",
+				"type": "UTF8"
+			},
+			{
+				"name": "billday",
+				"type": "UTF8"
+			},
+			{
+				"name": "billmonth",
+				"type": "UTF8"
+			},
+			{
+				"name": "billcd",
+				"type": "UTF8"
+			},
+			{
+				"name": "btdate",
+				"type": "UTF8"
+			},
+			{
+				"name": "ptdate",
+				"type": "UTF8"
+			},
+			{
+				"name": "payflag",
+				"type": "UTF8"
+			},
+			{
+				"name": "sinstfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "sinstto",
+				"type": "UTF8"
+			},
+			{
+				"name": "sinstamt01",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "sinstamt02",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "sinstamt03",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "sinstamt04",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "sinstamt05",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "sinstamt06",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "instfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "instto",
+				"type": "UTF8"
+			},
+			{
+				"name": "instbchnl",
+				"type": "UTF8"
+			},
+			{
+				"name": "instcchnl",
+				"type": "UTF8"
+			},
+			{
+				"name": "instfreq",
+				"type": "UTF8"
+			},
+			{
+				"name": "insttot01",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "insttot02",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "insttot03",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "insttot04",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "insttot05",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "insttot06",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "instpast01",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "instpast02",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "instpast03",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "instpast04",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "instpast05",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "instpast06",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "instjctl",
+				"type": "UTF8"
+			},
+			{
+				"name": "nofoutinst",
+				"type": "INT32"
+			},
+			{
+				"name": "outstamt",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "billdate01",
+				"type": "UTF8"
+			},
+			{
+				"name": "billdate02",
+				"type": "UTF8"
+			},
+			{
+				"name": "billdate03",
+				"type": "UTF8"
+			},
+			{
+				"name": "billdate04",
+				"type": "UTF8"
+			},
+			{
+				"name": "billamt01",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "billamt02",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "billamt03",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "billamt04",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "facthous",
+				"type": "UTF8"
+			},
+			{
+				"name": "bankkey",
+				"type": "UTF8"
+			},
+			{
+				"name": "BANKACCKEY",
+				"type": "UTF8"
+			},
+			{
+				"name": "discode01",
+				"type": "UTF8"
+			},
+			{
+				"name": "discode02",
+				"type": "UTF8"
+			},
+			{
+				"name": "discode03",
+				"type": "UTF8"
+			},
+			{
+				"name": "discode04",
+				"type": "UTF8"
+			},
+			{
+				"name": "grupkey",
+				"type": "UTF8"
+			},
+			{
+				"name": "membsel",
+				"type": "UTF8"
+			},
+			{
+				"name": "aplsupr",
+				"type": "UTF8"
+			},
+			{
+				"name": "aplspfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "aplspto",
+				"type": "UTF8"
+			},
+			{
+				"name": "billsupr",
+				"type": "UTF8"
+			},
+			{
+				"name": "billspfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "billspto",
+				"type": "UTF8"
+			},
+			{
+				"name": "commsupr",
+				"type": "UTF8"
+			},
+			{
+				"name": "commspfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "commspto",
+				"type": "UTF8"
+			},
+			{
+				"name": "lapssupr",
+				"type": "UTF8"
+			},
+			{
+				"name": "lapsspfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "lapsspto",
+				"type": "UTF8"
+			},
+			{
+				"name": "mailsupr",
+				"type": "UTF8"
+			},
+			{
+				"name": "mailspfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "mailspto",
+				"type": "UTF8"
+			},
+			{
+				"name": "notssupr",
+				"type": "UTF8"
+			},
+			{
+				"name": "notsspfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "notsspto",
+				"type": "UTF8"
+			},
+			{
+				"name": "rnwlsupr",
+				"type": "UTF8"
+			},
+			{
+				"name": "rnwlspfrom",
+				"type": "UTF8"
+			},
+			{
+				"name": "rnwlspto",
+				"type": "UTF8"
+			},
+			{
+				"name": "campaign",
+				"type": "UTF8"
+			},
+			{
+				"name": "SRCEBUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "nofrisks",
+				"type": "INT32"
+			},
+			{
+				"name": "jacket",
+				"type": "UTF8"
+			},
+			{
+				"name": "inststamt01",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "inststamt02",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "inststamt03",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "inststamt04",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "inststamt05",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "inststamt06",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "pstatcode",
+				"type": "UTF8"
+			},
+			{
+				"name": "pstatreasn",
+				"type": "UTF8"
+			},
+			{
+				"name": "pstattran",
+				"type": "INT32"
+			},
+			{
+				"name": "pstatdate",
+				"type": "UTF8"
+			},
+			{
+				"name": "pdind",
+				"type": "UTF8"
+			},
+			{
+				"name": "register",
+				"type": "UTF8"
+			},
+			{
+				"name": "chdrstcda",
+				"type": "UTF8"
+			},
+			{
+				"name": "chdrstcdb",
+				"type": "UTF8"
+			},
+			{
+				"name": "chdrstcdc",
+				"type": "UTF8"
+			},
+			{
+				"name": "chdrstcdd",
+				"type": "UTF8"
+			},
+			{
+				"name": "chdrstcde",
+				"type": "UTF8"
+			},
+			{
+				"name": "mplpfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "mplcoy",
+				"type": "UTF8"
+			},
+			{
+				"name": "MPLNUM",
+				"type": "UTF8"
+			},
+			{
+				"name": "poapfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "poacoy",
+				"type": "UTF8"
+			},
+			{
+				"name": "poanum",
+				"type": "UTF8"
+			},
+			{
+				"name": "finpfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "fincoy",
+				"type": "UTF8"
+			},
+			{
+				"name": "finnum",
+				"type": "UTF8"
+			},
+			{
+				"name": "wvfdat",
+				"type": "UTF8"
+			},
+			{
+				"name": "wvtdat",
+				"type": "UTF8"
+			},
+			{
+				"name": "wvfind",
+				"type": "UTF8"
+			},
+			{
+				"name": "clupfx",
+				"type": "UTF8"
+			},
+			{
+				"name": "clucoy",
+				"type": "UTF8"
+			},
+			{
+				"name": "clunum",
+				"type": "UTF8"
+			},
+			{
+				"name": "polpln",
+				"type": "UTF8"
+			},
+			{
+				"name": "chgflag",
+				"type": "UTF8"
+			},
+			{
+				"name": "laprind",
+				"type": "UTF8"
+			},
+			{
+				"name": "specind",
+				"type": "UTF8"
+			},
+			{
+				"name": "dueflg",
+				"type": "UTF8"
+			},
+			{
+				"name": "bfcharge",
+				"type": "UTF8"
+			},
+			{
+				"name": "dishnrcnt",
+				"type": "INT32"
+			},
+			{
+				"name": "pdtype",
+				"type": "UTF8"
+			},
+			{
+				"name": "dishnrdte",
+				"type": "UTF8"
+			},
+			{
+				"name": "stmpdtyamt",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "stmpdtydte",
+				"type": "UTF8"
+			},
+			{
+				"name": "polinc",
+				"type": "INT32"
+			},
+			{
+				"name": "polsum",
+				"type": "INT32"
+			},
+			{
+				"name": "nxtsfx",
+				"type": "INT32"
+			},
+			{
+				"name": "avlisu",
+				"type": "UTF8"
+			},
+			{
+				"name": "statement_date",
+				"type": "UTF8"
+			},
+			{
+				"name": "billcurr",
+				"type": "UTF8"
+			},
+			{
+				"name": "free_switches_used",
+				"type": "INT32"
+			},
+			{
+				"name": "free_switches_left",
+				"type": "INT32"
+			},
+			{
+				"name": "last_switch_date",
+				"type": "UTF8"
+			},
+			{
+				"name": "mandref",
+				"type": "INT32"
+			},
+			{
+				"name": "cntiss",
+				"type": "UTF8"
+			},
+			{
+				"name": "cntrcv",
+				"type": "UTF8"
+			},
+			{
+				"name": "coppn",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "cotype",
+				"type": "UTF8"
+			},
+			{
+				"name": "covernt",
+				"type": "UTF8"
+			},
+			{
+				"name": "docnum",
+				"type": "UTF8"
+			},
+			{
+				"name": "dtecan",
+				"type": "UTF8"
+			},
+			{
+				"name": "quoteno",
+				"type": "UTF8"
+			},
+			{
+				"name": "rnlsts",
+				"type": "UTF8"
+			},
+			{
+				"name": "sustrcde",
+				"type": "UTF8"
+			},
+			{
+				"name": "bankcode",
+				"type": "UTF8"
+			},
+			{
+				"name": "pndate",
+				"type": "UTF8"
+			},
+			{
+				"name": "subsflg",
+				"type": "UTF8"
+			},
+			{
+				"name": "hrskind",
+				"type": "UTF8"
+			},
+			{
+				"name": "slrypflg",
+				"type": "UTF8"
+			},
+			{
+				"name": "takovrflg",
+				"type": "UTF8"
+			},
+			{
+				"name": "gprnltyp",
+				"type": "UTF8"
+			},
+			{
+				"name": "gprmnths",
+				"type": "UTF8"
+			},
+			{
+				"name": "coysrvac",
+				"type": "UTF8"
+			},
+			{
+				"name": "mrksrvac",
+				"type": "UTF8"
+			},
+			{
+				"name": "polschpflg",
+				"type": "UTF8"
+			},
+			{
+				"name": "adjdate",
+				"type": "UTF8"
+			},
+			{
+				"name": "ptdateab",
+				"type": "UTF8"
+			},
+			{
+				"name": "lmbrno",
+				"type": "INT32"
+			},
+			{
+				"name": "lheadno",
+				"type": "INT32"
+			},
+			{
+				"name": "effdcldt",
+				"type": "UTF8"
+			},
+			{
+				"name": "pntrcde",
+				"type": "UTF8"
+			},
+			{
+				"name": "taxflag",
+				"type": "UTF8"
+			},
+			{
+				"name": "agedef",
+				"type": "UTF8"
+			},
+			{
+				"name": "TERMAGE",
+				"type": "UTF8"
+			},
+			{
+				"name": "personcov",
+				"type": "UTF8"
+			},
+			{
+				"name": "enrolltyp",
+				"type": "UTF8"
+			},
+			{
+				"name": "splitsubs",
+				"type": "UTF8"
+			},
+			{
+				"name": "dtlsind",
+				"type": "UTF8"
+			},
+			{
+				"name": "zrenno",
+				"type": "INT32"
+			},
+			{
+				"name": "zendno",
+				"type": "INT32"
+			},
+			{
+				"name": "zresnpd",
+				"type": "UTF8"
+			},
+			{
+				"name": "ZREPOLNO",
+				"type": "UTF8"
+			},
+			{
+				"name": "zcomtyp",
+				"type": "UTF8"
+			},
+			{
+				"name": "zrinum",
+				"type": "UTF8"
+			},
+			{
+				"name": "zschprt",
+				"type": "UTF8"
+			},
+			{
+				"name": "zpaymode",
+				"type": "UTF8"
+			},
+			{
+				"name": "user_profile",
+				"type": "UTF8"
+			},
+			{
+				"name": "jobname",
+				"type": "UTF8"
+			},
+			{
+				"name": "datime",
+				"type": "UTF8"
+			},
+			{
+				"name": "job_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "currfrom_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "currto_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "statdate_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "occdate_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "ccdate_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "crdate_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "billcd_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "btdate_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "ptdate_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "sinstfrom_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "sinstto_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "instfrom_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "instto_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "billdate01_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "billdate02_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "billdate03_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "billdate04_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "pstatdate_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "wvfdat_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "wvtdat_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "dishnrdte_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "stmpdtydte_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "statement_date_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "last_switch_date_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "cntiss_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "cntrcv_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "dtecan_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "pndate_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "adjdate_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "ptdateab_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "effdcldt_dfm",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_1",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_2",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_3",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_4",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_5",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_6",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_7",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_8",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_9",
+				"type": "UTF8"
+			},
+			{
+				"name": "populationdate_10",
+				"type": "UTF8"
+			},
+			{
+				"name": "system_createbyuser",
+				"type": "UTF8"
+			},
+			{
+				"name": "system_createdate",
+				"type": "UTF8"
+			},
+			{
+				"name": "system_changebyuser",
+				"type": "UTF8"
+			},
+			{
+				"name": "system_changedate",
+				"type": "UTF8"
+			},
+			{
+				"name": "ingestion_date",
+				"type": "UTF8"
+			},
+			{
+				"name": "valid_from_dt",
+				"type": "UTF8"
+			},
+			{
+				"name": "valid_to_dt",
+				"type": "INT64"
+			},
+			{
+				"name": "load_dt",
+				"type": "INT64"
+			},
+			{
+				"name": "activeflag",
+				"type": "UTF8"
+			}
+		]
+	}
+}
