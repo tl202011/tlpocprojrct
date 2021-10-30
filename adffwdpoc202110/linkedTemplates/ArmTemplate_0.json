@@ -1339,7 +1339,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat('/Shared/',pipeline().parameters.P_DATABRICKS)",
+								"value": "/Shared/wrk_spc_new/SCD/csv_ongoing",
 								"type": "Expression"
 							}
 						},
