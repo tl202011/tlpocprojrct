@@ -799,12 +799,12 @@
 									"userProperties": [],
 									"typeProperties": {
 										"on": {
-											"value": "@substring(pipeline().parameters.P_STREAM_NM,0,2)",
+											"value": "@substring(pipeline().parameters.P_STREAM_NM,0,3)",
 											"type": "Expression"
 										},
 										"cases": [
 											{
-												"value": "DB",
+												"value": "CSV",
 												"activities": [
 													{
 														"name": "PCS_COMMON_DATABRICKS_copy1",
