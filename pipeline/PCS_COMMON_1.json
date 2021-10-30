@@ -1,0 +1,211 @@
+{
+	"name": "PCS_COMMON_1",
+	"properties": {
+		"description": " ",
+		"activities": [
+			{
+				"name": "INSERT PROCESS LOG",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderStoredProcedureName": "[CNTL].[PROC_CNTL_START_PCS]",
+						"storedProcedureParameters": {
+							"P_PCS_NM": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.P_PROCESS_NM",
+									"type": "Expression"
+								}
+							},
+							"P_RUN_MODE": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.P_RUN_MODE",
+									"type": "Expression"
+								}
+							},
+							"P_STREAM_SEQ_ID": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SqlServerTable1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "GET SKIP FLAG",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "INSERT PROCESS LOG",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "V_SKIP_PROCESS",
+					"value": {
+						"value": "@activity('INSERT PROCESS LOG').output.FIRSTROW.SKIP_PROCESS",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "CHECK SKIP FLAG",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "GET SKIP FLAG",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "GET LOAD ID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('V_SKIP_PROCESS'),'0')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "SKIP PROCESS",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": "SELECT 1",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SqlServerTable1",
+									"type": "DatasetReference"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "RUN_PCS_2",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pipeline2",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"P_PCS_NM": {
+										"value": "@pipeline().parameters.P_PROCESS_NM",
+										"type": "Expression"
+									},
+									"P_RUN_MODE": {
+										"value": "@pipeline().parameters.P_RUN_MODE",
+										"type": "Expression"
+									},
+									"P_LOAD_ID": {
+										"value": "@variables('V_LOAD_ID')",
+										"type": "Expression"
+									},
+									"P_STREAM_SEQ_ID": {
+										"value": "@pipeline().parameters.P_STREAM_SEQ_ID",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "GET LOAD ID",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "INSERT PROCESS LOG",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "V_LOAD_ID",
+					"value": {
+						"value": "@activity('INSERT PROCESS LOG').output.FIRSTROW.LOAD_ID",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"P_PROCESS_NM": {
+				"type": "string",
+				"defaultValue": "SINGHAARM_SINGHAARM_AGENT"
+			},
+			"P_RUN_MODE": {
+				"type": "string",
+				"defaultValue": "R"
+			},
+			"P_STREAM_SEQ_ID": {
+				"type": "string",
+				"defaultValue": "-999"
+			}
+		},
+		"variables": {
+			"V_SKIP_PROCESS": {
+				"type": "String",
+				"defaultValue": "999"
+			},
+			"V_LOAD_ID": {
+				"type": "String",
+				"defaultValue": "999"
+			}
+		},
+		"folder": {
+			"name": "COMMON JOB"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
