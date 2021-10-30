@@ -152,29 +152,27 @@
 										"value": "IM",
 										"activities": [
 											{
-												"name": "PCS_COMMON_IMG",
-												"type": "ExecutePipeline",
+												"name": "PASS COMMON",
+												"type": "Lookup",
 												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
 												"userProperties": [],
 												"typeProperties": {
-													"waitOnCompletion": true,
-													"parameters": {
-														"P_RUN_MODE": {
-															"value": "@pipeline().parameters.P_RUN_MODE",
-															"type": "Expression"
-														},
-														"P_PCS_NM": {
-															"value": "@item().PCS_NM",
-															"type": "Expression"
-														},
-														"P_STREAM_SEQ_ID": {
-															"value": "@variables('V_STREAM_SEQ_ID')",
-															"type": "Expression"
-														},
-														"P_AS_AT_DT": {
-															"value": "@variables('V_AS_AT_DT')",
-															"type": "Expression"
-														}
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": "1",
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"dataset": {
+														"referenceName": "SqlServerTable1",
+														"type": "DatasetReference"
 													}
 												}
 											}
