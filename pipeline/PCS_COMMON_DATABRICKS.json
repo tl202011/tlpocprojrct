@@ -177,15 +177,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "SqlServerSource",
-									"sqlReaderQuery": "SELECT 1",
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
-								}
-							}
+							"userProperties": []
 						}
 					]
 				}
