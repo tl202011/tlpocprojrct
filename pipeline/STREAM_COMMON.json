@@ -521,7 +521,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://prod-11.southeastasia.logic.azure.com:443/workflows/938a661629634e678aa73e3bc728f571/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=AzDn8dLsjp_gd_k_kvN_46bcpN25NBpPlJCCu2Qq08w",
+					"url": "https://prod-01.southeastasia.logic.azure.com:443/workflows/ddeaf48e16f546b393150d42378a2739/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=JvdRrA4HeV7qgHZE9N_klpzJH6GkwzKd_pU_IJvTNUI",
 					"method": "POST",
 					"body": {
 						"value": "{\n\"Message\":\"@{activity('STREAM RESULT').output.firstrow.a}\",\n\"EmailTo\":\"@{activity('GET EMAIL').output.firstrow.EMAIL}\",\n\"Asat_dt\":\"@{activity('FINAL STREAM').output.firstrow.AS_AT_DT_FORMAT}\",\n\"StreamName\":\"@{pipeline().parameters.P_STREAM_NM}\"\n}",
