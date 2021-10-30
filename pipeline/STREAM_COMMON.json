@@ -181,29 +181,27 @@
 								],
 								"defaultActivities": [
 									{
-										"name": "RUN_PCS_1",
-										"type": "ExecutePipeline",
+										"name": "PASS COMMON_copy1",
+										"type": "Lookup",
 										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
 										"userProperties": [],
 										"typeProperties": {
-											"pipeline": {
-												"referenceName": "PCS_COMMON_1",
-												"type": "PipelineReference"
+											"source": {
+												"type": "SqlServerSource",
+												"sqlReaderQuery": "1",
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
 											},
-											"waitOnCompletion": true,
-											"parameters": {
-												"P_PROCESS_NM": {
-													"value": "@item().PCS_NM",
-													"type": "Expression"
-												},
-												"P_RUN_MODE": {
-													"value": "@pipeline().parameters.P_RUN_MODE",
-													"type": "Expression"
-												},
-												"P_STREAM_SEQ_ID": {
-													"value": "@variables('V_STREAM_SEQ_ID')",
-													"type": "Expression"
-												}
+											"dataset": {
+												"referenceName": "SqlServerTable1",
+												"type": "DatasetReference"
 											}
 										}
 									}
