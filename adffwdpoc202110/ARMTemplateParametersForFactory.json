@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "adffwdpoc202110"
 		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
 		"AzureDatabricks1_accessToken": {
 			"value": ""
 		},
@@ -12,9 +15,6 @@
 			"value": ""
 		},
 		"SqlServer1_connectionString": {
-			"value": ""
-		},
-		"AzureDataLakeStorage1_accountKey": {
 			"value": ""
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
